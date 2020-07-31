@@ -13,6 +13,11 @@ namespace task1
     {
         List<FileInform> fileInfos = new List<FileInform>();
 
+        /// <summary>
+        /// File path check
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>path to the file</returns>
         private string SelectFile(string path)
         {
             Console.WriteLine("Current path: " + path);
@@ -169,7 +174,7 @@ namespace task1
             dirName = SelectFile(dirName);
             try
             {
-                GetDirList(dirName, true);
+                GetDirList(dirName);
                 Console.WriteLine("\r\n-----------------------------------------");
                 Console.WriteLine("Navigation:");
                 Console.WriteLine("-----------------------------------------");
@@ -211,17 +216,14 @@ namespace task1
             }
         }
 
-        private void GetDirList(string dirName, bool isNextDir)
+        /// <summary>
+        /// Get list of directories and files
+        /// </summary>
+        /// <param name="dirName">Directory path</param>
+        private void GetDirList(string dirName)
         {
             Console.Clear();
-            if (isNextDir)
-                fileInfos = new List<FileInform>();
-            else
-                foreach (var flInf in fileInfos.Where(x => x.TypeFile != "Settings"))
-                {
-                    fileInfos.Remove(flInf);
-                }
-
+            fileInfos = new List<FileInform>();
             if (Directory.Exists(dirName))
             {
 
@@ -258,6 +260,12 @@ namespace task1
             }
         }
 
+        /// <summary>
+        /// Follow the specified path
+        /// </summary>
+        /// <param name="dirName">Directory path</param>
+        /// <param name="root">Root path</param>
+        /// <returns>true - stop method, false - continue method</returns>
         private bool NextDir(string dirName, string root)
         {
             if (dirName == "Root")
@@ -270,7 +278,7 @@ namespace task1
 
 
             string dirNamePrev = string.Empty;
-            GetDirList(dirName, true);
+            GetDirList(dirName);
 
             if (dirName.Substring(dirName.Length - 1) == "\\")
             {
@@ -302,6 +310,11 @@ namespace task1
             return false;
         }
 
+        /// <summary>
+        /// Check string value for number
+        /// </summary>
+        /// <param name="nubmer"></param>
+        /// <returns></returns>
         private int ValidNumber(string nubmer)
         {
             int NumId;
