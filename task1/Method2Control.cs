@@ -29,15 +29,15 @@ namespace task1
                         listCommaWord.Add(fileTextMass[i]);
 
                     string commaWords = String.Join(", ", listCommaWord.ToArray());
-                    Console.WriteLine("Words in the text: " + fileTextMass.Length);
-                    Console.WriteLine("Every 10th word: " + commaWords);
+                    Console.WriteLine($"Words in the text: {fileTextMass.Length}");
+                    Console.WriteLine($"Every 10th word: {commaWords}");
                 }
                 else
                 {
                     Console.WriteLine("File path not found!");
                 }
             }
-            catch (Exception ex) { Console.WriteLine("Exception: " + ex.Message); }
+            catch (Exception ex) { Console.WriteLine($"{ex.Message}"); }
         }
     }
 }

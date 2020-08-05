@@ -21,14 +21,14 @@ namespace task1
                         {
                             Console.WriteLine("\r\nReturn to the method selection menu? y/n");
                             string answer = Console.ReadLine();
-                            if (answer == "y" || answer == "Y")
+                            if (answer.ToLower() == "y")
                             {
                                 Console.Clear();
                                 MenuControl menuControl = new MenuControl();
                                 menuControl.CallMenuSelectMethods();
                             }
 
-                            else if (answer == "n" || answer == "N")
+                            else if (answer.ToLower() == "n")
                             { validMenuSelectMethods = true; }
                             else Console.WriteLine("\r\nPlease press y or n to choose!");
                         }

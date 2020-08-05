@@ -92,13 +92,13 @@ namespace task1
                 foreach (var flinf in fileInfos.Where(x => x.TypeFile == "Catalog").OrderBy(x => x.Name))
                 {
 
-                    Console.WriteLine("id: " + flinf.Id + "| " + flinf.Name);
+                    Console.WriteLine($"id: {flinf.Id} | {flinf.Name}");
                 }
 
                 Console.WriteLine("\r\nFiles:");
                 foreach (var flinf in fileInfos.Where(x => x.TypeFile == "File").OrderBy(x => x.Name))
                 {
-                    Console.WriteLine("id: " + flinf.Id + "| " + flinf.Name);
+                    Console.WriteLine($"id: {flinf.Id} | {flinf.Name}");
                 }
             }
             return fileInfos;
@@ -125,7 +125,6 @@ namespace task1
                 FileInfos = GetDirList(dirName);
 
                 string dirNamePrev = string.Empty;
-                //GetDirList(dirName);
 
                 //Get prev directory
                 if (dirName.Substring(dirName.Length - 1) == "\\")
@@ -149,7 +148,7 @@ namespace task1
                 Console.WriteLine("-----------------------------------------");
                 foreach (var dirInf in FileInfos.Where(x => x.TypeFile == "Settings"))
                 {
-                    Console.WriteLine("id: " + dirInf.Id + "| " + dirInf.PrevPath);
+                    Console.WriteLine($"id:{dirInf.Id} | {dirInf.PrevPath}");
                     Console.WriteLine("-----------------------------------------");
                 }
 
@@ -157,7 +156,7 @@ namespace task1
             }
             catch (Exception ex) 
             { 
-                Console.WriteLine($"{ex} \r\n"); 
+                Console.WriteLine($"Exception: {ex} \r\n"); 
                 MenuControl menuControl = new MenuControl();
                 menuControl.CallMenuSelectMethods();
             }

@@ -32,7 +32,7 @@ namespace task1
                     Console.WriteLine("File path not found!");
                 }
             }
-            catch (Exception ex) { Console.WriteLine("Exception: " + ex.Message); }
+            catch (Exception ex) { Console.WriteLine($"Exception: {ex.Message}"); }
         }
     }
 }
