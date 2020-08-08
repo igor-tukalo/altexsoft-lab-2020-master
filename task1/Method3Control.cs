@@ -12,25 +12,18 @@ namespace task1
             try
             {
                 Console.Write("Enter the path file: ");
-                string path = Console.ReadLine();
+                string path = Validation.СheckFileExist(Console.ReadLine());
                 Console.WriteLine();
 
-                if (File.Exists(path))
-                {
-                    string[] fileTextArr = new string(File.ReadAllText(path, Encoding.Default)).ToString().Split(new[] { '.' }).ToArray();
+                string[] fileTextArr = new string(File.ReadAllText(path, Encoding.Default)).ToString().Split(new[] { '.' }).ToArray();
 
-                    string[] wordsReverseArr = fileTextArr[2].Split(' ');
+                string[] wordsReverseArr = fileTextArr[2].Split(' ');
 
-                    for (int i = 0; i < wordsReverseArr.Length; i++)
-                    {
-                        wordsReverseArr[i] = new string(wordsReverseArr[i].Reverse().ToArray());
-                    }
-                    Console.WriteLine(string.Join(" ", wordsReverseArr));
-                }
-                else
+                for (int i = 0; i < wordsReverseArr.Length; i++)
                 {
-                    Console.WriteLine("File path not found!");
+                    wordsReverseArr[i] = new string(wordsReverseArr[i].Reverse().ToArray());
                 }
+                Console.WriteLine(string.Join(" ", wordsReverseArr));
             }
             catch (Exception ex) { Console.WriteLine($"Exception: {ex.Message}"); }
         }

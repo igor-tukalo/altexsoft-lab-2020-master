@@ -16,7 +16,7 @@ namespace task1
                 Console.Write("Enter the path root directory: ");
                 string dirName = Console.ReadLine();
 
-               FileInfos = GetDirList(dirName);
+                FileInfos = GetDirList(dirName);
 
                 Console.WriteLine("\r\n-----------------------------------------");
                 Console.WriteLine("Navigation:");
@@ -72,7 +72,7 @@ namespace task1
 
                 string[] dirs = Directory.GetDirectories(dirName);
                 int id = 0;
-                foreach (string s in dirs.OrderBy(x=>x.ToString()))
+                foreach (string s in dirs.OrderBy(x => x.ToString()))
                 {
                     DirectoryInfo dirInfo = new DirectoryInfo(dirName);
                     id++;
@@ -154,9 +154,9 @@ namespace task1
 
                 Console.WriteLine("\r\nCurrent directory: " + dirName);
             }
-            catch (Exception ex) 
-            { 
-                Console.WriteLine($"Exception: {ex} \r\n"); 
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex} \r\n");
                 MenuControl menuControl = new MenuControl();
                 menuControl.CallMenuSelectMethods();
             }

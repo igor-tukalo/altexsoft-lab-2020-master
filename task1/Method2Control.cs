@@ -14,28 +14,19 @@ namespace task1
             try
             {
                 Console.Write("Enter the path file: ");
-                string path = Console.ReadLine();
+                string path = Validation.СheckFileExist(Console.ReadLine());
 
-                StringBuilder fileText = new StringBuilder();
+                string text = File.ReadAllText(path, Encoding.Default);
+                Regex.Replace(text, "[-.?!)(,:]", "").Replace(@"""", "");
+                string[] fileTextMass = text.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-                if (File.Exists(path))
-                {
-                    string text = File.ReadAllText(path, Encoding.Default);
-                    fileText.Append(Regex.Replace(text, "[-.?!)(,:]", "").Replace(@"""", "") + " ");
-                    string[] fileTextMass = fileText.ToString().Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                List<string> listCommaWord = new List<string>();
+                for (int i = 9; i < fileTextMass.Length; i += 10)
+                    listCommaWord.Add(fileTextMass[i]);
 
-                    List<string> listCommaWord = new List<string>();
-                    for (int i = 9; i < fileTextMass.Length; i += 10)
-                        listCommaWord.Add(fileTextMass[i]);
-
-                    string commaWords = String.Join(", ", listCommaWord.ToArray());
-                    Console.WriteLine($"Words in the text: {fileTextMass.Length}");
-                    Console.WriteLine($"Every 10th word: {commaWords}");
-                }
-                else
-                {
-                    Console.WriteLine("File path not found!");
-                }
+                string commaWords = String.Join(", ", listCommaWord.ToArray());
+                Console.WriteLine($"Words in the text: {fileTextMass.Length}");
+                Console.WriteLine($"Every 10th word: {commaWords}");
             }
             catch (Exception ex) { Console.WriteLine($"{ex.Message}"); }
         }

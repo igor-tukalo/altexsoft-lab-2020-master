@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace task1
@@ -9,55 +10,56 @@ namespace task1
         /// <summary>
         /// Check string value for number
         /// </summary>
-        /// <param name="nubmer"></param>
+        /// <param name="text"></param>
         /// <returns></returns>
-        public static int ValidNumber(string nubmer)
+        public static int ValidNumber(string text)
         {
-            int NumId;
-
-            bool validStart = false;
-            while (!validStart)
+            //check for number
+            int Num;
+            bool isNum;
+            do
             {
-                //check for number
-                bool isNum = int.TryParse(nubmer, out NumId);
-                if (!string.IsNullOrWhiteSpace(nubmer) && isNum)
-                {
-                    return NumId;
-                }
-                else
+                isNum = int.TryParse(text, out Num);
+                if (!isNum)
                 {
                     Console.WriteLine("Warning! Value must be numeric!");
                     Console.Write("\r\nEnter value: ");
-                    nubmer = Console.ReadLine();
+                    text = Console.ReadLine();
                 }
             }
-            return 0;
+            while (!isNum);
+            return Num;
+        }
+
+        public static string СheckFileExist(string path)
+        {
+            while (!File.Exists(path))
+            {
+                Console.Write("File path not found! Enter the path : ");
+                path = Console.ReadLine();
+            }
+            return path;
         }
 
         /// <summary>
-        /// File path check
+        /// Obtain a Y or N response
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns>path to the file</returns>
-        public static string SelectFile(string path)
+        /// <returns>response</returns>
+        public static ConsoleKey YesNo()
         {
-            Console.WriteLine("Current path: " + path);
-            bool validChangepath = false;
-            while (validChangepath == false)
+            ConsoleKey response;
+
+            do
             {
-                Console.WriteLine("Change path? y/n");
-                string answer = Console.ReadLine();
-                if (answer.ToLower() == "y")
-                {
-                    Console.Write("Enter the path : ");
-                    path = Console.ReadLine();
-                    validChangepath = true;
-                }
-                else if (answer.ToLower() == "n")
-                { validChangepath = true; }
-                else Console.WriteLine("\r\nPlease press y or n to choose!");
-            }
-            return path;
+                while (Console.KeyAvailable) // Flushes the input queue.
+                    Console.ReadKey();
+
+                Console.Write("y or n?"); 
+                response = Console.ReadKey().Key;
+                Console.WriteLine();
+            } while (response != ConsoleKey.Y && response != ConsoleKey.N); // If the user did not respond with a 'Y' or an 'N', repeat the loop.
+
+            return response;
         }
 
     }

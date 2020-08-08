@@ -11,32 +11,25 @@ namespace task1
             try
             {
                 Console.Write("Enter the path original file: ");
-                string path = Console.ReadLine();
+                string path = Validation.СheckFileExist(Console.ReadLine());
 
                 Console.Write("Enter the path copy file: ");
-                string newPath = Console.ReadLine();
+                string newPath = Validation.СheckFileExist(Console.ReadLine());
 
                 Console.WriteLine("Enter the word: ");
                 string word = Console.ReadLine();
 
-                if (File.Exists(path))
-                {
-                    File.Copy(path, newPath);
+                File.Copy(path, newPath);
 
-                    string text = File.ReadAllText(path, Encoding.Default);
-                    if (text.Contains(word))
-                    {
-                        text = text.Replace(word, "");
-                        File.WriteAllText(newPath, text, Encoding.Default);
-                        Console.WriteLine($"{word} deleted from file!");
-                    }
-                    else
-                        Console.WriteLine("The text does not contain the specified word!");
+                string text = File.ReadAllText(path, Encoding.Default);
+                if (text.Contains(word))
+                {
+                    text = text.Replace(word, "");
+                    File.WriteAllText(newPath, text, Encoding.Default);
+                    Console.WriteLine($"{word} deleted from file!");
                 }
                 else
-                {
-                    Console.WriteLine("File path not found!");
-                }
+                    Console.WriteLine("The text does not contain the specified word!");
             }
             catch (Exception ex) { Console.WriteLine($"Exception: {ex.Message}"); }
         }

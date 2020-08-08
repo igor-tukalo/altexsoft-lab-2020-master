@@ -16,22 +16,15 @@ namespace task1
             {
                 case 0:
                     {
-                        bool validMenuSelectMethods = false;
-                        while (!validMenuSelectMethods)
-                        {
-                            Console.WriteLine("\r\nReturn to the method selection menu? y/n");
-                            string answer = Console.ReadLine();
-                            if (answer.ToLower() == "y")
-                            {
-                                Console.Clear();
-                                MenuControl menuControl = new MenuControl();
-                                menuControl.CallMenuSelectMethods();
-                            }
 
-                            else if (answer.ToLower() == "n")
-                            { validMenuSelectMethods = true; }
-                            else Console.WriteLine("\r\nPlease press y or n to choose!");
+                        Console.WriteLine($"\r\nReturn to the method selection menu? y/n");
+                        if (Validation.YesNo() == ConsoleKey.Y)
+                        {
+                            Console.Clear();
+                            MenuControl menuControl = new MenuControl();
+                            menuControl.CallMenuSelectMethods();
                         }
+
                     }
                     break;
                 case 1:
