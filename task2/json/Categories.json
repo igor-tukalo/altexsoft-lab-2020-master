@@ -1,0 +1,87 @@
+[
+  {
+    "Id": 1,
+    "Name": "Categories",
+    "ParentId": null
+  },
+  {
+    "Id": 2,
+    "Name": "Salads",
+    "ParentId": 1
+  },
+  {
+    "Id": 3,
+    "Name": "Bakery products",
+    "ParentId": 1
+  },
+  {
+    "Id": 4,
+    "Name": "Meat, poultry",
+    "ParentId": 1
+  },
+  {
+    "Id": 5,
+    "Name": "Fish, seafood",
+    "ParentId": 1
+  },
+  {
+    "Id": 6,
+    "Name": "The vinaigrette",
+    "ParentId": 2
+  },
+  {
+    "Id": 7,
+    "Name": "Mimosa",
+    "ParentId": 2
+  },
+  {
+    "Id": 8,
+    "Name": "Olivier salad",
+    "ParentId": 2
+  },
+  {
+    "Id": 9,
+    "Name": "Kefir baked goods",
+    "ParentId": 3
+  },
+  {
+    "Id": 10,
+    "Name": "Kefir pies",
+    "ParentId": 9
+  },
+  {
+    "Id": 11,
+    "Name": "Bread on kefir",
+    "ParentId": 9
+  },
+  {
+    "Id": 12,
+    "Name": "Kefir cupcakes",
+    "ParentId": 9
+  },
+  {
+    "Id": 13,
+    "Name": "Muffins on kefir",
+    "ParentId": 12
+  },
+  {
+    "Id": 14,
+    "Name": "Cutlets",
+    "ParentId": 4
+  },
+  {
+    "Id": 15,
+    "Name": "Meatballs",
+    "ParentId": 4
+  },
+  {
+    "Id": 16,
+    "Name": "Cabbage rolls",
+    "ParentId": 4
+  },
+  {
+    "Id": 17,
+    "Name": "Lazy stuffed cabbage",
+    "ParentId": 16
+  }
+]

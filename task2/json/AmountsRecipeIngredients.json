@@ -1,0 +1,58 @@
+[
+  {
+    "Id": 1,
+    "Amount": 100,
+    "Unit": "g",
+    "IdRecipe": 1,
+    "IdIngredient": 18
+  },
+  {
+    "Id": 2,
+    "Amount": 200,
+    "Unit": "ml",
+    "IdRecipe": 1,
+    "IdIngredient": 12
+  },
+  {
+    "Id": 3,
+    "Amount": 1,
+    "Unit": "sachet",
+    "IdRecipe": 1,
+    "IdIngredient": 20
+  },
+  {
+    "Id": 4,
+    "Amount": 2,
+    "Unit": "pcs",
+    "IdRecipe": 1,
+    "IdIngredient": 9
+  },
+  {
+    "Id": 5,
+    "Amount": 1,
+    "Unit": "glass",
+    "IdRecipe": 1,
+    "IdIngredient": 19
+  },
+  {
+    "Id": 6,
+    "Amount": 250,
+    "Unit": "g",
+    "IdRecipe": 1,
+    "IdIngredient": 21
+  },
+  {
+    "Id": 6,
+    "Amount": 1.5,
+    "Unit": "tsp",
+    "IdRecipe": 1,
+    "IdIngredient": 22
+  },
+  {
+    "Id": 6,
+    "Amount": 2.5,
+    "Unit": "tbs",
+    "IdRecipe": 1,
+    "IdIngredient": 23
+  }
+]

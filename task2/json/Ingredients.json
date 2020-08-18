@@ -1,0 +1,94 @@
+﻿[
+  {
+    "Id": 1,
+    "Name": "Potatoes"
+  },
+  {
+    "Id": 2,
+    "Name": "Beet"
+  },
+  {
+    "Id": 3,
+    "Name": "Carrot"
+  },
+  {
+    "Id": 4,
+    "Name": "Bulb onions"
+  },
+  {
+    "Id": 5,
+    "Name": "Salted cucumbers"
+  },
+  {
+    "Id": 6,
+    "Name": "Vegetable oil"
+  },
+  {
+    "Id": 7,
+    "Name": "Salt"
+  },
+  {
+    "Id": 8,
+    "Name": "Rice"
+  },
+  {
+    "Id": 9,
+    "Name": "Egg"
+  },
+  {
+    "Id": 10,
+    "Name": "Vinegar 6%"
+  },
+  {
+    "Id": 11,
+    "Name": "Water"
+  },
+  {
+    "Id": 12,
+    "Name": "Sugar"
+  },
+  {
+    "Id": 13,
+    "Name": "Mayonnaise"
+  },
+  {
+    "Id": 14,
+    "Name": "Chicken fillet"
+  },
+  {
+    "Id": 15,
+    "Name": "Canned peas"
+  },
+  {
+    "Id": 16,
+    "Name": "Garlic"
+  },
+  {
+    "Id": 17,
+    "Name": "Sausage"
+  },
+  {
+    "Id": 18,
+    "Name": "Butter"
+  },
+  {
+    "Id": 19,
+    "Name": "Kefir"
+  },
+  {
+    "Id": 20,
+    "Name": "Vanilla sugar"
+  },
+  {
+    "Id": 21,
+    "Name": "Flour"
+  },
+  {
+    "Id": 22,
+    "Name": "Baking powder"
+  },
+  {
+    "Id": 23,
+    "Name": "Cocoa"
+  }
+]

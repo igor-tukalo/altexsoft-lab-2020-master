@@ -1,0 +1,14 @@
+﻿[
+  {
+    "Id": 1,
+    "Name": "Cupcake Zebra",
+    "Description": "The recipe for Zebra cake is written down in old culinary notebooks of many housewives, possibly even mothers and grandmothers. Perhaps this is one of those recipes that do not age over the years. Zebra cake is fluffy, soft, very tasty and looks original. Such pastries are always useful at a family tea party.",
+    "IdCategory": 12
+  },
+  {
+    "Id": 2,
+    "Name": "Cheese muffins",
+    "Description": "Lovers of savory and hearty pastries will love them. Delicate, airy and aromatic muffins with a hint of cheese, can be served with tea, coffee or milk. They are good hot and cold.",
+    "IdCategory": 13
+  }
+]

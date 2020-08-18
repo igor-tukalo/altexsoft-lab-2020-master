@@ -6,7 +6,8 @@ namespace task2
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to the Cooking Book!");
+            MainMenuControl mainMenuControl = new MainMenuControl();
+            mainMenuControl.GetMenuItems();
         }
     }
 }
