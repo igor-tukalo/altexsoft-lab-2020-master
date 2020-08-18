@@ -54,7 +54,7 @@ namespace task2.Controls.RecipeAddConrols
                         {
                             Recipes = Recipes
                             .Select(r => r.Id == EditableRecipe.Id
-                            ? new Recipe { Name = r.Name, Description = r.Description, IdCategory = ItemsMenu[id].Id }
+                            ? new Recipe {Id= r.Id, Name = r.Name, Description = r.Description, IdCategory = ItemsMenu[id].Id }
                             : r).ToList();
 
                             Validation.SaveSelectedDataJson(recipes: Recipes);

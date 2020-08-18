@@ -56,7 +56,7 @@ namespace task2.Controls.RecipeAddConrols
 
                             Recipes = Recipes
                             .Select(r => r.Id == EditableRecipe.Id
-                            ? new Recipe { Name = recipeNewName, Description = r.Description, IdCategory = r.IdCategory }
+                            ? new Recipe { Id = r.Id, Name = recipeNewName, Description = r.Description, IdCategory = r.IdCategory }
                             : r).ToList();
 
                             Validation.SaveSelectedDataJson(recipes: Recipes);
@@ -78,7 +78,7 @@ namespace task2.Controls.RecipeAddConrols
 
                             Recipes = Recipes
                             .Select(r => r.Id == EditableRecipe.Id
-                            ? new Recipe { Name = r.Name, Description = newDescRecipe, IdCategory = r.IdCategory }
+                            ? new Recipe { Id = r.Id, Name = r.Name, Description = newDescRecipe, IdCategory = r.IdCategory }
                             : r).ToList();
 
                             Validation.SaveSelectedDataJson(recipes: Recipes);

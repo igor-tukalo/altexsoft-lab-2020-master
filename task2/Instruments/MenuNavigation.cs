@@ -41,7 +41,7 @@ namespace task2.Instruments
         protected void BuildHierarchicalMenu(List<EntityMenu> items, EntityMenu thisEntity, int level)
         {
             ItemsMenu.Add(new Category(thisEntity.Id,name: $"{new string('-', level)}{thisEntity.Name}", thisEntity.ParentId));
-            foreach (var child in items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Id))
+            foreach (var child in items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
             {
                 BuildHierarchicalMenu(items, child, level + 1);
             }
