@@ -106,7 +106,7 @@ namespace task2.Instruments
         /// <summary>
         /// Wrapping text on a new line after n characters
         /// </summary>
-        /// <param name="numChar">number of characters</param>
+        /// <param name="numChar">number of characters in one line</param>
         /// <param name="text">number of characters</param>
         /// <param name="wrapChar">indent mark</param>
         public static string WrapText(int numChar, string text, string wrapChar = "\n")

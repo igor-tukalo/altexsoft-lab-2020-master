@@ -7,7 +7,7 @@ using task2.Models;
 
 namespace task2.Controls.RecipeAddConrols
 {
-    public class RecipeAddControl : RecipeViewControl
+    public class RecipeAddControl : RecipeAddIngredientsControl
     {
         public RecipeAddControl()
         {
@@ -32,7 +32,7 @@ namespace task2.Controls.RecipeAddConrols
 
 
                 RecipeAddIngredientsControl ingredientsRecipeControl = new RecipeAddIngredientsControl();
-                ingredientsRecipeControl.GetMenuAddIngredientToRecipe(addedRecipe, category);
+                ingredientsRecipeControl.GetMenuIngredientsChangeBeforeAdding(addedRecipe, category);
             }
             catch (Exception ex)
             { Console.WriteLine($"{ex.Message}"); }

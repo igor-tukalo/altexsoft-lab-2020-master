@@ -15,7 +15,7 @@ namespace task2.Instruments
         protected List<AmountRecipeIngredient> AmountRecipeIngredients { get; set; }
         protected List<StepCooking> StepCookings { get; set; }
         protected List<Ingredient> Ingredients { get; set; }
-        Recipe RecipeViewSelected { get; set; }
+        protected Recipe RecipeViewSelected { get; set; }
 
         public RecipeViewControl()
         {

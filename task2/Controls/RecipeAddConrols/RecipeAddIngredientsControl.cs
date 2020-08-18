@@ -9,8 +9,8 @@ namespace task2.Controls.RecipeAddConrols
 {
     public class RecipeAddIngredientsControl : RecipeViewControl
     {
-        List<Ingredient> AddedIngredients { get; set; }
-        Recipe AddedRecipe { get; set; }
+        protected List<Ingredient> AddedIngredients { get; set; } // list of ingredients that can be changed before adding
+        protected Recipe RecipeEntity { get; set; }
 
         public RecipeAddIngredientsControl()
         {
@@ -28,29 +28,32 @@ namespace task2.Controls.RecipeAddConrols
         /// <param name="idRecipe"></param>
         /// <param name="category">to return to the category menu when canceling adding an ingredient</param>
         /// <param name="addedIngredients"></param>
-        public void GetMenuAddIngredientToRecipe(Recipe addedRecipe, EntityMenu category, List<Ingredient> addedIngredients = null)
+        virtual public void GetMenuIngredientsChangeBeforeAdding(Recipe addedRecipe, EntityMenu category, List<Ingredient> addedIngredients = null, List<EntityMenu> itemsMenuEntity=null)
         {
             CategoryRecipe = category;
             AddedIngredients = addedIngredients;
-            AddedRecipe = addedRecipe;
+            RecipeEntity = addedRecipe;
 
             Console.Clear();
 
-            ItemsMenu = new List<EntityMenu>
+            if (itemsMenuEntity is null)
+                ItemsMenu = new List<EntityMenu>
             {
                 new Category(name: "    Go to the steps of preparing the recipe"),
                 new Category(name: "    Remove previously added ingredient"),
                 new Category(name: "    Cancel create recipe")
             };
+            else ItemsMenu = itemsMenuEntity;
 
-            foreach (var ingr in Ingredients.OrderBy(x=>x.Name))
+            foreach (var ingr in Ingredients.OrderBy(x => x.Name))
             {
+                if(AddedIngredients ==null || !AddedIngredients.Exists(x=>x.Id==ingr.Id))
                 ItemsMenu.Add(new Ingredient(id: ingr.Id, name: ingr.Name));
             }
 
-            ViewAddedIngredients(AddedRecipe.Id);
+            ViewAddedIngredients(RecipeEntity.Id);
 
-            Console.WriteLine("\n To add an ingredient, select it from the list by pressing Enter.\n");
+            Console.WriteLine("\nTo add an ingredient, select it from the list by pressing Enter.");
             CallMenuNavigation();
         }
 
@@ -66,7 +69,7 @@ namespace task2.Controls.RecipeAddConrols
                             if (AddedIngredients.Count > 0)
                             {
                                 RecipeAddStepsCookingControl recipeAddStepsCookingControl = new RecipeAddStepsCookingControl();
-                                recipeAddStepsCookingControl.GetMenuItems(CategoryRecipe, AddedRecipe, AmountRecipeIngredients);
+                                recipeAddStepsCookingControl.GetMenuItems(CategoryRecipe, RecipeEntity, AmountRecipeIngredients);
                             }
                         }
                     }
@@ -78,12 +81,11 @@ namespace task2.Controls.RecipeAddConrols
                         {
                             if (AddedIngredients.Count > 0)
                             {
-                                Ingredients.Add(AddedIngredients[AddedIngredients.Count - 1]);
+                                //Ingredients.Add(AddedIngredients[AddedIngredients.Count - 1]);
                                 AddedIngredients.RemoveAt(AddedIngredients.Count - 1);
                                 AmountRecipeIngredients.RemoveAt(AmountRecipeIngredients.Count - 1);
 
-                                RecipeAddIngredientsControl ingredientsRecipeControl = new RecipeAddIngredientsControl(Ingredients, AmountRecipeIngredients);
-                                ingredientsRecipeControl.GetMenuAddIngredientToRecipe(AddedRecipe, CategoryRecipe, AddedIngredients);
+                                ReturnPreviousMenu();
                             }
                         }
                     }
@@ -91,19 +93,18 @@ namespace task2.Controls.RecipeAddConrols
                 case 2:
                     {
                         // Cancel. Back to recipe categories
-                        NavigateRecipeCategories navigateRecipeCategories = new NavigateRecipeCategories();
-                        navigateRecipeCategories.GetRecipesCategory(CategoryRecipe, CategoryRecipe.ParentId);
+                        Cancel();
                     }
                     break;
                 default:
                     {
-                        AddIngredientToRecipe(ItemsMenu[id].Id);
+                        AddIngredientToRecipe(ItemsMenu[id].Id, RecipeEntity.Id);
                     }
                     break;
             }
         }
 
-        private void AddIngredientToRecipe(int idIngredient)
+        protected void AddIngredientToRecipe(int idIngredient, int idRecipe)
         {
             int idAmount = AmountRecipeIngredients.Max(x => x.Id) + 1;
 
@@ -113,7 +114,7 @@ namespace task2.Controls.RecipeAddConrols
             Console.Write(" Enter the unit of ingredient: ");
             string unit = Validation.NullOrEmptyText(Console.ReadLine());
 
-            var amountRecipeIngredient = new AmountRecipeIngredient() { Id = idAmount, Amount = amount, Unit = unit, IdIngredient = idIngredient, IdRecipe = AddedRecipe.Id };
+            var amountRecipeIngredient = new AmountRecipeIngredient() { Id = idAmount, Amount = amount, Unit = unit, IdIngredient = idIngredient, IdRecipe = idRecipe };
             AmountRecipeIngredients.Add(amountRecipeIngredient);
 
             var ingredient = (from r in Ingredients
@@ -126,12 +127,17 @@ namespace task2.Controls.RecipeAddConrols
 
             // remove the ingredient to prevent duplicate ingredients
             Ingredients.Remove(ingredient);
+            ReturnPreviousMenu();
 
-            RecipeAddIngredientsControl ingredientsRecipeControl = new RecipeAddIngredientsControl(Ingredients, AmountRecipeIngredients);
-            ingredientsRecipeControl.GetMenuAddIngredientToRecipe(AddedRecipe, CategoryRecipe, AddedIngredients);
         }
 
-        private void ViewAddedIngredients(int idRecipe)
+        virtual protected void ReturnPreviousMenu()
+        {
+            RecipeAddIngredientsControl ingredientsRecipeControl = new RecipeAddIngredientsControl(Ingredients, AmountRecipeIngredients);
+            ingredientsRecipeControl.GetMenuIngredientsChangeBeforeAdding(RecipeEntity, CategoryRecipe, AddedIngredients);
+        }
+
+        protected void ViewAddedIngredients(int idRecipe)
         {
             Console.Write(" Added ingredients: ");
 
@@ -145,6 +151,12 @@ namespace task2.Controls.RecipeAddConrols
                     addedIngredients.Add($"{ingredient.Name} {amount.Amount} {amount.Unit}");
             }
             Console.WriteLine(string.Join(", ", addedIngredients));
+        }
+
+        virtual protected void Cancel()
+        {
+            NavigateRecipeCategories navigateRecipeCategories = new NavigateRecipeCategories();
+            navigateRecipeCategories.GetRecipesCategory(CategoryRecipe, CategoryRecipe.ParentId);
         }
     }
 }

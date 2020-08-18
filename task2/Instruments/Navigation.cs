@@ -39,7 +39,7 @@ namespace task2.Instruments
             ConsoleKeyInfo key;
             do
             {
-                ClearArea(0, 0, 5, 0);
+                ClearArea(0, 0, 6, 0);
                 for (int i = 0; i < MenuItems.Count; i++)
                 {
                     if (counter == i)

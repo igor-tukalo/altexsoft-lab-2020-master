@@ -96,8 +96,14 @@ namespace task2.Controls.RecipeAddConrols
                     break;
                 case 3:
                     {
+                        ItemsMenu = new List<EntityMenu>
+                        {
+                            new Category(name: "    Remove previously added ingredient"),
+                            new Category(name: "    Cancel")
+                        };
                         // Edit recipe ingredients
-
+                        RecipeEditIngredientsControl recipeEditIngredientsControl = new RecipeEditIngredientsControl();
+                        recipeEditIngredientsControl.GetMenuEditIngredients(CategoryRecipe, EditableRecipe);
                     }
                     break;
                 case 4:
