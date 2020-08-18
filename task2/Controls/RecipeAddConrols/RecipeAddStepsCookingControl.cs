@@ -10,34 +10,35 @@ namespace task2.Controls.RecipeAddConrols
 {
     public class RecipeAddStepsCookingControl : RecipeViewControl
     {
-        Recipe AddedRecipe { get; set; }
-        int CurrentStep { get; set; }
+        protected int CurrentStep { get; set; }
         public RecipeAddStepsCookingControl()
-        { 
-        }
-
-        public void GetMenuItems(EntityMenu categoryRecipeMenu, Recipe addedRecipe, List<AmountRecipeIngredient> addedAmountIngredients, int currentStep=0)
         {
-            CurrentStep = currentStep;
-            AddedRecipe = addedRecipe;
-            AmountRecipeIngredients = addedAmountIngredients;
-            CategoryRecipe = categoryRecipeMenu;
-
-            Console.Clear();
-
-            ItemsMenu = new List<EntityMenu>
+            ItemsMenuMain = new List<EntityMenu>
             {
                 new Category(name: "    Add step cooking"),
                 new Category(name: "    Create recipe"),
                 new Category(name: "    Cancel create recipe")
             };
+            AmountRecipeIngredients = null;
+        }
 
-            foreach (var s in StepCookings.Where(x=>x.IdRecipe==addedRecipe.Id).OrderBy(x => x.Step))
+        public void GetMenuItems(EntityMenu categoryRecipeMenu, Recipe addedRecipe, List<AmountRecipeIngredient> addedAmountIngredients = null, int currentStep = 0)
+        {
+            CurrentStep = currentStep;
+            RecipeViewSelected = addedRecipe;
+            AmountRecipeIngredients ??= addedAmountIngredients;
+            CategoryRecipe = categoryRecipeMenu;
+
+            Console.Clear();
+
+            ItemsMenu = new List<EntityMenu>(ItemsMenuMain);
+
+            foreach (var s in StepCookings.Where(x => x.IdRecipe == addedRecipe.Id).OrderBy(x => x.Step))
             {
-                ItemsMenu.Add(new StepCooking(id: s.Id, name: $"    {s.Step}. {s.Name}",typeEntity:"step"));
+                ItemsMenu.Add(new StepCooking(id: s.Id, name: $"    {s.Step}. {s.Name}", typeEntity: "step"));
             }
             Console.WriteLine("\n To change cooking steps, select a cooking step and press enter. \n");
-            RecipeView(AddedRecipe);
+            RecipeView(RecipeViewSelected, AmountRecipeIngredients);
             CallMenuNavigation();
 
         }
@@ -48,67 +49,72 @@ namespace task2.Controls.RecipeAddConrols
             {
                 case 0:
                     {
-                        // Add step cooking
                         AddStepCooking();
                     }
                     break;
                 case 1:
                     {
-                        // Create recipe
-                        if (StepCookings.Count>0)
-                        {
-                            Recipes.Add(AddedRecipe);
-
-                            Validation.SaveSelectedDataJson(Recipes, AmountRecipeIngredients, StepCookings);
-
-                            NavigateRecipeCategories navigateRecipeCategories = new NavigateRecipeCategories();
-                            navigateRecipeCategories.GetRecipesCategory(CategoryRecipe, CategoryRecipe.ParentId);
-                        }
+                        SaveDataRecipe();
                     }
                     break;
                 case 2:
                     {
-                        // Cancel create recipe
-                        NavigateRecipeCategories navigateRecipeCategories = new NavigateRecipeCategories();
-                        navigateRecipeCategories.GetRecipesCategory(CategoryRecipe, CategoryRecipe.ParentId);
+                        CancelCreateRecipe();
                     }
                     break;
                 default:
                     {
                         // Edit step cooking
-                        if(ItemsMenu[id].TypeEntity=="step")
-                        EditStepCooking(ItemsMenu[id].Id);
+                        if (ItemsMenu[id].TypeEntity == "step")
+                            EditStepCooking(ItemsMenu[id].Id);
                     }
                     break;
             }
         }
 
-        private void AddStepCooking()
+        protected void AddStepCooking()
         {
             Console.Clear();
             int idStep = StepCookings.Max(x => x.Id) + 1;
             CurrentStep++;
             Console.Write($" Describe the cooking step {CurrentStep}: ");
             string stepName = Validation.NullOrEmptyText(Console.ReadLine());
-            StepCookings.Add(new StepCooking() { Id = idStep, Step = CurrentStep, Name = stepName, IdRecipe= AddedRecipe.Id });
-
-            //ViewAddedStepsCooKing();
+            StepCookings.Add(new StepCooking() { Id = idStep, Step = CurrentStep, Name = stepName, IdRecipe = RecipeViewSelected.Id });
 
             Console.Write(" Add another cooking step? ");
             if (Validation.YesNo() == ConsoleKey.Y)
-            { 
-                AddStepCooking(); 
+            {
+                AddStepCooking();
             }
-            else GetMenuItems(CategoryRecipe, AddedRecipe, AmountRecipeIngredients,CurrentStep);
+            else ReturnPreviousMenu();
         }
 
-        private void EditStepCooking(int idStep)
+        protected virtual void SaveDataRecipe()
+        {
+            if (StepCookings.Count > 0)
+            {
+                Recipes.Add(RecipeViewSelected);
+
+                Validation.SaveSelectedDataJson(Recipes, AmountRecipeIngredients, StepCookings);
+
+                NavigateRecipeCategories navigateRecipeCategories = new NavigateRecipeCategories();
+                navigateRecipeCategories.GetRecipesCategory(CategoryRecipe, CategoryRecipe.ParentId);
+            }
+        }
+
+        protected virtual void CancelCreateRecipe()
+        {
+            NavigateRecipeCategories navigateRecipeCategories = new NavigateRecipeCategories();
+            navigateRecipeCategories.GetRecipesCategory(CategoryRecipe, CategoryRecipe.ParentId);
+        }
+
+        protected void EditStepCooking(int idStep)
         {
             Console.Clear();
             ConsoleKey consoleKey;
             consoleKey = Validation.EdirOrDeleteorCancel();
             var step = (from s in StepCookings
-                            where s.Id == idStep
+                        where s.Id == idStep
                         select s).First();
 
             if (consoleKey == ConsoleKey.D1)
@@ -117,7 +123,7 @@ namespace task2.Controls.RecipeAddConrols
                 Console.WriteLine($" You are editing {step.Step}. {step.Name}");
                 Console.Write($" Describe the new cooking step: ");
                 step.Name = Validation.NullOrEmptyText(Console.ReadLine());
-                GetMenuItems(CategoryRecipe, AddedRecipe, AmountRecipeIngredients, CurrentStep);
+                ReturnPreviousMenu();
             }
             else if (consoleKey == ConsoleKey.D2)
             {
@@ -127,13 +133,18 @@ namespace task2.Controls.RecipeAddConrols
                     s.Step--;
                 }
                 StepCookings.Remove(step);
-                GetMenuItems(CategoryRecipe, AddedRecipe, AmountRecipeIngredients, CurrentStep);
+                ReturnPreviousMenu();
             }
             else
             {
                 //cancel
-                GetMenuItems(CategoryRecipe, AddedRecipe, AmountRecipeIngredients, CurrentStep);
+                ReturnPreviousMenu();
             }
+        }
+
+        override public void ReturnPreviousMenu()
+        {
+            GetMenuItems(CategoryRecipe, RecipeViewSelected, AmountRecipeIngredients, CurrentStep);
         }
     }
 }

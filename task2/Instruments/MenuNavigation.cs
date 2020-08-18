@@ -9,6 +9,7 @@ namespace task2.Instruments
     public abstract class MenuNavigation
     {
         protected EntityMenu CategoryRecipe { get; set; } // used to return to the recipe categories menu
+        protected List<EntityMenu> ItemsMenuMain { get; set; }
         protected JsonControl jsonControl { get; set; }
         /// <summary>
         /// List of menu items
@@ -98,5 +99,6 @@ namespace task2.Instruments
 
         protected virtual void AddMenuItem(string filePath) { }
 
+        public virtual void ReturnPreviousMenu() { }
     }
 }

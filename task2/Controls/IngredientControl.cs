@@ -11,10 +11,17 @@ namespace task2
 {
     public class IngredientControl : MenuNavigation
     {
-        List<Ingredient> IngredientsList { get; set; }
+        protected List<Ingredient> IngredientsList { get; set; }
         public IngredientControl()
         {
             jsonControl = new JsonControl("Ingredients.json");
+            ItemsMenuMain = new List<EntityMenu>
+                {
+                    new Ingredient(name: "  Add ingredient"),
+                    new Ingredient(name: "  Return to settings"),
+                    new Ingredient(name: "  Return to main menu"),
+                    new Ingredient(name: "\n  Ingredients:\n")
+                };
         }
 
         public override void GetMenuItems(int IdMenu = 1)
@@ -25,20 +32,17 @@ namespace task2
 
                 //De - serialize to object or create new list
                 IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(jsonControl.GetJsonData());
-                ItemsMenu = new List<EntityMenu>()
+                ItemsMenu = new List<EntityMenu>(ItemsMenuMain);
+
+                foreach (var ingredient in IngredientsList.OrderBy(x=>x.Name))
                 {
-                    new Ingredient(name: "  Add ingredient"),
-                    new Ingredient(name: "  Return to settings"),
-                    new Ingredient(name: "  Return to main menu")
-                };
-                foreach (var ingredient in IngredientsList)
-                {
-                    ItemsMenu.Add(ingredient);
+                    ItemsMenu.Add(new Ingredient() { Id=ingredient.Id, Name = $"    {ingredient.Name}" });
                 }
 
             }
             else Console.WriteLine(" There are no ingredients! Add ingredients!");
 
+            Console.WriteLine();
             CallMenuNavigation();
         }
 
@@ -66,6 +70,7 @@ namespace task2
                 // when selecting categories, we call the context menu of actions
                 default:
                     {
+                        if(ItemsMenu[id].Id!=0)
                         _ = new ContextMenuCategories(new IngredientControl(), jsonControl.JsonFileName, ItemsMenu[id].Id, new List<EntityMenu>(IngredientsList));
                     }
                     break;
@@ -83,7 +88,7 @@ namespace task2
 
                 do
                 {
-                    if (IngredientsList.Exists(x => x.Name.ToLower() == nameIngredient.ToLower()))
+                    if (IngredientsList.Exists(x => x.Name.ToLower() == nameIngredient.ToLower().Trim()))
                     {
                         Console.Write(" An ingredient with that name already exists. Enter another name: ");
                         nameIngredient = Console.ReadLine();
@@ -94,10 +99,15 @@ namespace task2
                 IngredientsList.Add(new Ingredient() { Id = id, Name = nameIngredient });
                 // Update json data string
                 File.WriteAllText(filePath, JsonConvert.SerializeObject(IngredientsList));
-                new IngredientControl().GetMenuItems();
+                ReturnPreviousMenu();
             }
             catch (Exception ex)
             { Console.WriteLine($"{ex.Message}"); }
+        }
+
+        override public void ReturnPreviousMenu()
+        {
+            new IngredientControl().GetMenuItems();
         }
     }
 }

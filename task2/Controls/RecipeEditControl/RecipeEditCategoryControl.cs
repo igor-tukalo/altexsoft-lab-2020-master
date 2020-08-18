@@ -40,7 +40,7 @@ namespace task2.Controls.RecipeAddConrols
         {
             switch (id)
             {
-                case 0:
+                case 0: 
                     {
                         // Cancel
                         RecipeEditControl recipeEditControl = new RecipeEditControl();

@@ -9,52 +9,70 @@ namespace task2.Controls.RecipeAddConrols
 {
     public class RecipeAddIngredientsControl : RecipeViewControl
     {
-        protected List<Ingredient> AddedIngredients { get; set; } // list of ingredients that can be changed before adding
-        protected Recipe RecipeEntity { get; set; }
-
+        
         public RecipeAddIngredientsControl()
         {
+            ItemsMenuMain = new List<EntityMenu>
+            {
+                new Category(name: "    Add a new ingredient to the ingredient selection list"),
+                new Category(name: "    Go to the steps of preparing the recipe"),
+                new Category(name: "    Cancel create recipe")
+            };
         }
 
         public RecipeAddIngredientsControl(List<Ingredient> ingredients, List<AmountRecipeIngredient> amountRecipeIngredients)
         {
             Ingredients = ingredients;
             AmountRecipeIngredients = amountRecipeIngredients;
+
+            ItemsMenuMain = new List<EntityMenu>
+            {
+                new Category(name: "    Add a new ingredient to the ingredient selection list"),
+                new Category(name: "    Go to the steps of preparing the recipe"),
+                new Category(name: "    Cancel create recipe")
+            };
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="idRecipe"></param>
+        /// <param name="addedRecipe"></param>
         /// <param name="category">to return to the category menu when canceling adding an ingredient</param>
-        /// <param name="addedIngredients"></param>
-        virtual public void GetMenuIngredientsChangeBeforeAdding(Recipe addedRecipe, EntityMenu category, List<Ingredient> addedIngredients = null, List<EntityMenu> itemsMenuEntity=null)
+        virtual public void GetMenuIngredientsChangeBeforeAdding(Recipe addedRecipe, EntityMenu category)
         {
             CategoryRecipe = category;
-            AddedIngredients = addedIngredients;
-            RecipeEntity = addedRecipe;
+            RecipeViewSelected = addedRecipe;
 
             Console.Clear();
 
-            if (itemsMenuEntity is null)
-                ItemsMenu = new List<EntityMenu>
-            {
-                new Category(name: "    Go to the steps of preparing the recipe"),
-                new Category(name: "    Remove previously added ingredient"),
-                new Category(name: "    Cancel create recipe")
-            };
-            else ItemsMenu = itemsMenuEntity;
-
-            foreach (var ingr in Ingredients.OrderBy(x => x.Name))
-            {
-                if(AddedIngredients ==null || !AddedIngredients.Exists(x=>x.Id==ingr.Id))
-                ItemsMenu.Add(new Ingredient(id: ingr.Id, name: ingr.Name));
-            }
-
-            ViewAddedIngredients(RecipeEntity.Id);
+            ViewAddedIngredients(RecipeViewSelected.Id);
 
             Console.WriteLine("\nTo add an ingredient, select it from the list by pressing Enter.");
             CallMenuNavigation();
+        }
+
+        protected void ViewAddedIngredients(int idRecipe)
+        {
+            ItemsMenu = new List<EntityMenu>(ItemsMenuMain)
+            {
+                new Ingredient(name: "\n    Added ingredients:\n")
+            };
+
+            foreach (var amount in AmountRecipeIngredients.Where(x => x.IdRecipe == idRecipe))
+            {
+                foreach (var ingr in Ingredients.Where(x => x.Id == amount.IdIngredient))
+                {
+                    ItemsMenu.Add(new Category(id: ingr.Id, name: $"    {ingr.Name} {amount.Amount} {amount.Unit}", typeEntity: "amountIngr"));
+                }
+            }
+
+            ItemsMenu.Add(new Ingredient(name: "\n    Ingredients to add:\n"));
+
+            foreach (var ingr in Ingredients.OrderBy(x => x.Name))
+            {
+                if (!ItemsMenu.Exists(x => x.Id == ingr.Id))
+                    ItemsMenu.Add(new Category(id: ingr.Id, name: $"    {ingr.Name}", typeEntity: "ingr"));
+            }
         }
 
         protected override void SelectMethodMenu(int id)
@@ -63,30 +81,21 @@ namespace task2.Controls.RecipeAddConrols
             {
                 case 0:
                     {
-                        // Go to the steps of preparing the recipe
-                        if (AddedIngredients != null)
+                        // Add a new ingredient to the ingredient selection list
+                        if (ItemsMenu.Where(x => x.TypeEntity == "amountIngr").Count() > 0)
                         {
-                            if (AddedIngredients.Count > 0)
-                            {
-                                RecipeAddStepsCookingControl recipeAddStepsCookingControl = new RecipeAddStepsCookingControl();
-                                recipeAddStepsCookingControl.GetMenuItems(CategoryRecipe, RecipeEntity, AmountRecipeIngredients);
-                            }
+                            IngredientControlRecipeAdd ingredientControlRecipe = new IngredientControlRecipeAdd(RecipeViewSelected, CategoryRecipe, AmountRecipeIngredients);
+                            ingredientControlRecipe.GetMenuItems();
                         }
                     }
                     break;
                 case 1:
                     {
-                        // Remove previously added ingredient
-                        if (AddedIngredients != null)
+                        // Go to the steps of preparing the recipe
+                        if (ItemsMenu.Where(x => x.TypeEntity == "amountIngr").Count() > 0)
                         {
-                            if (AddedIngredients.Count > 0)
-                            {
-                                //Ingredients.Add(AddedIngredients[AddedIngredients.Count - 1]);
-                                AddedIngredients.RemoveAt(AddedIngredients.Count - 1);
-                                AmountRecipeIngredients.RemoveAt(AmountRecipeIngredients.Count - 1);
-
-                                ReturnPreviousMenu();
-                            }
+                            RecipeAddStepsCookingControl recipeAddStepsCookingControl = new RecipeAddStepsCookingControl();
+                            recipeAddStepsCookingControl.GetMenuItems(CategoryRecipe, RecipeViewSelected, AmountRecipeIngredients);
                         }
                     }
                     break;
@@ -98,7 +107,7 @@ namespace task2.Controls.RecipeAddConrols
                     break;
                 default:
                     {
-                        AddIngredientToRecipe(ItemsMenu[id].Id, RecipeEntity.Id);
+                        AddOrDeleteIngredient(ItemsMenu[id]);
                     }
                     break;
             }
@@ -109,48 +118,65 @@ namespace task2.Controls.RecipeAddConrols
             int idAmount = AmountRecipeIngredients.Max(x => x.Id) + 1;
 
             Console.Write("\n Enter the amount of ingredient: ");
-            int amount = Validation.ValidNumber(Console.ReadLine());
+            double amount = Validation.ValidDouble(Console.ReadLine().Replace(".",","));
 
             Console.Write(" Enter the unit of ingredient: ");
             string unit = Validation.NullOrEmptyText(Console.ReadLine());
 
             var amountRecipeIngredient = new AmountRecipeIngredient() { Id = idAmount, Amount = amount, Unit = unit, IdIngredient = idIngredient, IdRecipe = idRecipe };
             AmountRecipeIngredients.Add(amountRecipeIngredient);
-
-            var ingredient = (from r in Ingredients
-                              where r.Id == idIngredient
-                              select r).First();
-
-            AddedIngredients ??= new List<Ingredient>();
-
-            AddedIngredients.Add(ingredient);
-
-            // remove the ingredient to prevent duplicate ingredients
-            Ingredients.Remove(ingredient);
             ReturnPreviousMenu();
-
         }
 
-        virtual protected void ReturnPreviousMenu()
+        protected void AddOrDeleteIngredient(EntityMenu EntityItemMenu)
         {
-            RecipeAddIngredientsControl ingredientsRecipeControl = new RecipeAddIngredientsControl(Ingredients, AmountRecipeIngredients);
-            ingredientsRecipeControl.GetMenuIngredientsChangeBeforeAdding(RecipeEntity, CategoryRecipe, AddedIngredients);
+            // Remove ingredient
+            if (EntityItemMenu.TypeEntity == "amountIngr")
+            {
+                AmountRecipeIngredients.Remove(GetAmountIngredient(EntityItemMenu.Id));
+                ReturnPreviousMenu();
+            }// Add ingredient
+            else if (EntityItemMenu.TypeEntity == "ingr")
+            {
+                AddIngredientToRecipe(EntityItemMenu.Id, RecipeViewSelected.Id);
+            }
         }
 
-        protected void ViewAddedIngredients(int idRecipe)
+        /// <summary>
+        /// Get the amount ingredients units for the specified recipe
+        /// </summary>
+        /// <param name="idRecipe"></param>
+        /// <param name="etityIngredients"></param>
+        /// <returns></returns>
+        private List<Ingredient> GetIngredientRecipe(int idRecipe)
         {
-            Console.Write(" Added ingredients: ");
-
-            List<string> addedIngredients = new List<string>();
+            List<Ingredient> etityIngredients = new List<Ingredient>();
             foreach (var amount in AmountRecipeIngredients.Where(x => x.IdRecipe == idRecipe))
             {
-                var ingredient = (from r in AddedIngredients
-                                  where r.Id == amount.IdIngredient
-                                  select r).FirstOrDefault();
-                if (ingredient != null)
-                    addedIngredients.Add($"{ingredient.Name} {amount.Amount} {amount.Unit}");
+                foreach (var ingr in Ingredients.Where(x => x.Id == amount.IdIngredient))
+                {
+                    etityIngredients.Add(new Ingredient(id: ingr.Id, name: $"{ingr.Name}"));
+                }
             }
-            Console.WriteLine(string.Join(", ", addedIngredients));
+            return etityIngredients;
+        }
+
+        /// <summary>
+        /// Get the amount ingredients units for the specified ingredient
+        /// </summary>
+        /// <param name="IdIngredient"></param>
+        /// <returns></returns>
+        private AmountRecipeIngredient GetAmountIngredient(int IdIngredient)
+        {
+            return (from a in AmountRecipeIngredients
+                    where a.IdIngredient == IdIngredient
+                    select a).First();
+        }
+
+        override public void ReturnPreviousMenu()
+        {
+            RecipeAddIngredientsControl ingredientsRecipeControl = new RecipeAddIngredientsControl(Ingredients, AmountRecipeIngredients);
+            ingredientsRecipeControl.GetMenuIngredientsChangeBeforeAdding(RecipeViewSelected, CategoryRecipe);
         }
 
         virtual protected void Cancel()

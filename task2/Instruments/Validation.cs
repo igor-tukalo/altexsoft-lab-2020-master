@@ -38,6 +38,34 @@ namespace task2.Instruments
         }
 
         /// <summary>
+        /// Check string value for number
+        /// </summary>
+        /// <param name="nubmer"></param>
+        /// <returns></returns>
+        public static double ValidDouble(string nubmer)
+        {
+            double NumId;
+
+            bool validStart = false;
+            while (validStart == false)
+            {
+                //check for number
+                bool isNum = double.TryParse(nubmer, out NumId);
+                if (!string.IsNullOrWhiteSpace(nubmer) && isNum)
+                {
+                    return NumId;
+                }
+                else
+                {
+                    Console.WriteLine(" Warning! Value must be numeric!");
+                    Console.Write("\r\n Enter value: ");
+                    nubmer = Console.ReadLine();
+                }
+            }
+            return 0;
+        }
+
+        /// <summary>
         /// Сhecking menu navigation selection from dictionary
         /// </summary>
         /// <param name="nameNavigationMenu"></param>

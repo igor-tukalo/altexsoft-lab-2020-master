@@ -10,12 +10,10 @@ namespace task2.Controls.RecipeAddConrols
 {
     public class RecipeEditControl : RecipeViewControl
     {
-
-        Recipe EditableRecipe { get; set; }
         override public void GetMenuItems(EntityMenu categoryRecipe, Recipe editableRecipe)
         {
             CategoryRecipe = categoryRecipe;
-            EditableRecipe = editableRecipe;
+            RecipeViewSelected = editableRecipe;
 
             Console.Clear();
 
@@ -30,7 +28,7 @@ namespace task2.Controls.RecipeAddConrols
 
             };
             var recipe = (from r in Recipes
-                          where r.Id == EditableRecipe.Id
+                          where r.Id == RecipeViewSelected.Id
                           select r).First();
 
             Console.WriteLine("\n    Edit recipe\n");
@@ -47,7 +45,7 @@ namespace task2.Controls.RecipeAddConrols
                     {
                         // Edit recipe name
                         Console.Clear();
-                        Console.WriteLine($"Current recipe name: {EditableRecipe.Name}");
+                        Console.WriteLine($"Current recipe name: {RecipeViewSelected.Name}");
                         Console.Write("Do you really want to change the name of the recipe? ");
                         if (Validation.YesNo() == ConsoleKey.Y)
                         {
@@ -55,21 +53,21 @@ namespace task2.Controls.RecipeAddConrols
                             string recipeNewName = Validation.IsExsistsNameList(new List<EntityMenu>(Recipes), Validation.NullOrEmptyText(Console.ReadLine()));
 
                             Recipes = Recipes
-                            .Select(r => r.Id == EditableRecipe.Id
+                            .Select(r => r.Id == RecipeViewSelected.Id
                             ? new Recipe { Id = r.Id, Name = recipeNewName, Description = r.Description, IdCategory = r.IdCategory }
                             : r).ToList();
 
                             Validation.SaveSelectedDataJson(recipes: Recipes);
-                            GetMenuItems(CategoryRecipe, EditableRecipe);
+                            GetMenuItems(CategoryRecipe, RecipeViewSelected);
                         }
-                        else GetMenuItems(CategoryRecipe, EditableRecipe);
+                        else GetMenuItems(CategoryRecipe, RecipeViewSelected);
                     }
                     break;
                 case 1:
                     {
                         // Edit description recipe
                         Console.Clear();
-                        Console.WriteLine($"Current description: {EditableRecipe.Description}");
+                        Console.WriteLine($"Current description: {RecipeViewSelected.Description}");
                         Console.Write($"Are you sure you want to change the recipe description? ");
                         if (Validation.YesNo() == ConsoleKey.Y)
                         {
@@ -77,21 +75,21 @@ namespace task2.Controls.RecipeAddConrols
                             string newDescRecipe = Validation.NullOrEmptyText(Console.ReadLine());
 
                             Recipes = Recipes
-                            .Select(r => r.Id == EditableRecipe.Id
+                            .Select(r => r.Id == RecipeViewSelected.Id
                             ? new Recipe { Id = r.Id, Name = r.Name, Description = newDescRecipe, IdCategory = r.IdCategory }
                             : r).ToList();
 
                             Validation.SaveSelectedDataJson(recipes: Recipes);
-                            GetMenuItems(CategoryRecipe, EditableRecipe);
+                            GetMenuItems(CategoryRecipe, RecipeViewSelected);
                         }
-                        else GetMenuItems(CategoryRecipe, EditableRecipe);
+                        else GetMenuItems(CategoryRecipe, RecipeViewSelected);
                     }
                     break;
                 case 2:
                     {
                         // Change category recipe
                         RecipeEditCategoryControl recipeEditCategoryControl = new RecipeEditCategoryControl();
-                        recipeEditCategoryControl.GetMenuItems(CategoryRecipe, EditableRecipe);
+                        recipeEditCategoryControl.GetMenuItems(CategoryRecipe, RecipeViewSelected);
                     }
                     break;
                 case 3:
@@ -103,20 +101,21 @@ namespace task2.Controls.RecipeAddConrols
                         };
                         // Edit recipe ingredients
                         RecipeEditIngredientsControl recipeEditIngredientsControl = new RecipeEditIngredientsControl();
-                        recipeEditIngredientsControl.GetMenuEditIngredients(CategoryRecipe, EditableRecipe);
+                        recipeEditIngredientsControl.GetMenuIngredientsChangeBeforeAdding(RecipeViewSelected, CategoryRecipe);
                     }
                     break;
                 case 4:
                     {
                         // Edit cooking steps
-
+                        RecipeEditStepsControl recipeEditStepsControl = new RecipeEditStepsControl();
+                        recipeEditStepsControl.GetMenuItems(CategoryRecipe, RecipeViewSelected,currentStep:StepCookings.Where(x=>x.IdRecipe== RecipeViewSelected.Id).Max(x=>x.Step));
                     }
                     break;
                 case 5:
                     {
                         // Cancel
                         var recipe = (from r in Recipes
-                                      where r.Id == EditableRecipe.Id
+                                      where r.Id == RecipeViewSelected.Id
                                       select r).First();
 
                         RecipeViewControl recipeViewControl = new RecipeViewControl();

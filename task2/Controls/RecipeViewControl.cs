@@ -38,12 +38,14 @@ namespace task2.Instruments
                 };
 
             Console.WriteLine("\n    View recipe\n");
-            RecipeView(RecipeViewSelected);
+            RecipeView(RecipeViewSelected, AmountRecipeIngredients);
             CallMenuNavigation();
         }
 
-        protected void RecipeView(Recipe recipe)
+        protected void RecipeView(Recipe recipe, List<AmountRecipeIngredient> amountRecipeIngredients=null)
         {
+            if(amountRecipeIngredients == null)
+            amountRecipeIngredients = AmountRecipeIngredients;
             //Console.Clear();
             Console.WriteLine($"{new string('\n', ItemsMenu.Count)}");
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
@@ -51,7 +53,7 @@ namespace task2.Instruments
             Console.WriteLine("\n    Required ingredients:\n");
 
             //ingredients recipe
-            foreach (var a in AmountRecipeIngredients.Where(x => x.IdRecipe == recipe.Id))
+            foreach (var a in amountRecipeIngredients.Where(x => x.IdRecipe == recipe.Id))
             {
                 foreach (var i in Ingredients.Where(x => x.Id == a.IdIngredient))
                 {
