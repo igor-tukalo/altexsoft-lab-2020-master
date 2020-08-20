@@ -9,6 +9,9 @@ namespace task2.Instruments
     public abstract class MenuNavigation
     {
         protected EntityMenu CategoryRecipe { get; set; } // used to return to the recipe categories menu
+        /// <summary>
+        /// Сontains the menu navigation to be created first
+        /// </summary>
         protected List<EntityMenu> ItemsMenuMain { get; set; }
         protected JsonControl jsonControl { get; set; }
         /// <summary>
