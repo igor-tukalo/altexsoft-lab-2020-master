@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace task2.Models
+﻿namespace task2.Models
 {
-    public class AmountRecipeIngredient
+    public class AmountIngredient
     {
         public int Id { get; set; }
         public double Amount { get; set; }

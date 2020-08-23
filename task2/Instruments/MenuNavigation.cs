@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using task2.Controls;
 using task2.Models;
+using task2.Repositories;
 
 namespace task2.Instruments
 {
     public abstract class MenuNavigation
     {
-        protected EntityMenu CategoryRecipe { get; set; } // used to return to the recipe categories menu
+        protected UnitOfWork unitOfWork;
+        protected int RecipeId;
+
         /// <summary>
         /// Сontains the menu navigation to be created first
         /// </summary>
         protected List<EntityMenu> ItemsMenuMain { get; set; }
-        protected JsonControl jsonControl { get; set; }
+
         /// <summary>
         /// List of menu items
         /// </summary>
@@ -51,14 +52,14 @@ namespace task2.Instruments
             }
         }
 
-        /// <summary>
-        /// Build a hierarchical menu to the specified hierarchy level
-        /// </summary>
-        /// <param name="items">list items which have a parent id</param>
-        /// <param name="thisEntity">item which have ParentId 0</param>
-        /// <param name="level">level hierarchy</param>
-        /// <param name="levelLimitation">level limitation hierarchy</param>
-        protected void BuildHierarchicalMenu(List<EntityMenu> items, EntityMenu thisEntity, int level, int levelLimitation)
+            /// <summary>
+            /// Build a hierarchical menu to the specified hierarchy level
+            /// </summary>
+            /// <param name="items">list items which have a parent id</param>
+            /// <param name="thisEntity">item which have ParentId 0</param>
+            /// <param name="level">level hierarchy</param>
+            /// <param name="levelLimitation">level limitation hierarchy</param>
+            protected void BuildHierarchicalMenu(List<EntityMenu> items, EntityMenu thisEntity, int level, int levelLimitation)
         {
             if (level <= levelLimitation)
             {
@@ -100,7 +101,7 @@ namespace task2.Instruments
         /// <param name="IdMenu">id of the menu from which the hierarchy starts</param>
         public virtual void GetMenuItems(int IdMenu = 1) { }
 
-        protected virtual void AddMenuItem(string filePath) { }
+        protected virtual void AddMenuItem() { }
 
         public virtual void ReturnPreviousMenu() { }
     }

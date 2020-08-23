@@ -8,10 +8,11 @@ using task2.Models;
 
 namespace task2.Controls.RecipeAddConrols
 {
-    public class RecipeAddStepsCookingControl : RecipeViewControl
+    public class RecipeEditStepsCookingControl1 : RecipeViewControl
     {
+
         protected int CurrentStep { get; set; }
-        public RecipeAddStepsCookingControl()
+        public RecipeEditStepsCookingControl1()
         {
             ItemsMenuMain = new List<EntityMenu>
             {
@@ -22,7 +23,7 @@ namespace task2.Controls.RecipeAddConrols
             AmountRecipeIngredients = null;
         }
 
-        public void GetMenuItems(EntityMenu categoryRecipeMenu, Recipe addedRecipe, List<AmountRecipeIngredient> addedAmountIngredients = null, int currentStep = 0)
+        public void GetMenuItems(EntityMenu categoryRecipeMenu, Recipe addedRecipe, List<AmountIngredient> addedAmountIngredients = null, int currentStep = 0)
         {
             CurrentStep = currentStep;
             RecipeViewSelected = addedRecipe;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace task2.Models
 {
@@ -9,6 +7,7 @@ namespace task2.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int ParentId { get; set; }
+
         public string TypeEntity { get; set; }
 
         public EntityMenu(int id = 0, string name = "", int? parentId = 0, string typeEntity= "")

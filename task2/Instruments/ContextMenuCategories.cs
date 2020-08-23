@@ -1,79 +1,70 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using task2.Controls;
 using task2.Models;
+using task2.Repositories;
 
 namespace task2.Instruments
 {
-    public class ContextMenuCategories : MenuNavigation
+    public class ContextMenuCategories : ContextMenuNavigation
     {
-        protected MenuNavigation SwappableObject { get; set; }
-        protected List<EntityMenu> EntityList { get; set; }
-        protected int IdMenuNavigation { get; set; }
-
-        /// <summary>
-        /// Call the action menu for the specified item in the navigation menu
-        /// </summary>
-        /// <param name="swappableObject">object for which actions will be performed</param>
-        /// <param name="jsonFileName"></param>
-        /// <param name="idMenuNavigation"></param>
-        /// <param name="entityList"></param>
-        public ContextMenuCategories(MenuNavigation swappableObject, string jsonFileName, int idMenuNavigation, List<EntityMenu> entityList)
+        public ContextMenuCategories(UnitOfWork _unitOfWork, int idMenuNavigation, int recipeId = 0) : base(_unitOfWork, idMenuNavigation, recipeId)
         {
-            SwappableObject = swappableObject;
-            Console.Clear();
-            EntityList = entityList;
-            jsonControl = new JsonControl(jsonFileName);
-            IdMenuNavigation = idMenuNavigation;
-            ItemsMenu = new List<EntityMenu>
-            {
-                new Category(name: "Rename"),
-                new Category(name: "Delete"),
-                new Category(name: "Cancel")
-            };
-
-            CallMenuNavigation();
         }
 
-        protected override void SelectMethodMenu(int id)
+        protected override void Rename()
         {
-            switch (id)
-            {
-                case 0:
-                    {
-                        Console.Write("Enter new name: ");
-                        string newName = Console.ReadLine();
-                        foreach (var item in EntityList.Where(x => x.Id == IdMenuNavigation))
-                        {
-                            item.Name = newName;
-                        }
-                        File.WriteAllText(jsonControl.GetJsonPathFile(), JsonConvert.SerializeObject(EntityList));
-                        SwappableObject.GetMenuItems();
-                    }
-                    break;
-                case 1:
-                    {
-                        if (Validation.YesNo() == ConsoleKey.Y)
-                        {
-                            EntityList.Remove(EntityList.FirstOrDefault(x => x.Id == IdMenuNavigation));
-                            File.WriteAllText(jsonControl.GetJsonPathFile(), JsonConvert.SerializeObject(EntityList));
-                            SwappableObject.GetMenuItems();
-                        }
-                        else SwappableObject.GetMenuItems();
+            Console.Write("  Enter new name: ");
+            string newName = Console.ReadLine();
 
-                    }
-                    break;
-                case 2:
-                    {
-                        SwappableObject.GetMenuItems();
-                    }
-                    break;
+            
+            Category category = unitOfWork.Categories.Get(IdMenuNavigation);
+            unitOfWork.Categories.Update(new Category { Id = category.Id, Name = newName, ParentId = category.ParentId });
+
+            unitOfWork.SaveDataTable("Categories.json", JsonConvert.SerializeObject(unitOfWork.Categories.GetAll()));
+            Cancel();
+        }
+
+        protected override void Delete()
+        {
+            Console.Write("  Attention! are you sure you want to delete the category? You will also delete all the recipes that are in them! ");
+            if (Validation.YesNo() == ConsoleKey.Y)
+            {
+                var parent = unitOfWork.Categories.GetAll().ToList().Find((x) => x.Id == IdMenuNavigation);
+                RemoveHierarchicalCategory(new List<EntityMenu>(unitOfWork.Categories.GetAll().ToList()), parent, 1);
+
+                unitOfWork.SaveAllData();
+                unitOfWork.SaveDataTable("Categories.json", JsonConvert.SerializeObject(unitOfWork.Categories.GetAll()));
+                Cancel();
+            }
+            else Cancel();
+        }
+
+        protected void RemoveHierarchicalCategory(List<EntityMenu> items, EntityMenu thisEntity, int level)
+        {
+            unitOfWork.Categories.Delete(thisEntity.Id);
+            foreach (var r in unitOfWork.Recipes.GetAll().ToList().Where(x => x.IdCategory == thisEntity.Id))
+            {
+                foreach (var a in unitOfWork.AmountIngredients.GetAll().ToList().Where(x => x.IdRecipe == r.Id))
+                    unitOfWork.AmountIngredients.Delete(a.Id);
+
+                foreach (var a in unitOfWork.StepsCooking.GetAll().ToList().Where(x => x.IdRecipe == r.Id))
+                    unitOfWork.StepsCooking.Delete(a.Id);
+
+                unitOfWork.Recipes.Delete(r.Id);
+            }
+
+            foreach (var child in items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            {
+                RemoveHierarchicalCategory(items, child, level + 1);
             }
         }
-
+        protected override void Cancel()
+        {
+            new CategoriesControl().GetMenuItems();
+        }
 
     }
 }

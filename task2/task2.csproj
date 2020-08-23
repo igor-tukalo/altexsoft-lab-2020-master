@@ -6,11 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controls\RecipeEditStepsCookingControl1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="json\AmountsRecipeIngredients.json">
+    <None Update="json\AmountIngredients.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="json\Categories.json">

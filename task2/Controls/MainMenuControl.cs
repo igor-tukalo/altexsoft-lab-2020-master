@@ -1,9 +1,8 @@
 ﻿using System;
-using task2.Controls;
 using task2.Instruments;
 using task2.Models;
 
-namespace task2
+namespace task2.Controls
 {
     public class MainMenuControl : MenuNavigation
     {
@@ -35,7 +34,7 @@ namespace task2
             {
                 case 0:
                     {
-                        RecipeCategoriesControl recipeControl = new RecipeCategoriesControl();
+                        RecipesCategoryControl recipeControl = new RecipesCategoryControl();
                         recipeControl.GetMenuItems();
                     }
                     break;

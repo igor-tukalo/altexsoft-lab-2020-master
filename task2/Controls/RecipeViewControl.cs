@@ -1,34 +1,25 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using task2.Controls;
-using task2.Controls.RecipeAddConrols;
+using task2.Instruments;
 using task2.Models;
+using task2.Repositories;
 
-namespace task2.Instruments
+namespace task2.Controls
 {
-    public class RecipeViewControl : MenuNavigation
+    public class RecipeViewControl : RecipesCategoryControl
     {
-        protected List<Recipe> Recipes { get; set; }
-        protected List<AmountRecipeIngredient> AmountRecipeIngredients { get; set; }
-        protected List<StepCooking> StepCookings { get; set; }
-        protected List<Ingredient> Ingredients { get; set; }
-        protected Recipe RecipeViewSelected { get; set; }
-
-        public RecipeViewControl()
+        Recipe RecipeViewSelected;
+        public RecipeViewControl(int recipeId, int categoryId, UnitOfWork _unitOfWork)
         {
-            Recipes = JsonConvert.DeserializeObject<List<Recipe>>(new JsonControl("Recipes.json").GetJsonData());
-            AmountRecipeIngredients = JsonConvert.DeserializeObject<List<AmountRecipeIngredient>>(new JsonControl("AmountsRecipeIngredients.json").GetJsonData());
-            StepCookings = JsonConvert.DeserializeObject<List<StepCooking>>(new JsonControl("StepsCooking.json").GetJsonData());
-            Ingredients = JsonConvert.DeserializeObject<List<Ingredient>>(new JsonControl("Ingredients.json").GetJsonData());
+            IdPrevCategory = categoryId;
+            RecipeId = recipeId;
+            unitOfWork = _unitOfWork;
+            RecipeViewSelected = unitOfWork.Recipes.Get(RecipeId);
         }
 
-        virtual public void GetMenuItems(EntityMenu categoryRecipe, Recipe recipe)
+        virtual public void GetMenuItems()
         {
-            RecipeViewSelected = recipe;
-            CategoryRecipe = categoryRecipe;
             Console.Clear();
             ItemsMenu = new List<EntityMenu>
                 {
@@ -38,32 +29,31 @@ namespace task2.Instruments
                 };
 
             Console.WriteLine("\n    View recipe\n");
-            RecipeView(RecipeViewSelected, AmountRecipeIngredients);
+            RecipeView();
             CallMenuNavigation();
         }
 
-        protected void RecipeView(Recipe recipe, List<AmountRecipeIngredient> amountRecipeIngredients=null)
+        public void RecipeView()
         {
-            if(amountRecipeIngredients == null)
-            amountRecipeIngredients = AmountRecipeIngredients;
             //Console.Clear();
             Console.WriteLine($"{new string('\n', ItemsMenu.Count)}");
-            Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
-            Console.WriteLine($"    {Validation.WrapText(10, recipe.Description, "\n    ")}");
+            Console.WriteLine($"{new string('\n', 5)}    ________{RecipeViewSelected.Name}________\n\n");
+            Console.WriteLine($"    {Validation.WrapText(10, RecipeViewSelected.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
 
             //ingredients recipe
-            foreach (var a in amountRecipeIngredients.Where(x => x.IdRecipe == recipe.Id))
-            {
-                foreach (var i in Ingredients.Where(x => x.Id == a.IdIngredient))
+            if (unitOfWork.AmountIngredients.GetAll() != null)
+                foreach (var a in unitOfWork.AmountIngredients.GetAll().Where(x => x.IdRecipe == RecipeViewSelected.Id))
                 {
-                    Console.WriteLine($"    {i.Name} - {a.Amount} {a.Unit}");
+                    foreach (var i in unitOfWork.Ingredients.GetAll().Where(x => x.Id == a.IdIngredient))
+                    {
+                        Console.WriteLine($"    {i.Name} - {a.Amount} {a.Unit}");
+                    }
                 }
-            }
 
             //steps recipe
             Console.WriteLine("\n    Сooking steps:\n");
-            foreach (var s in StepCookings.Where(x => x.IdRecipe == recipe.Id).OrderBy(x => x.Step))
+            foreach (var s in unitOfWork.StepsCooking.GetAll().Where(x => x.IdRecipe == RecipeViewSelected.Id).OrderBy(x => x.Step))
             {
                 Console.WriteLine($"    {s.Step}. {Validation.WrapText(10, s.Name, "\n       ")}");
             }
@@ -76,15 +66,13 @@ namespace task2.Instruments
                 case 0:
                     {
                         // Back to recipe category
-                        NavigateRecipeCategories navigateRecipeCategories = new NavigateRecipeCategories();
-                        navigateRecipeCategories.GetRecipesCategory(CategoryRecipe, CategoryRecipe.ParentId);
+                        new NavigateRecipeCategories().GetMenuItems(unitOfWork.Recipes.Get(RecipeId).IdCategory);
                     }
                     break;
                 case 1:
                     {
                         // Edit recipe
-                        RecipeEditControl recipeEditControl = new RecipeEditControl();
-                        recipeEditControl.GetMenuItems(CategoryRecipe, RecipeViewSelected);
+                        new RecipeСreateControl(unitOfWork.Recipes.Get(RecipeId).IdCategory, IdPrevCategory, unitOfWork).GetMenuItems();
                     }
                     break;
                 case 2:
@@ -94,19 +82,19 @@ namespace task2.Instruments
                         Console.Write("Are you sure you want to delete the recipe? ");
                         if (Validation.YesNo() == ConsoleKey.Y)
                         {
-                            AmountRecipeIngredients.RemoveAll(i => i.IdRecipe == RecipeViewSelected.Id);
-                            StepCookings.RemoveAll(i => i.IdRecipe == RecipeViewSelected.Id);
-                            Recipes.RemoveAll(i => i.Id == RecipeViewSelected.Id);
+                            int idCategory = unitOfWork.Recipes.Get(RecipeId).IdCategory;
+                            foreach (var a in unitOfWork.AmountIngredients.GetAll().ToList().Where(x => x.IdRecipe == RecipeId))
+                                unitOfWork.AmountIngredients.Delete(a.Id);
 
-                            // Update json data string
-                            File.WriteAllText(new JsonControl("Recipes.json").GetJsonPathFile(), JsonConvert.SerializeObject(Recipes));
-                            File.WriteAllText(new JsonControl("AmountsRecipeIngredients.json").GetJsonPathFile(), JsonConvert.SerializeObject(AmountRecipeIngredients));
-                            File.WriteAllText(new JsonControl("StepsCooking.json").GetJsonPathFile(), JsonConvert.SerializeObject(StepCookings));
+                            foreach (var a in unitOfWork.StepsCooking.GetAll().ToList().Where(x => x.IdRecipe == RecipeId))
+                                unitOfWork.StepsCooking.Delete(a.Id);
 
-                            NavigateRecipeCategories navigateRecipeCategories = new NavigateRecipeCategories();
-                            navigateRecipeCategories.GetRecipesCategory(CategoryRecipe, CategoryRecipe.ParentId);
+                            unitOfWork.Recipes.Delete(RecipeId);
+
+                            unitOfWork.SaveAllData();
+                            new NavigateRecipeCategories().GetMenuItems(idCategory);
                         }
-                        else GetMenuItems(CategoryRecipe, RecipeViewSelected);
+                        else new NavigateRecipeCategories().GetMenuItems(unitOfWork.Recipes.Get(RecipeId).IdCategory);
 
                     }
                     break;

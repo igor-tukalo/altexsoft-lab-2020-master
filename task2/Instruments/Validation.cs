@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using task2.Controls;
 using task2.Models;
 
 namespace task2.Instruments
@@ -123,7 +120,7 @@ namespace task2.Instruments
                 while (Console.KeyAvailable) // Flushes the input queue.
                     Console.ReadKey();
 
-                Console.WriteLine("Press:\n1 to edit\n2 to remove\n3 to cancel");
+                Console.WriteLine("  Press:\n1 to edit\n2 to remove\n3 to cancel");
                 response = Console.ReadKey().Key;
                 Console.WriteLine();
             } while (response != ConsoleKey.D1 && response != ConsoleKey.D2 && response != ConsoleKey.D3); // If the user did not respond, repeat the loop.
@@ -139,14 +136,18 @@ namespace task2.Instruments
         /// <param name="wrapChar">indent mark</param>
         public static string WrapText(int numChar, string text, string wrapChar = "\n")
         {
-            string[] wrapText = text.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                string[] wrapText = text.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (wrapText.Length > numChar)
-                for (int i = numChar - 1; i < wrapText.Length; i += numChar)
-                {
-                    wrapText[i] += wrapChar;
-                }
-            return string.Join(" ", wrapText).Replace(wrapChar + " ", wrapChar);
+                if (wrapText.Length > numChar)
+                    for (int i = numChar - 1; i < wrapText.Length; i += numChar)
+                    {
+                        wrapText[i] += wrapChar;
+                    }
+                return string.Join(" ", wrapText).Replace(wrapChar + " ", wrapChar);
+            }
+            else return text;
         }
 
         /// <summary>
@@ -169,12 +170,12 @@ namespace task2.Instruments
         }
 
         /// <summary>
-        /// Сheck item for unique name
+        /// The name must not exist in the list
         /// </summary>
         /// <param name="list"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string IsExsistsNameList(List<EntityMenu> list, string name)
+        public static string IsNameMustNotExist(List<EntityMenu> list, string name)
         {
             do
             {
@@ -194,26 +195,23 @@ namespace task2.Instruments
         }
 
         /// <summary>
-        /// Save json data
+        /// The name must exist in the list
         /// </summary>
-        /// <param name="recipes"></param>
-        /// <param name="amountRecipeIngredients"></param>
-        /// <param name="stepCookings"></param>
-        /// <param name="ingredients"></param>
-        public static void SaveSelectedDataJson(List<Recipe> recipes = null, List<AmountRecipeIngredient> amountRecipeIngredients = null,
-            List<StepCooking> stepCookings = null, List<Ingredient> ingredients = null, List<Category> categories = null)
+        /// <param name="list"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string IsNameMustExist(List<EntityMenu> list, string name)
         {
-            // Update json data string
-            if (recipes != null)
-                File.WriteAllText(new JsonControl("Recipes.json").GetJsonPathFile(), JsonConvert.SerializeObject(recipes));
-            if (amountRecipeIngredients != null)
-                File.WriteAllText(new JsonControl("AmountsRecipeIngredients.json").GetJsonPathFile(), JsonConvert.SerializeObject(amountRecipeIngredients));
-            if (stepCookings != null)
-                File.WriteAllText(new JsonControl("StepsCooking.json").GetJsonPathFile(), JsonConvert.SerializeObject(stepCookings));
-            if (ingredients != null)
-                File.WriteAllText(new JsonControl("Ingredients.json").GetJsonPathFile(), JsonConvert.SerializeObject(ingredients));
-            if (categories != null)
-                File.WriteAllText(new JsonControl("Categories.json").GetJsonPathFile(), JsonConvert.SerializeObject(categories));
+            do
+            {
+                if (!list.Exists(x => x.Name.ToLower() == name.ToLower()))
+                {
+                    Console.Write(" No name found. Enter an existing name: ");
+                    name = Console.ReadLine();
+                }
+
+            } while (!list.Exists(x => x.Name == name));
+            return name;
         }
     }
 }

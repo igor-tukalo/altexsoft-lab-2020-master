@@ -10,9 +10,9 @@ namespace task2.Controls
         {
             Console.Clear();
 
-            ItemsMenu.Add(new Category(name: "Customize сategories"));
-            ItemsMenu.Add(new Category(name: "Customize ingredients"));
-            ItemsMenu.Add(new Category(name: "Return to main menu"));
+            ItemsMenu.Add(new Category(name: "  Customize сategories"));
+            ItemsMenu.Add(new Category(name: "  Customize ingredients"));
+            ItemsMenu.Add(new Category(name: "  Return to main menu"));
 
             CallMenuNavigation();
         }
@@ -23,13 +23,13 @@ namespace task2.Controls
             {
                 case 0:
                     {
-                        CategoryControl categoryControl = new CategoryControl();
+                        CategoriesControl categoryControl = new CategoriesControl();
                         categoryControl.GetMenuItems();
                     }
                     break;
                 case 1:
                     {
-                        IngredientControl ingredientControl = new IngredientControl();
+                        IngredientsControl ingredientControl = new IngredientsControl();
                         ingredientControl.GetMenuItems();
                     }
                     break;
