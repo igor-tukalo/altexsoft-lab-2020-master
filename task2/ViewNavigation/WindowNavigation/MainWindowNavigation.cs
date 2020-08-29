@@ -1,12 +1,14 @@
 ﻿using System;
-using task2.Instruments;
+using System.Collections.Generic;
+using task2.Controls;
+using task2.Interfaces;
 using task2.Models;
 
-namespace task2.Controls
+namespace task2.ViewNavigation.WindowNavigation
 {
-    public class MainMenuControl : MenuNavigation
+    public class MainWindowNavigation : INavigation
     {
-        override public void GetMenuItems(int IdMenu = 1)
+        public void GetNavigation()
         {
             Console.Clear();
             Console.WriteLine(@"
@@ -22,26 +24,27 @@ namespace task2.Controls
                    \`_..--''--.;.--'''--.._\
                     ");
 
-            ItemsMenu.Add(new Category(name: "  Recipes"));
-            ItemsMenu.Add(new Category(name: "  Settings"));
+            List<EntityMenu> ItemsMenu = new List<EntityMenu>
+            {
+                new EntityMenu() { Name = "    Recipes" },
+                new EntityMenu() { Name = "    Settings" }
+            };
 
-            CallMenuNavigation();
-
+            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
         }
-        override protected void SelectMethodMenu(int id)
+
+        void SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        RecipesCategoryControl recipeControl = new RecipesCategoryControl();
-                        recipeControl.GetMenuItems();
+                        new ProgramMenu(new RecipesNavigation(new CategoriesControl(),new RecipesControl())).CallMenu();
                     }
                     break;
                 case 1:
                     {
-                        SettingsControl settingsControl = new SettingsControl();
-                        settingsControl.GetMenuItems();
+                        new ProgramMenu(new SettingsNavigation(new SettingsControl())).CallMenu();
                     }
                     break;
             }

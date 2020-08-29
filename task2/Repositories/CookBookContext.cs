@@ -13,16 +13,15 @@ namespace task2.Repositories
         public List<Ingredient> Ingredients { get; set; }
         public List<Recipe> Recipes { get; set; }
         public List<AmountIngredient> AmountIngredients { get; set; }
-        public List<StepCooking> StepsCooking { get; set; }
+        public List<CookingStep> CookingSteps { get; set; }
         public CookBookContext()
         {
             Categories = JsonConvert.DeserializeObject<List<Category>>(GetJsonData("Categories.json"));
             Ingredients = JsonConvert.DeserializeObject<List<Ingredient>>(GetJsonData("Ingredients.json"));
             Recipes = JsonConvert.DeserializeObject<List<Recipe>>(GetJsonData("Recipes.json"));
             AmountIngredients = JsonConvert.DeserializeObject<List<AmountIngredient>>(GetJsonData("AmountIngredients.json"));
-            StepsCooking = JsonConvert.DeserializeObject<List<StepCooking>>(GetJsonData("StepsCooking.json"));
+            CookingSteps = JsonConvert.DeserializeObject<List<CookingStep>>(GetJsonData("CookingSteps.json"));
         }
-
         /// <summary>
         /// Get json file data at specified path
         /// </summary>
@@ -43,7 +42,6 @@ namespace task2.Repositories
                 return string.Empty;
             }
         }
-
         /// <summary>
         /// Get path to json file by specified filename
         /// </summary>
@@ -61,16 +59,12 @@ namespace task2.Repositories
                 return string.Empty;
             }
         }
-
-        public void SaveChanges()
+        public void SaveAllData()
         {
-            //File.WriteAllText(GetJsonPathFile("Categories.json"), JsonConvert.SerializeObject(Categories));
-            //File.WriteAllText(GetJsonPathFile("Ingredients.json"), JsonConvert.SerializeObject(Ingredients));
             File.WriteAllText(GetJsonPathFile("Recipes.json"), JsonConvert.SerializeObject(Recipes));
             File.WriteAllText(GetJsonPathFile("AmountIngredients.json"), JsonConvert.SerializeObject(AmountIngredients));
-            File.WriteAllText(GetJsonPathFile("StepsCooking.json"), JsonConvert.SerializeObject(StepsCooking));
+            File.WriteAllText(GetJsonPathFile("CookingSteps.json"), JsonConvert.SerializeObject(CookingSteps));
         }
-
         public void SaveChanges(string jsonName,string content)
         {
             File.WriteAllText(GetJsonPathFile(jsonName), content);

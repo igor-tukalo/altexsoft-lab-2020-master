@@ -2,7 +2,7 @@
   {
     "Id": 1,
     "Name": "Categories",
-    "ParentId": null
+    "ParentId": 0
   },
   {
     "Id": 2,

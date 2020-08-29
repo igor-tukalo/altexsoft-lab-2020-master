@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "task1", "task1\task1.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "task2", "task2\task2.csproj", "{768D4030-D965-4506-B4CA-A10F4815633B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasks", "tasks", "{88EB36BF-967F-400D-966D-DB634BB26D38}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "task1", "task1", "{77AFB6A3-00A5-4182-9020-4A471DCBF1F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +28,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{14781B1A-DE9A-46D9-A74F-BB2F908DCC07} = {77AFB6A3-00A5-4182-9020-4A471DCBF1F9}
+		{768D4030-D965-4506-B4CA-A10F4815633B} = {88EB36BF-967F-400D-966D-DB634BB26D38}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C9DAEF0-A3B2-45E7-A904-D45CE12E843B}

@@ -1,45 +1,25 @@
 ﻿using System;
-using task2.Instruments;
-using task2.Models;
+using System.Configuration;
+using task2.Interfaces;
 
 namespace task2.Controls
 {
-    public class SettingsControl : MenuNavigation
+    class SettingsControl : ISettingsControl
     {
-        public void GetMenuItems()
+        /// <summary>
+        /// Сhange the maximum number of lines for a page
+        /// </summary>
+        public void EditBatch()
         {
-            Console.Clear();
-
-            ItemsMenu.Add(new Category(name: "  Customize сategories"));
-            ItemsMenu.Add(new Category(name: "  Customize ingredients"));
-            ItemsMenu.Add(new Category(name: "  Return to main menu"));
-
-            CallMenuNavigation();
-        }
-
-        override protected void SelectMethodMenu(int id)
-        {
-            switch (id)
-            {
-                case 0:
-                    {
-                        CategoriesControl categoryControl = new CategoriesControl();
-                        categoryControl.GetMenuItems();
-                    }
-                    break;
-                case 1:
-                    {
-                        IngredientsControl ingredientControl = new IngredientsControl();
-                        ingredientControl.GetMenuItems();
-                    }
-                    break;
-                case 2:
-                    {
-                        MainMenuControl mainMenuControl = new MainMenuControl();
-                        mainMenuControl.GetMenuItems();
-                    }
-                    break;
-            }
+            Console.WriteLine($"  Current number of navigation menu lines: {ConfigurationManager.AppSettings.Get("Batch")}");
+            Console.Write("  Enter the number of navigation menu lines: ");
+            //Create the object
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            //make changes
+            config.AppSettings.Settings["Batch"].Value = Validation.ValidNumber(Console.ReadLine()).ToString();
+            //save to apply changes
+            config.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection("appSettings");
         }
     }
 }

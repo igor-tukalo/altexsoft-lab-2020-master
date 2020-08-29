@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace task2.Repositories
+namespace task2.Interfaces
 {
     interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll();
+        List<T> GetAll();
         T Get(int id);
         void Create(T item);
         void Update(T item);

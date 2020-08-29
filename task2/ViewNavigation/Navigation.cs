@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using task2.Models;
 
-namespace task2.Instruments
+namespace task2.ViewNavigation
 {
     public class Navigation
     {
         public delegate void Method(int id);
 
-        readonly List<EntityMenu> MenuItems;
+        List<EntityMenu> MenuItems;
         int counter = 0;
 
         /// <summary>
@@ -16,9 +16,9 @@ namespace task2.Instruments
         /// </summary>
         /// <param name="menuItems"></param>
         /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
-        public Navigation(List<EntityMenu> menuItems, Method selectedMethod)
+        public void GetNavigation(List<EntityMenu> menuItems, Method selectedMethod)
         {
-            this.MenuItems = menuItems;
+            MenuItems = menuItems;
             int menuResult;
 
             List<Method> methodsMenu = new List<Method>();
@@ -34,7 +34,7 @@ namespace task2.Instruments
             } while (menuResult != MenuItems.Count - 1);
         }
 
-        public int PrintMenu()
+        private int PrintMenu()
         {
             ConsoleKeyInfo key;
             do
@@ -48,7 +48,7 @@ namespace task2.Instruments
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.WriteLine(MenuItems[i].Name);
                         Console.BackgroundColor = ConsoleColor.Black;
-                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Gray;
                     }
                     else
                         Console.WriteLine(MenuItems[i].Name);

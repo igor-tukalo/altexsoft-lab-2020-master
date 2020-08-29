@@ -2,90 +2,87 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using task2.Instruments;
+using task2.Interfaces;
 using task2.Models;
 using task2.Repositories;
 
 namespace task2.Controls
 {
-    public class CategoriesControl : MenuNavigation
+    public class CategoriesControl : ICategoriesControl
     {
-        public CategoriesControl()
+        readonly UnitOfWork unitOfWork = new UnitOfWork();
+        public Category GetParentCategory(int id)
         {
-            unitOfWork = new UnitOfWork();
-        }
-        public override void GetMenuItems(int IdMenu = 1)
-        {
-            Console.Clear();
-
-                ItemsMenu = new List<EntityMenu>
-                {
-                    new Category(name: "    Add category"),
-                    new Category(name: "    Return to settings"),
-                    new Category(name: "    Return to main menu")
-                };
-
-                var parent = unitOfWork.Categories.GetAll().ToList().Find((x) => x.Id == IdMenu);
-                BuildHierarchicalMenu(new List<EntityMenu>(unitOfWork.Categories.GetAll().ToList()), parent, 1);
-
-            CallMenuNavigation();
+            return unitOfWork.Categories.Get(id);
         }
 
-        protected override void SelectMethodMenu(int id)
-        {
-            switch (id)
-            {
-                case 0:
-                    {
-                        AddMenuItem();
-                    }
-                    break;
-                case 1:
-                    {
-                        SettingsControl settingsControl = new SettingsControl();
-                        settingsControl.GetMenuItems();
-                    }
-                    break;
-                case 2:
-                    {
-                        MainMenuControl mainMenuControl = new MainMenuControl();
-                        mainMenuControl.GetMenuItems();
-                    }
-                    break;
-                // when selecting categories, we call the context menu of actions
-                default:
-                    {
-                        if(ItemsMenu[id].Id!=1)
-                        _ = new ContextMenuCategories(unitOfWork, ItemsMenu[id].Id);
-                    }
-                    break;
-            }
-        }
-
-        protected override void AddMenuItem()
+        public void Add()
         {
             try
             {
-                Console.WriteLine();
                 int id = unitOfWork.Categories.GetAll().Max(x => x.Id) + 1;
-
-                Console.Write(" Enter name category: ");
+                Console.Write("\n    Enter name category: ");
                 string name = Console.ReadLine();
-
-                Console.Write(" Enter name main category: ");
-                string nameMainCategory = Validation.IsNameMustExist(new List<EntityMenu>(unitOfWork.Categories.GetAll().ToList()), Console.ReadLine());
-
+                Console.Write("    Enter name main category: ");
+                string nameMainCategory = unitOfWork.Categories.IsNameMustExist(Validation.NullOrEmptyText(Console.ReadLine()));
                 int idMainCategory = (from t in unitOfWork.Categories.GetAll()
-                                                       where t.Name == nameMainCategory
-                                                       select t.Id).First();
-
-                //Add any new category
-                unitOfWork.Categories.Create(new Category(id, name, idMainCategory));
+                                      where t.Name == nameMainCategory
+                                      select t.Id).First();
+                unitOfWork.Categories.Create(new Category() { Id = id, Name = name, ParentId = idMainCategory });
                 unitOfWork.SaveDataTable("Categories.json", JsonConvert.SerializeObject(unitOfWork.Categories.GetAll()));
-                new CategoriesControl().GetMenuItems();
             }
             catch (Exception ex)
             { Console.WriteLine($"{ex.Message}"); }
+        }
+
+        public void BuildHierarchicalCategories(List<EntityMenu> items, Category thisEntity, int level)
+        {
+            items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
+            foreach (var child in unitOfWork.Categories.GetAll().FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            {
+                BuildHierarchicalCategories(items, child, level + 1);
+            }
+        }
+
+        public void RemoveHierarchicalCategory(Category thisEntity, int level)
+        {
+            unitOfWork.Categories.Delete(thisEntity.Id);
+            foreach (var r in unitOfWork.Recipes.GetAll().ToList().Where(x => x.IdCategory == thisEntity.Id))
+            {
+                foreach (var a in unitOfWork.AmountIngredients.GetAll().ToList().Where(x => x.IdRecipe == r.Id))
+                    unitOfWork.AmountIngredients.Delete(a.Id);
+
+                foreach (var a in unitOfWork.CookingSteps.GetAll().ToList().Where(x => x.IdRecipe == r.Id))
+                    unitOfWork.CookingSteps.Delete(a.Id);
+
+                unitOfWork.Recipes.Delete(r.Id);
+            }
+            foreach (var child in unitOfWork.Categories.GetAll().FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            {
+                RemoveHierarchicalCategory(child, level + 1);
+            }
+        }
+
+        public void Rename(int idCategory)
+        {
+            Console.Write("    Enter new name: ");
+            string newName = unitOfWork.Categories.IsNameMustNotExist(Console.ReadLine());
+            var category = unitOfWork.Categories.Get(idCategory);
+            category.Name = newName;
+            unitOfWork.Categories.Update(category);
+            unitOfWork.SaveDataTable("Categories.json", JsonConvert.SerializeObject(unitOfWork.Categories.GetAll()));
+        }
+
+        public void Delete(int idCategory)
+        {
+            Console.Write("    Attention! Are you sure you want to delete the category? You will also delete all the recipes that are in them! ");
+            if (Validation.YesNo() == ConsoleKey.Y)
+            {
+                var parent = unitOfWork.Categories.Get(idCategory);
+                RemoveHierarchicalCategory(parent, 1);
+                unitOfWork.SaveChangesRecipe();
+                unitOfWork.SaveDataTable("Categories.json", JsonConvert.SerializeObject(unitOfWork.Categories.GetAll()));
+            }
         }
     }
 }

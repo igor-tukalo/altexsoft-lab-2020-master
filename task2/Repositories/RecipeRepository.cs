@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using task2.Controls;
+using task2.Interfaces;
 using task2.Models;
 
 namespace task2.Repositories
@@ -33,14 +34,9 @@ namespace task2.Repositories
                     select r).FirstOrDefault();
         }
 
-        public IEnumerable<Recipe> GetAll()
+        public List<Recipe> GetAll()
         {
             return db.Recipes;
-        }
-
-        public void GetMenuNavigation()
-        {
-            new RecipesCategoryControl();
         }
 
         public void Update(Recipe item)
@@ -49,6 +45,19 @@ namespace task2.Repositories
             .Select(r => r.Id == item.Id
             ? new Recipe { Id = item.Id, Name = item.Name, Description = item.Description, IdCategory = item.IdCategory }
             : r).ToList();
+        }
+
+        public string IsNameMustNotExist(string name)
+        {
+            do
+            {
+                if (db.Recipes.Exists(x => x.Name.ToLower() == name.ToLower()))
+                {
+                    Console.Write("    This name is already in use. enter another name: ");
+                    name = Validation.NullOrEmptyText(Console.ReadLine());
+                }
+            } while (db.Recipes.Exists(x => x.Name.ToLower() == name.ToLower()));
+            return name;
         }
     }
 }

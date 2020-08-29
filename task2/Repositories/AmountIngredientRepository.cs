@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using task2.Instruments;
+using task2.Interfaces;
 using task2.Models;
 
 namespace task2.Repositories
@@ -35,14 +35,9 @@ namespace task2.Repositories
                     select a).FirstOrDefault();
         }
 
-        public IEnumerable<AmountIngredient> GetAll()
+        public List<AmountIngredient> GetAll()
         {
             return db.AmountIngredients;
-        }
-
-        public void GetMenuNavigation()
-        {
-
         }
 
         public void Update(AmountIngredient item)

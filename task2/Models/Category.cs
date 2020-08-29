@@ -1,9 +1,9 @@
 ﻿namespace task2.Models
 {
-    public class Category : EntityMenu
+    public class Category 
     {
-        public Category(int id = 0, string name = "", int? parentId = 0, string typeEntity = "") : base(id, name, parentId,typeEntity)
-        {
-        }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int ParentId { get; set; }
     }
 }

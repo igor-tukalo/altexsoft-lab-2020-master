@@ -1,5 +1,5 @@
 ﻿using System;
-using task2.Controls;
+using task2.ViewNavigation.WindowNavigation;
 
 namespace task2
 {
@@ -8,10 +8,8 @@ namespace task2
         static void Main(string[] args)
         {
             Console.WindowHeight = Console.LargestWindowHeight;
-            Console.WindowWidth = Console.LargestWindowWidth;
-
-            MainMenuControl mainMenuControl = new MainMenuControl();
-            mainMenuControl.GetMenuItems();
+            ProgramMenu programMenu = new ProgramMenu(new MainWindowNavigation());
+            programMenu.CallMenu();
         }
     }
 }
