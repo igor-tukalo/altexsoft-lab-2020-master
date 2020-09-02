@@ -1,26 +1,26 @@
 ﻿using task2.Interfaces;
-using task2.Repositories;
 
 namespace task2.Controls
 {
     public abstract class BaseControl : IBaseControl
     {
-        public CookBookContext DBControl { get; set; }
+        public UnitOfWork UnitOfWork { get; set; }
+
         protected BaseControl()
         {
-            DBControl = new CookBookContext();
+            UnitOfWork = new UnitOfWork();
         }
         public virtual void Add()
         {
-            DBControl.SaveAllData();
+            UnitOfWork.SaveAllData();
         }
         public virtual void Edit(int id)
         {
-            DBControl.SaveAllData();
+            UnitOfWork.SaveAllData();
         }
         public virtual void Delete(int id)
         {
-            DBControl.SaveAllData();
+            UnitOfWork.SaveAllData();
         }
     }
 }

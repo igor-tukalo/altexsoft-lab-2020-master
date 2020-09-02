@@ -11,11 +11,12 @@ namespace task2.Controls
         public List<AmountIngredient> AmountIngredients { get; set; }
         public List<Ingredient> Ingredients { get; set; }
         public int IdRecipe { get; set; }
+
         public RecipeIngredientsControl(int idRecipe)
         {
             IdRecipe = idRecipe;
-            Ingredients = DBControl.Ingredients.Items;
-            AmountIngredients = DBControl.AmountIngredients.Items;
+            Ingredients = UnitOfWork.Ingredients.Items;
+            AmountIngredients = UnitOfWork.AmountIngredients.Items;
         }
 
         public void Add(int idIngredient)
@@ -25,13 +26,13 @@ namespace task2.Controls
             double amount = Validation.ValidDouble(Console.ReadLine().Replace(".", ","));
             Console.Write("    Enter the unit of ingredient: ");
             string unit = Validation.NullOrEmptyText(Console.ReadLine());
-            DBControl.AmountIngredients.Create(new AmountIngredient { Id = idAmountIngredients, Amount = amount, Unit = unit, IdIngredient = idIngredient, IdRecipe = IdRecipe });
+            UnitOfWork.AmountIngredients.Create(new AmountIngredient { Id = idAmountIngredients, Amount = amount, Unit = unit, IdIngredient = idIngredient, IdRecipe = IdRecipe });
             base.Add();
         }
 
         public override void Delete(int id)
         {
-            DBControl.AmountIngredients.Delete(id);
+            UnitOfWork.AmountIngredients.Delete(id);
             base.Delete(id);
         }
 

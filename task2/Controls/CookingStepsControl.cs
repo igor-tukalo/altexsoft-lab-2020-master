@@ -10,10 +10,11 @@ namespace task2.Controls
     {
         public List<CookingStep> CookingSteps { get; set; }
         public int IdRecipe { get; set; }
+
         public CookingStepsControl(int idRecipe)
         {
             IdRecipe = idRecipe;
-            CookingSteps = DBControl.CookingSteps.Items;
+            CookingSteps = UnitOfWork.CookingSteps.Items;
         }
 
         public List<EntityMenu> Get(List<EntityMenu> itemsMenu, int idRecipe)
@@ -33,7 +34,7 @@ namespace task2.Controls
                 CookingSteps.Where(x => x.IdRecipe == IdRecipe).Max(x => x.Step) + 1 : 1;
             Console.Write($"\n    Describe the cooking step {CurrentStep}: ");
             string stepName = Validation.NullOrEmptyText(Console.ReadLine());
-            DBControl.CookingSteps.Create(new CookingStep() { Id = idCookingStep, Step = CurrentStep, Name = stepName, IdRecipe = IdRecipe });
+            UnitOfWork.CookingSteps.Create(new CookingStep() { Id = idCookingStep, Step = CurrentStep, Name = stepName, IdRecipe = IdRecipe });
             base.Add();
             Console.Write("\n    Add another cooking step? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
@@ -42,11 +43,11 @@ namespace task2.Controls
 
         public override void Edit(int id)
         {
-            var cookingStep = DBControl.CookingSteps.Get(id);
+            var cookingStep = UnitOfWork.CookingSteps.Get(id);
             Console.Write($"    Describe the cooking step {cookingStep.Step}: ");
             string stepName = Validation.NullOrEmptyText(Console.ReadLine());
             cookingStep.Name = stepName;
-            DBControl.CookingSteps.Update(cookingStep);
+            UnitOfWork.CookingSteps.Update(cookingStep);
             base.Edit(id);
         }
 
@@ -54,11 +55,11 @@ namespace task2.Controls
         {
             Console.Write("    Do you really want to remove the cooking step? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
-            foreach (var s in CookingSteps.Where(x => x.IdRecipe == IdRecipe && x.Step > DBControl.CookingSteps.Get(id).Step))
+            foreach (var s in CookingSteps.Where(x => x.IdRecipe == IdRecipe && x.Step > UnitOfWork.CookingSteps.Get(id).Step))
             {
                 s.Step--;
             }
-            DBControl.CookingSteps.Delete(id);
+            UnitOfWork.CookingSteps.Delete(id);
             base.Delete(id);
         }
     }

@@ -11,18 +11,19 @@ namespace task2.Controls
     class IngredientsControl : BaseControl, IIngredientsControl
     {
         public List<Ingredient> Ingredients { get; set; }
+
         public IngredientsControl()
-        {
-            Ingredients = DBControl.Ingredients.Items;
+        { 
+            Ingredients = UnitOfWork.Ingredients.Items;
         }
 
         public override void Add()
         {
             int id = Ingredients.Count() > 0 ? Ingredients.Max(x => x.Id) + 1 : 1;
             Console.Write("\n    Enter name ingredient: ");
-            string name = DBControl.Ingredients.IsNameMustNotExist(Console.ReadLine());
+            string name = UnitOfWork.Ingredients.IsNameMustNotExist(Console.ReadLine());
             string nameIngredient = name;
-            DBControl.Ingredients.Create(new Ingredient() { Id = id, Name = nameIngredient });
+            UnitOfWork.Ingredients.Create(new Ingredient() { Id = id, Name = nameIngredient });
             base.Add();
         }
 
@@ -51,17 +52,17 @@ namespace task2.Controls
         public override void Edit(int id)
         {
             Console.Write("    Enter new name: ");
-            string newName = DBControl.Ingredients.IsNameMustNotExist(Console.ReadLine());
-            var ingredient = DBControl.Ingredients.Get(id);
+            string newName = UnitOfWork.Ingredients.IsNameMustNotExist(Console.ReadLine());
+            var ingredient = UnitOfWork.Ingredients.Get(id);
             ingredient.Name = newName;
-            DBControl.Ingredients.Update(ingredient);
+            UnitOfWork.Ingredients.Update(ingredient);
             base.Edit(id);
         }
         public override void Delete(int id)
         {
             Console.Write("    Do you really want to remove the ingredient? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
-            DBControl.Ingredients.Delete(id);
+            UnitOfWork.Ingredients.Delete(id);
             base.Delete(id);
         }
     }

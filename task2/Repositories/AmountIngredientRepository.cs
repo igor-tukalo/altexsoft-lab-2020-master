@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using task2.Interfaces;
 using task2.Models;
+using task2.Repositories;
 
-namespace task2.Repositories
+namespace task2.Interfaces
 {
     public class AmountIngredientRepository : IRepository<AmountIngredient>
     {

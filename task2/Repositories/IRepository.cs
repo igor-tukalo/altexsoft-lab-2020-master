@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace task2.Interfaces
+namespace task2.Repositories
 {
     interface IRepository<T> where T : class
     {
