@@ -7,9 +7,10 @@ using task2.ViewNavigation.WindowNavigation;
 
 namespace task2.ViewNavigation.ContextMenuNavigation
 {
-    class RecipesContextMenuNavigation : INavigation
+    class RecipesContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
         readonly int IdRecipe;
+        int IdCategory { get; set; }
         readonly IRecipesControl Recipes;
         
         public RecipesContextMenuNavigation(int idRecipe, IRecipesControl recipes)
@@ -18,10 +19,10 @@ namespace task2.ViewNavigation.ContextMenuNavigation
             Recipes = recipes;
         }
 
-        public void GetNavigation()
+        public override void CallNavigation()
         {
             Console.Clear();
-            List<EntityMenu> ItemsMenu = new List<EntityMenu>
+            base.ItemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Open" },
                     new EntityMenu(){ Name = "    Rename" },
@@ -31,12 +32,12 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
+            IdCategory = Recipes.GetIdCategory(IdRecipe);
             switch (id)
             {
                 case 0:
@@ -46,14 +47,14 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     break;
                 case 1:
                     {
-                        Recipes.Rename(IdRecipe);
-                        new RecipesNavigation(new CategoriesControl(), new RecipesControl()).MovementCategoriesRecipes(Recipes.GetIdCategory(IdRecipe));
+                        Recipes.Edit(IdRecipe);
+                        BackPrevMenu();
                     }
                     break;
                 case 2:
                     {
                         Recipes.ChangeDescription(IdRecipe);
-                        new RecipesNavigation(new CategoriesControl(), new RecipesControl()).MovementCategoriesRecipes(Recipes.GetIdCategory(IdRecipe));
+                        BackPrevMenu();
                     }
                     break;
                 case 3:
@@ -68,17 +69,21 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     break;
                 case 5:
                     {
-                        int idCategory = Recipes.GetIdCategory(IdRecipe);
                         Recipes.Delete(IdRecipe);
-                        new RecipesNavigation(new CategoriesControl(), new RecipesControl()).MovementCategoriesRecipes(idCategory);
+                        BackPrevMenu();
                     }
                     break;
                 case 6:
                     {
-                        new RecipesNavigation(new CategoriesControl(), new RecipesControl()).MovementCategoriesRecipes(Recipes.GetIdCategory(IdRecipe));
+                        BackPrevMenu();
                     }
                     break;
             }
+        }
+
+        public void BackPrevMenu()
+        {
+            new RecipesNavigation(new CategoriesControl(), new RecipesControl()).MovementCategoriesRecipes(IdCategory);
         }
     }
 }

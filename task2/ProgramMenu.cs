@@ -7,12 +7,12 @@ namespace task2
         INavigation NavigationMenu { get; set; }
         public ProgramMenu(INavigation navigation)
         {
-            this.NavigationMenu = navigation;
+            NavigationMenu = navigation;
         }
 
         public void CallMenu()
         {
-            NavigationMenu.GetNavigation();
+            NavigationMenu.CallNavigation();
         }
     }
 }

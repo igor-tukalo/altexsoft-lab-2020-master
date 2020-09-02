@@ -7,11 +7,10 @@ using task2.ViewNavigation.ContextMenuNavigation;
 
 namespace task2.ViewNavigation.WindowNavigation
 {
-    class RecipesNavigation : INavigation
+    class RecipesNavigation : BaseNavigation, INavigation
     {
         readonly IRecipesControl Recipes;
         readonly ICategoriesControl Categories;
-        List<EntityMenu> ItemsMenu;
         int IdNextCategory = 1;
         int IdPrevCategory;
 
@@ -20,23 +19,21 @@ namespace task2.ViewNavigation.WindowNavigation
             Categories = categories;
             Recipes = recipes;
         }
-        public void GetNavigation()
+        public override void CallNavigation()
         {
             Console.Clear();
-
-            ItemsMenu = new List<EntityMenu>
+            base.ItemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Add recipe" },
                     new EntityMenu(){ Name = "    Return to main menu" }
                 };
-
             var parent = Categories.GetParentCategory(IdNextCategory);
             IdPrevCategory = parent.ParentId;
             Recipes.BuildRecipesCategories(ItemsMenu, parent, 1, 2);
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
             switch (id)
             {
@@ -57,7 +54,6 @@ namespace task2.ViewNavigation.WindowNavigation
                             new ProgramMenu(new RecipesContextMenuNavigation(ItemsMenu[id].Id, new RecipesControl())).CallMenu();
                         else
                             MovementCategoriesRecipes(ItemsMenu[id].Id);
-
                     }
                     break;
             }
@@ -71,8 +67,7 @@ namespace task2.ViewNavigation.WindowNavigation
             // backward movement. one level up
             else
                 IdNextCategory = IdPrevCategory == 0 ? 1 : IdPrevCategory;
-
-            GetNavigation();
+            CallNavigation();
         }
     }
 }

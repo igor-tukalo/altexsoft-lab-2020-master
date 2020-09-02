@@ -7,7 +7,6 @@ namespace task2.ViewNavigation
     public class Navigation
     {
         public delegate void Method(int id);
-
         List<EntityMenu> MenuItems;
         int counter = 0;
 
@@ -16,7 +15,7 @@ namespace task2.ViewNavigation
         /// </summary>
         /// <param name="menuItems"></param>
         /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
-        public void GetNavigation(List<EntityMenu> menuItems, Method selectedMethod)
+        public void CallNavigation(List<EntityMenu> menuItems, Method selectedMethod)
         {
             MenuItems = menuItems;
             int menuResult;
@@ -24,7 +23,6 @@ namespace task2.ViewNavigation
             List<Method> methodsMenu = new List<Method>();
             for (int i = 0; i < MenuItems.Count; i++)
                 methodsMenu.Add(selectedMethod);
-
             do
             {
                 menuResult = PrintMenu();
@@ -68,7 +66,6 @@ namespace task2.ViewNavigation
             while (key.Key != ConsoleKey.Enter);
             return counter;
         }
-
 
         private static void ClearArea(int top, int left, int height, int width)
         {

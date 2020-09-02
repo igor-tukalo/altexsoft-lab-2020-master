@@ -7,36 +7,34 @@ using task2.ViewNavigation.ContextMenuNavigation;
 
 namespace task2.ViewNavigation.WindowNavigation
 {
-    class CategoriesNavigation : INavigation
+    class CategoriesNavigation : BaseNavigation, INavigation
     {
-        readonly ICategoriesControl Categories;
+        public ICategoriesControl Categories;
         public CategoriesNavigation(ICategoriesControl categories)
         {
             Categories = categories;
         }
-
-        List<EntityMenu> ItemsMenu;
-        public void GetNavigation()
+        public override void CallNavigation()
         {
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            base.ItemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Add category" },
                     new EntityMenu(){ Name = "    Return to settings"},
                     new EntityMenu(){ Name = "    Return to main menu"}
                 };
             Categories.BuildHierarchicalCategories(ItemsMenu, Categories.GetParentCategory(1), 1);
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
                         Categories.Add();
-                        GetNavigation();
+                        CallNavigation();
                     }
                     break;
                 case 1:

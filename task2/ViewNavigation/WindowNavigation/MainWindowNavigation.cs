@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using task2.Controls;
 using task2.Interfaces;
 using task2.Models;
+using task2.ViewNavigation.ContextMenuNavigation;
 
 namespace task2.ViewNavigation.WindowNavigation
 {
-    public class MainWindowNavigation : INavigation
+    class MainWindowNavigation : BaseNavigation, INavigation
     {
-        public void GetNavigation()
+        public override void CallNavigation()
         {
             Console.Clear();
             Console.WriteLine(@"
@@ -23,17 +24,15 @@ namespace task2.ViewNavigation.WindowNavigation
                   \\\_.-'      :      ''-.\
                    \`_..--''--.;.--'''--.._\
                     ");
-
-            List<EntityMenu> ItemsMenu = new List<EntityMenu>
+            base.ItemsMenu = new List<EntityMenu>
             {
                 new EntityMenu() { Name = "    Recipes" },
                 new EntityMenu() { Name = "    Settings" }
             };
-
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
             switch (id)
             {

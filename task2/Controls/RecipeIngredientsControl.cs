@@ -1,47 +1,48 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using task2.Interfaces;
 using task2.Models;
-using task2.Repositories;
 
 namespace task2.Controls
 {
-    class RecipeIngredientsControl : IRecipeIngredientsControl
+    class RecipeIngredientsControl : BaseControl, IRecipeIngredientsControl
     {
-        readonly UnitOfWork unitOfWork = new UnitOfWork();
+        public List<AmountIngredient> AmountIngredients { get; set; }
+        public List<Ingredient> Ingredients { get; set; }
         public int IdRecipe { get; set; }
         public RecipeIngredientsControl(int idRecipe)
         {
             IdRecipe = idRecipe;
+            Ingredients = DBControl.Ingredients.Items;
+            AmountIngredients = DBControl.AmountIngredients.Items;
         }
 
-        public void Add(int idRecipe, int idIngredient)
+        public void Add(int idIngredient)
         {
-            int idAmountIngredients = unitOfWork.AmountIngredients.GetAll().Count() > 0 ? unitOfWork.AmountIngredients.GetAll().Max(x => x.Id) + 1 : 1;
+            int idAmountIngredients = AmountIngredients.Count() > 0 ? AmountIngredients.Max(x => x.Id) + 1 : 1;
             Console.Write("\n    Enter the amount of ingredient: ");
             double amount = Validation.ValidDouble(Console.ReadLine().Replace(".", ","));
             Console.Write("    Enter the unit of ingredient: ");
             string unit = Validation.NullOrEmptyText(Console.ReadLine());
-            unitOfWork.AmountIngredients.Create(new AmountIngredient { Id = idAmountIngredients, Amount = amount, Unit = unit, IdIngredient = idIngredient, IdRecipe = idRecipe });
-            unitOfWork.SaveDataTable("AmountIngredients.json", JsonConvert.SerializeObject(unitOfWork.AmountIngredients.GetAll()));
+            DBControl.AmountIngredients.Create(new AmountIngredient { Id = idAmountIngredients, Amount = amount, Unit = unit, IdIngredient = idIngredient, IdRecipe = IdRecipe });
+            base.Add();
         }
 
-        public void Delete(int idAmountIngredient)
+        public override void Delete(int id)
         {
-            unitOfWork.AmountIngredients.Delete(idAmountIngredient);
-            unitOfWork.SaveDataTable("AmountIngredients.json", JsonConvert.SerializeObject(unitOfWork.AmountIngredients.GetAll()));
+            DBControl.AmountIngredients.Delete(id);
+            base.Delete(id);
         }
 
         public List<EntityMenu> Get(List<EntityMenu> itemsMenu, int idRecipe)
         {
-            if (unitOfWork.AmountIngredients.GetAll() != null)
-                foreach (var a in unitOfWork.AmountIngredients.GetAll().Where(x => x.IdRecipe == idRecipe))
+            if (AmountIngredients != null)
+                foreach (var a in AmountIngredients.Where(x => x.IdRecipe == idRecipe))
                 {
-                    foreach (var i in unitOfWork.Ingredients.GetAll().Where(x => x.Id == a.IdIngredient))
+                    foreach (var i in Ingredients.Where(x => x.Id == a.IdIngredient))
                     {
-                        itemsMenu.Add(new EntityMenu() { Id = a.Id, Name = $"    {i.Name} - {a.Amount} {a.Unit}", ParentId=a.IdRecipe, TypeEntity = "ingrRecipe" });
+                        itemsMenu.Add(new EntityMenu() { Id = a.Id, Name = $"    {i.Name} - {a.Amount} {a.Unit}", ParentId = a.IdRecipe, TypeEntity = "ingrRecipe" });
                     }
                 }
             return itemsMenu;

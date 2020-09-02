@@ -3,11 +3,9 @@ using task2.Models;
 
 namespace task2.Interfaces
 {
-    interface IIngredientsControl
+    interface IIngredientsControl : IBaseControl
     {
-        void Add();
-        void Delete(int idIngredient);
+        List<Ingredient> Ingredients { get; set; }
         List<EntityMenu> GetIngredientsBatch(List<EntityMenu> itemsMenu, int idBatch = 1);
-        void Rename(int idIngredient);
     }
 }

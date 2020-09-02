@@ -7,42 +7,34 @@ namespace task2.Repositories
 {
     public class AmountIngredientRepository : IRepository<AmountIngredient>
     {
-        private readonly CookBookContext db;
-
-        public AmountIngredientRepository(CookBookContext context)
+        public List<AmountIngredient> Items { get; set; }
+        public AmountIngredientRepository(List<AmountIngredient> context)
         {
-            this.db = context;
+            Items = context;
         }
 
         public void Create(AmountIngredient item)
         {
-            db.AmountIngredients.Add(item);
+            Items.Add(item);
         }
 
         public void Delete(int id)
         {
-            AmountIngredient amountIngredient = (from a in db.AmountIngredients
-                                                 where a.Id == id
-                                                 select a).FirstOrDefault();
+            var amountIngredient = Get(id);
             if (amountIngredient != null)
-                db.AmountIngredients.Remove(amountIngredient);
+                Items.Remove(amountIngredient);
         }
 
         public AmountIngredient Get(int id)
         {
-            return (from a in db.AmountIngredients
+            return (from a in Items
                     where a.Id == id
                     select a).FirstOrDefault();
         }
 
-        public List<AmountIngredient> GetAll()
-        {
-            return db.AmountIngredients;
-        }
-
         public void Update(AmountIngredient item)
         {
-            db.AmountIngredients = db.AmountIngredients
+            Items = Items
             .Select(a => a.Id == item.Id
             ? new AmountIngredient { Id = item.Id, Amount = item.Amount, Unit = item.Unit, IdRecipe = item.IdRecipe, IdIngredient = item.IdIngredient }
             : a).ToList();

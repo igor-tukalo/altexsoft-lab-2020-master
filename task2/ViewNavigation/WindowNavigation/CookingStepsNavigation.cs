@@ -7,17 +7,16 @@ using task2.ViewNavigation.ContextMenuNavigation;
 
 namespace task2.ViewNavigation.WindowNavigation
 {
-    class CookingStepsNavigation : INavigation
+    class CookingStepsNavigation : BaseNavigation, INavigation
     {
-        ICookingStepsControl CookingSteps;
-        List<EntityMenu> ItemsMenu;
+        readonly ICookingStepsControl CookingSteps;
 
         public CookingStepsNavigation(ICookingStepsControl cookingSteps)
         {
             CookingSteps = cookingSteps;
         }
 
-        public void GetNavigation()
+        public override void CallNavigation()
         {
             Console.Clear();
             ItemsMenu = new List<EntityMenu>
@@ -25,19 +24,18 @@ namespace task2.ViewNavigation.WindowNavigation
                     new EntityMenu(){ Name= "    Add step cooking" },
                     new EntityMenu(){ Name= "    Cancel" }
                 };
-
             CookingSteps.Get(ItemsMenu,CookingSteps.IdRecipe);
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+       public override void SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        CookingSteps.Add(CookingSteps.IdRecipe);
-                        GetNavigation();
+                        CookingSteps.Add();
+                        CallNavigation();
                     }
                     break;
                 case 1:

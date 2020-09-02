@@ -1,91 +1,80 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using task2.Interfaces;
 using task2.Models;
-using task2.Repositories;
 
 namespace task2.Controls
 {
-    class RecipesControl : IRecipesControl
+    class RecipesControl : BaseControl, IRecipesControl
     {
-        readonly UnitOfWork unitOfWork = new UnitOfWork();
         public int GetIdCategory(int idRecipe)
         {
-            return unitOfWork.Recipes.Get(idRecipe).IdCategory;
+            return DBControl.Recipes.Get(idRecipe).IdCategory;
         }
         public void View(int idRecipe)
         {
-            var recipe = unitOfWork.Recipes.Get(idRecipe);
+            var recipe = DBControl.Recipes.Get(idRecipe);
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
             Console.WriteLine($"    {Validation.WrapText(10, recipe.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
             //ingredients recipe
-            if (unitOfWork.AmountIngredients.GetAll() != null)
-                foreach (var a in unitOfWork.AmountIngredients.GetAll().Where(x => x.IdRecipe == recipe.Id))
+                foreach (var a in DBControl.AmountIngredients.Items.Where(x => x.IdRecipe == recipe.Id))
                 {
-                    foreach (var i in unitOfWork.Ingredients.GetAll().Where(x => x.Id == a.IdIngredient))
+                    foreach (var i in DBControl.Ingredients.Items.Where(x => x.Id == a.IdIngredient))
                     {
                         Console.WriteLine($"    {i.Name} - {a.Amount} {a.Unit}");
                     }
                 }
             //steps recipe
             Console.WriteLine("\n    Сooking steps:\n");
-            foreach (var s in unitOfWork.CookingSteps.GetAll().Where(x => x.IdRecipe == recipe.Id).OrderBy(x => x.Step))
+            foreach (var s in DBControl.CookingSteps.Items.Where(x => x.IdRecipe == recipe.Id).OrderBy(x => x.Step))
             {
                 Console.WriteLine($"    {s.Step}. {Validation.WrapText(10, s.Name, "\n       ")}");
             }
         }
 
-        public void Rename(int idRecipe)
+        public override void Edit(int id)
         {
             Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = unitOfWork.Recipes.IsNameMustNotExist(Console.ReadLine());
-            var recipe = unitOfWork.Recipes.Get(idRecipe);
+            string nameRecipe = DBControl.Recipes.IsNameMustNotExist(Console.ReadLine());
+            var recipe = DBControl.Recipes.Get(id);
             recipe.Name = nameRecipe;
-            unitOfWork.Recipes.Update(recipe);
-            unitOfWork.SaveDataTable("Recipes.json", JsonConvert.SerializeObject(unitOfWork.Recipes.GetAll()));
+            DBControl.Recipes.Update(recipe);
+            base.Edit(id);
         }
 
         public void ChangeDescription(int idRecipe)
         {
             Console.Write("\n    Enter recipe description: ");
             string description = Validation.NullOrEmptyText(Console.ReadLine());
-            var recipe = unitOfWork.Recipes.Get(idRecipe);
+            var recipe = DBControl.Recipes.Get(idRecipe);
             recipe.Description = description;
-            unitOfWork.Recipes.Update(recipe);
-            unitOfWork.SaveDataTable("Recipes.json", JsonConvert.SerializeObject(unitOfWork.Recipes.GetAll()));
+            DBControl.Recipes.Update(recipe);
+            DBControl.SaveAllData();
         }
 
         public void Add(int idCategory)
         {
-            Console.WriteLine($"\n    The recipe will be added to the category: {unitOfWork.Categories.Get(idCategory).Name}");
-            int idRecipe = unitOfWork.Recipes.GetAll().Count() > 0 ? unitOfWork.Recipes.GetAll().Max(x => x.Id) + 1 : 1;
+            int idRecipe = DBControl.Recipes.Items.Count() > 0 ? DBControl.Recipes.Items.Max(x => x.Id) + 1 : 1;
+            Console.WriteLine($"\n    The recipe will be added to the category: {DBControl.Categories.Get(idCategory).Name}");
             Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = unitOfWork.Recipes.IsNameMustNotExist(Console.ReadLine());
+            string nameRecipe = DBControl.Recipes.IsNameMustNotExist(Console.ReadLine());
             Console.Write("\n    Enter recipe description: ");
             string description = Validation.NullOrEmptyText(Console.ReadLine());
-
-            unitOfWork.Recipes.Create(new Recipe() { Id = idRecipe, Name = nameRecipe, IdCategory = idCategory });
-            unitOfWork.SaveDataTable("Recipes.json", JsonConvert.SerializeObject(unitOfWork.Recipes.GetAll()));
+            DBControl.Recipes.Create(new Recipe() { Id = idRecipe, Name = nameRecipe, Description=description, IdCategory = idCategory });
+            base.Add();
         }
-        public void Delete(int idRecipe)
+
+        public override void Delete(int id)
         {
             Console.Clear();
             Console.Write("Are you sure you want to delete the recipe? ");
-            if (Validation.YesNo() == ConsoleKey.Y)
-            {
-                int idCategory = unitOfWork.Recipes.Get(idRecipe).IdCategory;
-                foreach (var a in unitOfWork.AmountIngredients.GetAll().ToList().Where(x => x.IdRecipe == idRecipe))
-                    unitOfWork.AmountIngredients.Delete(a.Id);
-
-                foreach (var a in unitOfWork.CookingSteps.GetAll().ToList().Where(x => x.IdRecipe == idRecipe))
-                    unitOfWork.CookingSteps.Delete(a.Id);
-
-                unitOfWork.Recipes.Delete(idRecipe);
-                unitOfWork.SaveChangesRecipe();
-            }
+            if (Validation.YesNo() == ConsoleKey.N) return;
+            DBControl.AmountIngredients.Items.RemoveAll(r => r.IdRecipe == id);
+            DBControl.CookingSteps.Items.RemoveAll(r => r.IdRecipe == id);
+            DBControl.Recipes.Delete(id);
+            base.Delete(id);
         }
 
         /// <summary>
@@ -97,20 +86,18 @@ namespace task2.Controls
         /// <param name="levelLimitation">level limitation hierarchy</param>
         public void BuildRecipesCategories(List<EntityMenu> items, Category thisEntity, int level, int levelLimitation)
         {
-            if (level <= levelLimitation)
+            if (level > levelLimitation)
+                return;
+            items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
+            foreach (var recipe in DBControl.Recipes.Items.Where(x => x.IdCategory == thisEntity.Id))
             {
-                items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
-                foreach (var recipe in unitOfWork.Recipes.GetAll().Where(x => x.IdCategory == thisEntity.Id))
-                {
-                    items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.IdCategory, TypeEntity = "recipe" });
-                }
-                foreach (var child in unitOfWork.Categories.GetAll().FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
-                {
-                    var entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
-                    BuildCurrentOpenRecipesCategories(items, entityMenu, level + 1, levelLimitation);
-                }
+                items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.IdCategory, TypeEntity = "recipe" });
             }
-
+            foreach (var child in DBControl.Categories.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            {
+                var entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
+                BuildCurrentOpenRecipesCategories(items, entityMenu, level + 1, levelLimitation);
+            }
         }
 
         /// <summary>

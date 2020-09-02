@@ -11,13 +11,12 @@ namespace task2
         /// <returns></returns>
         public static int ValidNumber(string number)
         {
-            int NumId=0;
-
+            int numId = 0;
             bool validStart = false;
             while (!validStart)
             {
                 //check for number
-                bool isNum = int.TryParse(number, out NumId);
+                bool isNum = int.TryParse(number, out numId);
                 if (!string.IsNullOrWhiteSpace(number) && isNum)
                 {
                     validStart = true;
@@ -29,7 +28,7 @@ namespace task2
                     number = Console.ReadLine();
                 }
             }
-            return NumId;
+            return numId;
         }
 
         /// <summary>
@@ -39,13 +38,12 @@ namespace task2
         /// <returns></returns>
         public static double ValidDouble(string number)
         {
-            double NumId=0;
-
+            double numId = 0;
             bool validStart = false;
             while (!validStart)
             {
                 //check for number
-                bool isNum = double.TryParse(number, out NumId);
+                bool isNum = double.TryParse(number, out numId);
                 if (!string.IsNullOrWhiteSpace(number) && isNum)
                 {
                     validStart = true;
@@ -57,7 +55,7 @@ namespace task2
                     number = Console.ReadLine();
                 }
             }
-            return NumId;
+            return numId;
         }
 
         /// <summary>
@@ -128,7 +126,7 @@ namespace task2
         /// <param name="batch"></param>
         /// <param name="countBatch"></param>
         /// <returns></returns>
-        public static int BatchExist(string batch,int countBatch)
+        public static int BatchExist(string batch, int countBatch)
         {
             int batchNum = ValidNumber(batch);
             do

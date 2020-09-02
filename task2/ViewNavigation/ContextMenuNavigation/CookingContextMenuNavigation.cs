@@ -7,9 +7,9 @@ using task2.ViewNavigation.WindowNavigation;
 
 namespace task2.ViewNavigation.ContextMenuNavigation
 {
-    class CookingStepsContextMenuNavigation : INavigation
+    class CookingStepsContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
-        ICookingStepsControl CookingSteps;
+        readonly ICookingStepsControl CookingSteps;
         readonly int IdCookingStep;
 
         public CookingStepsContextMenuNavigation(int idCookingStep, ICookingStepsControl cookingSteps)
@@ -18,41 +18,45 @@ namespace task2.ViewNavigation.ContextMenuNavigation
             CookingSteps = cookingSteps;
         }
 
-        public void GetNavigation()
+        public override void CallNavigation()
         {
             Console.Clear();
-            List<EntityMenu> ItemsMenu = new List<EntityMenu>
+            base.ItemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Edit" },
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
                         CookingSteps.Edit(IdCookingStep);
-                        new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(CookingSteps.IdRecipe))).CallMenu();
+                        BackPrevMenu();
                     }
                     break;
                 case 1:
                     {
-                        CookingSteps.Delete(IdCookingStep, CookingSteps.IdRecipe);
-                        new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(CookingSteps.IdRecipe))).CallMenu();
+                        CookingSteps.Delete(IdCookingStep);
+                        BackPrevMenu();
                     }
                     break;
                 case 2:
                     {
-                        new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(CookingSteps.IdRecipe))).CallMenu();
+                        BackPrevMenu();
                     }
                     break;
             }
+        }
+
+        public void BackPrevMenu()
+        {
+            new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(CookingSteps.IdRecipe))).CallMenu();
         }
     }
 }

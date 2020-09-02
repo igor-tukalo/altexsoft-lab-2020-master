@@ -7,11 +7,10 @@ using task2.ViewNavigation.ContextMenuNavigation;
 
 namespace task2.ViewNavigation.WindowNavigation
 {
-    class RecipesIngredientsNavigation : INavigation
+    class RecipesIngredientsNavigation : BaseNavigation, INavigation
     {
-        IRecipeIngredientsControl RecipeIngredients;
-        IIngredientsControl Ingredients;
-        List<EntityMenu> ItemsMenu;
+        readonly IRecipeIngredientsControl RecipeIngredients;
+        readonly IIngredientsControl Ingredients;
         public int PageIngredients = 1;
         public RecipesIngredientsNavigation(IIngredientsControl ingredients, IRecipeIngredientsControl recipeIngredients)
         {
@@ -19,24 +18,23 @@ namespace task2.ViewNavigation.WindowNavigation
             RecipeIngredients = recipeIngredients;
         }
 
-        public void GetNavigation()
+        public override void CallNavigation()
         {
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            base.ItemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name= "    Go to page", TypeEntity="pages" },
                     new EntityMenu(){ Name= "    Сreate a new ingredient" },
                     new EntityMenu(){ Name= "    Cancel" },
                 };
-            ItemsMenu.Add(new EntityMenu() {  Name = "\n    Recipe ingredients:\n" });
+            ItemsMenu.Add(new EntityMenu() { Name = "\n    Recipe ingredients:\n" });
             ItemsMenu = RecipeIngredients.Get(ItemsMenu, RecipeIngredients.IdRecipe);
             ItemsMenu.Add(new EntityMenu() { Name = "\n    Ingredients to add:\n" });
             ItemsMenu = Ingredients.GetIngredientsBatch(ItemsMenu, PageIngredients);
-            
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
             switch (id)
             {
@@ -44,13 +42,13 @@ namespace task2.ViewNavigation.WindowNavigation
                     {
                         Console.Write("\n    Enter page number: ");
                         PageIngredients = Validation.BatchExist(Console.ReadLine(), ItemsMenu[id].ParentId);
-                        GetNavigation();
+                        CallNavigation();
                     }
                     break;
                 case 1:
                     {
                         Ingredients.Add();
-                        GetNavigation();
+                        CallNavigation();
                     }
                     break;
                 case 2:
@@ -63,12 +61,12 @@ namespace task2.ViewNavigation.WindowNavigation
                         if (ItemsMenu[id].TypeEntity == "ingrRecipe")
                         {
                             RecipeIngredients.Delete(ItemsMenu[id].Id);
-                            GetNavigation();
+                            CallNavigation();
                         }
                         else if (ItemsMenu[id].TypeEntity == "ingr")
                         {
-                            RecipeIngredients.Add(RecipeIngredients.IdRecipe,ItemsMenu[id].Id);
-                            GetNavigation();
+                            RecipeIngredients.Add(ItemsMenu[id].Id);
+                            CallNavigation();
                         }
                     }
                     break;

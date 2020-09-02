@@ -7,7 +7,7 @@ using task2.ViewNavigation.WindowNavigation;
 
 namespace task2.ViewNavigation.ContextMenuNavigation
 {
-    class IngredientsContextMenuNavigation : INavigation
+    class IngredientsContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
         readonly IIngredientsControl Ingredients;
         readonly int IdIngredient;
@@ -18,53 +18,50 @@ namespace task2.ViewNavigation.ContextMenuNavigation
             IdIngredient = idIngredient;
             Page = page;
         }
-        public void GetNavigation()
+
+        public override void CallNavigation()
         {
             Console.Clear();
-            List<EntityMenu> ItemsMenu = new List<EntityMenu>
+            base.ItemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Rename" },
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        Ingredients.Rename(IdIngredient);
-                        IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(new IngredientsControl())
-                        {
-                            PageIngredients = Page
-                        };
-                        new ProgramMenu(ingredientsNavigation).CallMenu();
+                        Ingredients.Edit(IdIngredient);
+                        BackPrevMenu();
                     }
                     break;
                 case 1:
                     {
                         Ingredients.Delete(IdIngredient);
-                        IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(new IngredientsControl())
-                        {
-                            PageIngredients = Page
-                        };
-                        new ProgramMenu(ingredientsNavigation).CallMenu();
+                        BackPrevMenu();
                     }
                     break;
                 case 2:
                     {
-                        IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(new IngredientsControl())
-                        {
-                            PageIngredients = Page
-                        };
-                        new ProgramMenu(ingredientsNavigation).CallMenu();
+                        BackPrevMenu();
                     }
                     break;
             }
+        }
+
+        public void BackPrevMenu()
+        {
+            IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(new IngredientsControl())
+            {
+                PageIngredients = Page
+            };
+            new ProgramMenu(ingredientsNavigation).CallMenu();
         }
     }
 }

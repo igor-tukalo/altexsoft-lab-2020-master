@@ -7,17 +7,16 @@ using task2.ViewNavigation.ContextMenuNavigation;
 
 namespace task2.ViewNavigation.WindowNavigation
 {
-    class IngredientsNavigation : INavigation
+    class IngredientsNavigation : BaseNavigation, INavigation
     {
-        IIngredientsControl Ingredients;
+        readonly IIngredientsControl Ingredients;
 
         public IngredientsNavigation(IIngredientsControl ingredients)
         {
             Ingredients = ingredients;
         }
-        List<EntityMenu> ItemsMenu;
         public int PageIngredients = 1;
-        public void GetNavigation()
+        public override void CallNavigation()
         {
             Console.Clear();
             ItemsMenu = new List<EntityMenu>
@@ -28,17 +27,17 @@ namespace task2.ViewNavigation.WindowNavigation
                     new EntityMenu(){ Name = "\n    Ingredients:\n" }
                 };
             ItemsMenu = Ingredients.GetIngredientsBatch(ItemsMenu, PageIngredients);
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
                         Ingredients.Add();
-                        GetNavigation();
+                        CallNavigation();
                     }
                     break;
                 case 1:
@@ -50,12 +49,12 @@ namespace task2.ViewNavigation.WindowNavigation
                     {
                         Console.Write("\n    Enter page number: ");
                         PageIngredients = Validation.BatchExist(Console.ReadLine(), ItemsMenu[id].ParentId);
-                        GetNavigation();
+                        CallNavigation();
                     }
                     break;
                 default:
                     {
-                        new ProgramMenu(new IngredientsContextMenuNavigation(ItemsMenu[id].Id,PageIngredients,new IngredientsControl())).CallMenu();
+                        new ProgramMenu(new IngredientsContextMenuNavigation(ItemsMenu[id].Id, PageIngredients, new IngredientsControl())).CallMenu();
                     }
                     break;
             }

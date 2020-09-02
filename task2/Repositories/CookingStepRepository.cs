@@ -7,40 +7,34 @@ namespace task2.Repositories
 {
     public class CookingStepRepository : IRepository<CookingStep>
     {
-        private readonly CookBookContext db;
-        public CookingStepRepository(CookBookContext context)
+        public List<CookingStep> Items { get; set; }
+        public CookingStepRepository(List<CookingStep> context)
         {
-            this.db = context;
+            Items = context;
         }
+
         public void Create(CookingStep item)
         {
-            db.CookingSteps.Add(item);
+            Items.Add(item);
         }
 
         public void Delete(int id)
         {
-            CookingStep stepCooking = (from s in db.CookingSteps
-                             where s.Id == id
-                             select s).FirstOrDefault();
+            var stepCooking = Get(id);
             if (stepCooking != null)
-                db.CookingSteps.Remove(stepCooking);
+                Items.Remove(stepCooking);
         }
 
         public CookingStep Get(int id)
         {
-            return (from s in db.CookingSteps
+            return (from s in Items
                     where s.Id == id
                     select s).FirstOrDefault();
         }
 
-        public List<CookingStep> GetAll()
-        {
-            return db.CookingSteps;
-        }
-
         public void Update(CookingStep item)
         {
-            db.CookingSteps = db.CookingSteps
+            Items = Items
             .Select(s => s.Id == item.Id
             ? new CookingStep { Id = item.Id, Step = item.Step, Name = item.Name, IdRecipe= item.IdRecipe }
             : s).ToList();

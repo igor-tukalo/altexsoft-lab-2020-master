@@ -3,12 +3,10 @@ using task2.Models;
 
 namespace task2.Interfaces
 {
-    interface ICookingStepsControl
+    interface ICookingStepsControl : IBaseControl
     {
         int IdRecipe { get; set; }
-        void Add(int recipeId);
-        void Delete(int idCookingStep, int idRecipe);
-        void Edit(int idCookingStep);
+        List<CookingStep> CookingSteps { get; set; }
         List<EntityMenu> Get(List<EntityMenu> itemsMenu, int idRecipe);
     }
 }

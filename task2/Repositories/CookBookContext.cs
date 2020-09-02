@@ -9,19 +9,17 @@ namespace task2.Repositories
 {
     public class CookBookContext
     {
-        public List<Category> Categories { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
-        public List<Recipe> Recipes { get; set; }
-        public List<AmountIngredient> AmountIngredients { get; set; }
-        public List<CookingStep> CookingSteps { get; set; }
-        public CookBookContext()
-        {
-            Categories = JsonConvert.DeserializeObject<List<Category>>(GetJsonData("Categories.json"));
-            Ingredients = JsonConvert.DeserializeObject<List<Ingredient>>(GetJsonData("Ingredients.json"));
-            Recipes = JsonConvert.DeserializeObject<List<Recipe>>(GetJsonData("Recipes.json"));
-            AmountIngredients = JsonConvert.DeserializeObject<List<AmountIngredient>>(GetJsonData("AmountIngredients.json"));
-            CookingSteps = JsonConvert.DeserializeObject<List<CookingStep>>(GetJsonData("CookingSteps.json"));
-        }
+        private CategoryRepository categoryRepository;
+        private IngredientRepository ingredientRepository;
+        private RecipeRepository recipeRepository;
+        private AmountIngredientRepository amountIngredientRepository;
+        private CookingStepRepository cookingStepRepository;
+
+        public CategoryRepository Categories => categoryRepository ?? (categoryRepository = new CategoryRepository(JsonConvert.DeserializeObject<List<Category>>(GetJsonData("Categories.json"))));
+        public IngredientRepository Ingredients => ingredientRepository ?? (ingredientRepository = new IngredientRepository(JsonConvert.DeserializeObject<List<Ingredient>>(GetJsonData("Ingredients.json"))));
+        public RecipeRepository Recipes => recipeRepository ?? (recipeRepository = new RecipeRepository(JsonConvert.DeserializeObject<List<Recipe>>(GetJsonData("Recipes.json"))));
+        public AmountIngredientRepository AmountIngredients => amountIngredientRepository ?? (amountIngredientRepository = new AmountIngredientRepository(JsonConvert.DeserializeObject<List<AmountIngredient>>(GetJsonData("AmountIngredients.json"))));
+        public CookingStepRepository CookingSteps => cookingStepRepository ?? (cookingStepRepository = new CookingStepRepository(JsonConvert.DeserializeObject<List<CookingStep>>(GetJsonData("CookingSteps.json"))));
         /// <summary>
         /// Get json file data at specified path
         /// </summary>
@@ -61,11 +59,14 @@ namespace task2.Repositories
         }
         public void SaveAllData()
         {
-            File.WriteAllText(GetJsonPathFile("Recipes.json"), JsonConvert.SerializeObject(Recipes));
-            File.WriteAllText(GetJsonPathFile("AmountIngredients.json"), JsonConvert.SerializeObject(AmountIngredients));
-            File.WriteAllText(GetJsonPathFile("CookingSteps.json"), JsonConvert.SerializeObject(CookingSteps));
+            SaveChanges("Recipes.json", JsonConvert.SerializeObject(Recipes.Items));
+            SaveChanges("AmountIngredients.json", JsonConvert.SerializeObject(AmountIngredients.Items));
+            SaveChanges("CookingSteps.json", JsonConvert.SerializeObject(CookingSteps.Items));    
+            SaveChanges("Categories.json", JsonConvert.SerializeObject(Categories.Items));
+            SaveChanges("Ingredients.json", JsonConvert.SerializeObject(Ingredients.Items));
+            SaveChanges("AmountIngredients.json", JsonConvert.SerializeObject(AmountIngredients.Items));
         }
-        public void SaveChanges(string jsonName,string content)
+        private void SaveChanges(string jsonName,string content)
         {
             File.WriteAllText(GetJsonPathFile(jsonName), content);
         }

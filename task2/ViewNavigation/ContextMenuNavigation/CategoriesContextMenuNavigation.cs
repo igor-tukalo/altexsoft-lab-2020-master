@@ -7,52 +7,56 @@ using task2.ViewNavigation.WindowNavigation;
 
 namespace task2.ViewNavigation.ContextMenuNavigation
 {
-    class CategoriesContextMenuNavigation : INavigation
+    class CategoriesContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
         readonly int Idcategory;
         readonly ICategoriesControl Categories;
-        
+
         public CategoriesContextMenuNavigation(int idCategory, ICategoriesControl categories)
         {
             Idcategory = idCategory;
             Categories = categories;
         }
-        
-        public void GetNavigation()
+
+        public override void CallNavigation()
         {
             Console.Clear();
-            List<EntityMenu> ItemsMenu = new List<EntityMenu>
+            base.ItemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Rename" },
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-
-            new Navigation().GetNavigation(ItemsMenu, SelectMethodMenu);
+            base.CallNavigation();
         }
 
-        void SelectMethodMenu(int id)
+        public override void SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        Categories.Rename(Idcategory);
-                        new ProgramMenu(new CategoriesNavigation(new CategoriesControl())).CallMenu();
+                        Categories.Edit(Idcategory);
+                        BackPrevMenu();
                     }
                     break;
                 case 1:
                     {
                         Categories.Delete(Idcategory);
-                        new ProgramMenu(new CategoriesNavigation(new CategoriesControl())).CallMenu();
+                        BackPrevMenu();
                     }
                     break;
                 case 2:
                     {
-                        new ProgramMenu(new CategoriesNavigation(new CategoriesControl())).CallMenu();
+                        BackPrevMenu();
                     }
                     break;
             }
+        }
+
+        public void BackPrevMenu()
+        {
+            new ProgramMenu(new CategoriesNavigation(new CategoriesControl())).CallMenu();
         }
     }
 }

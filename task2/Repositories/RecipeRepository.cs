@@ -8,40 +8,34 @@ namespace task2.Repositories
 {
     public class RecipeRepository : IRepository<Recipe>
     {
-        private readonly CookBookContext db;
-        public RecipeRepository(CookBookContext context)
+        public List<Recipe> Items { get; set; }
+
+        public RecipeRepository(List<Recipe> context)
         {
-            this.db = context;
+            Items = context;
         }
         public void Create(Recipe item)
         {
-            db.Recipes.Add(item);
+            Items.Add(item);
         }
 
         public void Delete(int id)
         {
-            Recipe recipe = (from r in db.Recipes
-                             where r.Id == id
-                             select r).FirstOrDefault();
+            var recipe = Get(id);
             if (recipe != null)
-                db.Recipes.Remove(recipe);
+                Items.Remove(recipe);
         }
 
         public Recipe Get(int id)
         {
-            return (from r in db.Recipes
+            return (from r in Items
                     where r.Id == id
                     select r).FirstOrDefault();
         }
 
-        public List<Recipe> GetAll()
-        {
-            return db.Recipes;
-        }
-
         public void Update(Recipe item)
         {
-            db.Recipes = db.Recipes
+            Items = Items
             .Select(r => r.Id == item.Id
             ? new Recipe { Id = item.Id, Name = item.Name, Description = item.Description, IdCategory = item.IdCategory }
             : r).ToList();
@@ -51,12 +45,12 @@ namespace task2.Repositories
         {
             do
             {
-                if (db.Recipes.Exists(x => x.Name.ToLower() == name.ToLower()))
+                if (Items.Exists(x => x.Name.ToLower() == name.ToLower()))
                 {
                     Console.Write("    This name is already in use. enter another name: ");
                     name = Validation.NullOrEmptyText(Console.ReadLine());
                 }
-            } while (db.Recipes.Exists(x => x.Name.ToLower() == name.ToLower()));
+            } while (Items.Exists(x => x.Name.ToLower() == name.ToLower()));
             return name;
         }
     }
