@@ -2,7 +2,7 @@
 
 namespace task2
 {
-    public class ProgramMenu
+    class ProgramMenu
     {
         INavigation NavigationMenu { get; set; }
         public ProgramMenu(INavigation navigation)

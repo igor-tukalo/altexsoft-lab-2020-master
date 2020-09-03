@@ -6,17 +6,10 @@ using task2.Repositories;
 
 namespace task2.Interfaces
 {
-    public class CategoryRepository : IRepository<Category>
+    class CategoryRepository : BaseRepository<Category>, IRepository<Category>
     {
-        public List<Category> Items { get; set; }
-        public CategoryRepository(List<Category> context)
+        public CategoryRepository(List<Category> context) : base(context)
         {
-            Items = context;
-        }
-
-        public void Create(Category item)
-        {
-            Items.Add(item);
         }
 
         public void Delete(int id)
@@ -29,8 +22,8 @@ namespace task2.Interfaces
         public Category Get(int id)
         {
             return (from c in Items
-                    where c.Id==id
-                   select c).FirstOrDefault();
+                    where c.Id == id
+                    select c).FirstOrDefault();
         }
 
         public void Update(Category item)
@@ -56,14 +49,11 @@ namespace task2.Interfaces
 
         public string IsNameMustNotExist(string name)
         {
-            do
+            while (Items.Exists(x => x.Name.ToLower() == name.ToLower()))
             {
-                if (Items.Exists(x => x.Name.ToLower() == name.ToLower()))
-                {
-                    Console.Write("    This name is already in use. enter another name: ");
-                    name = Validation.NullOrEmptyText(Console.ReadLine());
-                }
-            } while (Items.Exists(x => x.Name.ToLower() == name.ToLower()));
+                Console.Write("    This name is already in use. enter another name: ");
+                name = Validation.NullOrEmptyText(Console.ReadLine());
+            }
             return name;
         }
     }

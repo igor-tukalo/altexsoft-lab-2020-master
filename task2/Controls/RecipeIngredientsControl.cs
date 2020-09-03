@@ -12,7 +12,7 @@ namespace task2.Controls
         public List<Ingredient> Ingredients { get; set; }
         public int IdRecipe { get; set; }
 
-        public RecipeIngredientsControl(int idRecipe)
+        public RecipeIngredientsControl(int idRecipe,IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             IdRecipe = idRecipe;
             Ingredients = UnitOfWork.Ingredients.Items;
@@ -27,13 +27,13 @@ namespace task2.Controls
             Console.Write("    Enter the unit of ingredient: ");
             string unit = Validation.NullOrEmptyText(Console.ReadLine());
             UnitOfWork.AmountIngredients.Create(new AmountIngredient { Id = idAmountIngredients, Amount = amount, Unit = unit, IdIngredient = idIngredient, IdRecipe = IdRecipe });
-            base.Add();
+            UnitOfWork.SaveAllData();
         }
 
-        public override void Delete(int id)
+        public void Delete(int id)
         {
             UnitOfWork.AmountIngredients.Delete(id);
-            base.Delete(id);
+            UnitOfWork.SaveAllData();
         }
 
         public List<EntityMenu> Get(List<EntityMenu> itemsMenu, int idRecipe)

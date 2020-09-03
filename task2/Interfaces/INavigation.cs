@@ -3,7 +3,7 @@ using task2.Models;
 
 namespace task2.Interfaces
 {
-    public interface INavigation
+    interface INavigation
     {
         List<EntityMenu> ItemsMenu { get; set; }
         void CallNavigation();

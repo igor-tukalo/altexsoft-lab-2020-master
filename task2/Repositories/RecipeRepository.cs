@@ -6,17 +6,10 @@ using task2.Repositories;
 
 namespace task2.Interfaces
 {
-    public class RecipeRepository : IRepository<Recipe>
+    class RecipeRepository : BaseRepository<Recipe>, IRepository<Recipe>
     {
-        public List<Recipe> Items { get; set; }
-
-        public RecipeRepository(List<Recipe> context)
+        public RecipeRepository(List<Recipe> context) : base(context)
         {
-            Items = context;
-        }
-        public void Create(Recipe item)
-        {
-            Items.Add(item);
         }
 
         public void Delete(int id)
@@ -43,14 +36,11 @@ namespace task2.Interfaces
 
         public string IsNameMustNotExist(string name)
         {
-            do
+            while (Items.Exists(x => x.Name.ToLower() == name.ToLower()))
             {
-                if (Items.Exists(x => x.Name.ToLower() == name.ToLower()))
-                {
-                    Console.Write("    This name is already in use. enter another name: ");
-                    name = Validation.NullOrEmptyText(Console.ReadLine());
-                }
-            } while (Items.Exists(x => x.Name.ToLower() == name.ToLower()));
+                Console.Write("    This name is already in use. enter another name: ");
+                name = Validation.NullOrEmptyText(Console.ReadLine());
+            }
             return name;
         }
     }

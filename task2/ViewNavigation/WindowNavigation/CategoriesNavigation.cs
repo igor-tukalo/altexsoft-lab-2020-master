@@ -9,7 +9,7 @@ namespace task2.ViewNavigation.WindowNavigation
 {
     class CategoriesNavigation : BaseNavigation, INavigation
     {
-        public ICategoriesControl Categories;
+        ICategoriesControl Categories;
         public CategoriesNavigation(ICategoriesControl categories)
         {
             Categories = categories;
@@ -49,7 +49,7 @@ namespace task2.ViewNavigation.WindowNavigation
                     break;
                 default:
                     {
-                        new ProgramMenu(new CategoriesContextMenuNavigation(ItemsMenu[id].Id, new CategoriesControl())).CallMenu();
+                        new ProgramMenu(new CategoriesContextMenuNavigation(ItemsMenu[id].Id, Categories)).CallMenu();
                     }
                     break;
             }

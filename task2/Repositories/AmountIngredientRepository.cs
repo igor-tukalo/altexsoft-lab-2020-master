@@ -5,17 +5,10 @@ using task2.Repositories;
 
 namespace task2.Interfaces
 {
-    public class AmountIngredientRepository : IRepository<AmountIngredient>
+    class AmountIngredientRepository : BaseRepository<AmountIngredient>, IRepository<AmountIngredient>
     {
-        public List<AmountIngredient> Items { get; set; }
-        public AmountIngredientRepository(List<AmountIngredient> context)
+        public AmountIngredientRepository(List<AmountIngredient> context) : base(context)
         {
-            Items = context;
-        }
-
-        public void Create(AmountIngredient item)
-        {
-            Items.Add(item);
         }
 
         public void Delete(int id)

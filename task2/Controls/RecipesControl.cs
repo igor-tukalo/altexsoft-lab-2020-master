@@ -8,6 +8,10 @@ namespace task2.Controls
 {
     class RecipesControl : BaseControl, IRecipesControl
     {
+        public RecipesControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
+        }
+
         public int GetIdCategory(int idRecipe)
         {
             return UnitOfWork.Recipes.Get(idRecipe).IdCategory;
@@ -34,14 +38,14 @@ namespace task2.Controls
             }
         }
 
-        public override void Edit(int id)
+        public void Edit(int id)
         {
             Console.Write("\n    Enter the name of the recipe: ");
             string nameRecipe = UnitOfWork.Recipes.IsNameMustNotExist(Console.ReadLine());
             var recipe = UnitOfWork.Recipes.Get(id);
             recipe.Name = nameRecipe;
             UnitOfWork.Recipes.Update(recipe);
-            base.Edit(id);
+            UnitOfWork.SaveAllData();
         }
 
         public void ChangeDescription(int idRecipe)
@@ -63,10 +67,10 @@ namespace task2.Controls
             Console.Write("\n    Enter recipe description: ");
             string description = Validation.NullOrEmptyText(Console.ReadLine());
             UnitOfWork.Recipes.Create(new Recipe() { Id = idRecipe, Name = nameRecipe, Description=description, IdCategory = idCategory });
-            base.Add();
+            UnitOfWork.SaveAllData();
         }
 
-        public override void Delete(int id)
+        public void Delete(int id)
         {
             Console.Clear();
             Console.Write("Are you sure you want to delete the recipe? ");
@@ -74,7 +78,7 @@ namespace task2.Controls
             UnitOfWork.AmountIngredients.Items.RemoveAll(r => r.IdRecipe == id);
             UnitOfWork.CookingSteps.Items.RemoveAll(r => r.IdRecipe == id);
             UnitOfWork.Recipes.Delete(id);
-            base.Delete(id);
+            UnitOfWork.SaveAllData();
         }
 
         /// <summary>

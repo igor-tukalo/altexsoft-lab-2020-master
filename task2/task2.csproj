@@ -15,19 +15,19 @@
     <None Update="App.config">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="json\AmountIngredients.json">
+    <None Update="json\AmountIngredient.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="json\Categories.json">
+    <None Update="json\Category.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="json\CookingSteps.json">
+    <None Update="json\CookingStep.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="json\Ingredients.json">
+    <None Update="json\Ingredient.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="json\Recipes.json">
+    <None Update="json\Recipe.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

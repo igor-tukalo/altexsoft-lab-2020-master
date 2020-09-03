@@ -57,7 +57,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(new IngredientsControl())
+            IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(new IngredientsControl(Ingredients.UnitOfWork))
             {
                 PageIngredients = Page
             };

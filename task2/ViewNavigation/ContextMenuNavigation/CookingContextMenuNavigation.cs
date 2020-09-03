@@ -56,7 +56,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(CookingSteps.IdRecipe))).CallMenu();
+            new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(CookingSteps.IdRecipe,CookingSteps.UnitOfWork))).CallMenu();
         }
     }
 }

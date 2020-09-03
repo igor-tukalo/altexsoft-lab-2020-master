@@ -5,17 +5,10 @@ using task2.Repositories;
 
 namespace task2.Interfaces
 {
-    public class CookingStepRepository : IRepository<CookingStep>
+    class CookingStepRepository : BaseRepository<CookingStep>, IRepository<CookingStep>
     {
-        public List<CookingStep> Items { get; set; }
-        public CookingStepRepository(List<CookingStep> context)
+        public CookingStepRepository(List<CookingStep> context) : base(context)
         {
-            Items = context;
-        }
-
-        public void Create(CookingStep item)
-        {
-            Items.Add(item);
         }
 
         public void Delete(int id)
@@ -36,7 +29,7 @@ namespace task2.Interfaces
         {
             Items = Items
             .Select(s => s.Id == item.Id
-            ? new CookingStep { Id = item.Id, Step = item.Step, Name = item.Name, IdRecipe= item.IdRecipe }
+            ? new CookingStep { Id = item.Id, Step = item.Step, Name = item.Name, IdRecipe = item.IdRecipe }
             : s).ToList();
         }
     }

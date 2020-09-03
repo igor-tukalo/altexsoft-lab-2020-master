@@ -12,19 +12,19 @@ namespace task2.Controls
     {
         public List<Ingredient> Ingredients { get; set; }
 
-        public IngredientsControl()
-        { 
+        public IngredientsControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
             Ingredients = UnitOfWork.Ingredients.Items;
         }
 
-        public override void Add()
+        public void Add()
         {
             int id = Ingredients.Count() > 0 ? Ingredients.Max(x => x.Id) + 1 : 1;
             Console.Write("\n    Enter name ingredient: ");
             string name = UnitOfWork.Ingredients.IsNameMustNotExist(Console.ReadLine());
             string nameIngredient = name;
             UnitOfWork.Ingredients.Create(new Ingredient() { Id = id, Name = nameIngredient });
-            base.Add();
+            UnitOfWork.SaveAllData();
         }
 
         /// <summary>
@@ -49,21 +49,21 @@ namespace task2.Controls
             ? new EntityMenu { Name = $"    Go to page. Pages: {idBatch}/{counterBatch}", ParentId = counterBatch, TypeEntity = "pages" }
             : i).ToList();
         }
-        public override void Edit(int id)
+        public void Edit(int id)
         {
             Console.Write("    Enter new name: ");
             string newName = UnitOfWork.Ingredients.IsNameMustNotExist(Console.ReadLine());
             var ingredient = UnitOfWork.Ingredients.Get(id);
             ingredient.Name = newName;
             UnitOfWork.Ingredients.Update(ingredient);
-            base.Edit(id);
+            UnitOfWork.SaveAllData();
         }
-        public override void Delete(int id)
+        public void Delete(int id)
         {
             Console.Write("    Do you really want to remove the ingredient? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
             UnitOfWork.Ingredients.Delete(id);
-            base.Delete(id);
+            UnitOfWork.SaveAllData();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace task2.Controls
         public List<CookingStep> CookingSteps { get; set; }
         public int IdRecipe { get; set; }
 
-        public CookingStepsControl(int idRecipe)
+        public CookingStepsControl(int idRecipe,IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             IdRecipe = idRecipe;
             CookingSteps = UnitOfWork.CookingSteps.Items;
@@ -27,7 +27,7 @@ namespace task2.Controls
             return itemsMenu;
         }
 
-        public override void Add()
+        public void Add()
         {
             int idCookingStep = CookingSteps.Count() > 0 ? CookingSteps.Max(x => x.Id) + 1 : 1;
             int CurrentStep = CookingSteps.Where(x => x.IdRecipe == IdRecipe).Count() > 0 ?
@@ -35,23 +35,23 @@ namespace task2.Controls
             Console.Write($"\n    Describe the cooking step {CurrentStep}: ");
             string stepName = Validation.NullOrEmptyText(Console.ReadLine());
             UnitOfWork.CookingSteps.Create(new CookingStep() { Id = idCookingStep, Step = CurrentStep, Name = stepName, IdRecipe = IdRecipe });
-            base.Add();
+            UnitOfWork.SaveAllData();
             Console.Write("\n    Add another cooking step? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
             Add();
         }
 
-        public override void Edit(int id)
+        public void Edit(int id)
         {
             var cookingStep = UnitOfWork.CookingSteps.Get(id);
             Console.Write($"    Describe the cooking step {cookingStep.Step}: ");
             string stepName = Validation.NullOrEmptyText(Console.ReadLine());
             cookingStep.Name = stepName;
             UnitOfWork.CookingSteps.Update(cookingStep);
-            base.Edit(id);
+            UnitOfWork.SaveAllData();
         }
 
-        public override void Delete(int id)
+        public void Delete(int id)
         {
             Console.Write("    Do you really want to remove the cooking step? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
@@ -60,7 +60,7 @@ namespace task2.Controls
                 s.Step--;
             }
             UnitOfWork.CookingSteps.Delete(id);
-            base.Delete(id);
+            UnitOfWork.SaveAllData();
         }
     }
 }

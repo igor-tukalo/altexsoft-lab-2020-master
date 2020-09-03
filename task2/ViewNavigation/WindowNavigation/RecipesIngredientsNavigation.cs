@@ -53,7 +53,7 @@ namespace task2.ViewNavigation.WindowNavigation
                     break;
                 case 2:
                     {
-                        new ProgramMenu(new RecipesContextMenuNavigation(RecipeIngredients.IdRecipe, new RecipesControl())).CallMenu();
+                        new ProgramMenu(new RecipesContextMenuNavigation(RecipeIngredients.IdRecipe, new RecipesControl(RecipeIngredients.UnitOfWork))).CallMenu();
                     }
                     break;
                 default:

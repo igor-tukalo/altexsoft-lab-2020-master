@@ -35,12 +35,12 @@ namespace task2.ViewNavigation.WindowNavigation
             {
                 case 0:
                     {
-                        new ProgramMenu(new CategoriesNavigation(new CategoriesControl())).CallMenu();
+                        new ProgramMenu(new CategoriesNavigation(new CategoriesControl(new UnitOfWork()))).CallMenu();
                     }
                     break;
                 case 1:
                     {
-                        new ProgramMenu(new IngredientsNavigation(new IngredientsControl())).CallMenu();
+                        new ProgramMenu(new IngredientsNavigation(new IngredientsControl(new UnitOfWork()))).CallMenu();
                     }
                     break;
                 case 2:

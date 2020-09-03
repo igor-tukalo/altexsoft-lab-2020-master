@@ -59,12 +59,12 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     break;
                 case 3:
                     {
-                        new ProgramMenu(new RecipesIngredientsNavigation(new IngredientsControl(), new RecipeIngredientsControl(IdRecipe))).CallMenu();
+                        new ProgramMenu(new RecipesIngredientsNavigation(new IngredientsControl(Recipes.UnitOfWork), new RecipeIngredientsControl(IdRecipe, Recipes.UnitOfWork))).CallMenu();
                     }
                     break;
                 case 4:
                     {
-                        new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(IdRecipe))).CallMenu();
+                        new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(IdRecipe, Recipes.UnitOfWork))).CallMenu();
                     }
                     break;
                 case 5:
@@ -83,7 +83,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            new RecipesNavigation(new CategoriesControl(), new RecipesControl()).MovementCategoriesRecipes(IdCategory);
+            new RecipesNavigation(new CategoriesControl(Recipes.UnitOfWork), new RecipesControl(Recipes.UnitOfWork)).MovementCategoriesRecipes(IdCategory);
         }
     }
 }

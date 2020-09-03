@@ -6,14 +6,17 @@ using task2.Models;
 
 namespace task2.Controls
 {
-    public class CategoriesControl : BaseControl, ICategoriesControl
+    class CategoriesControl : BaseControl, ICategoriesControl
     {
+        public CategoriesControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
+        }
         public Category GetParentCategory(int id)
         {
             return UnitOfWork.Categories.Get(id);
         }
 
-        public override void Add()
+        public void Add()
         {
             int id = UnitOfWork.Categories.Items.Count() > 0 ? UnitOfWork.Categories.Items.Max(x => x.Id) + 1 : 1;
             Console.Write("\n    Enter name category: ");
@@ -24,7 +27,7 @@ namespace task2.Controls
                                   where t.Name == nameMainCategory
                                   select t.Id).First();
             UnitOfWork.Categories.Create(new Category() { Id = id, Name = name, ParentId = idMainCategory });
-            base.Add();
+            UnitOfWork.SaveAllData();
         }
 
         public void BuildHierarchicalCategories(List<EntityMenu> items, Category thisEntity, int level)
@@ -51,24 +54,24 @@ namespace task2.Controls
             }
         }
 
-        public override void Edit(int id)
+        public void Edit(int id)
         {
             Console.Write("    Enter new name: ");
             string newName = UnitOfWork.Categories.IsNameMustNotExist(Console.ReadLine());
             var category = UnitOfWork.Categories.Get(id);
             category.Name = newName;
             UnitOfWork.Categories.Update(category);
-            base.Edit(id);
+            UnitOfWork.SaveAllData();
         }
 
-        public override void Delete(int id)
+        public void Delete(int id)
         {
             if (GetParentCategory(id).ParentId == 0) return;
             Console.Write("    Attention! Are you sure you want to delete the category? You will also delete all the recipes that are in them! ");
             if (Validation.YesNo() == ConsoleKey.N) return;
             var parent = UnitOfWork.Categories.Get(id);
             RemoveHierarchicalCategory(parent, 1);
-            base.Delete(id);
+            UnitOfWork.SaveAllData();
         }
     }
 }

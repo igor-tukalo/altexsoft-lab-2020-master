@@ -56,7 +56,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            new ProgramMenu(new CategoriesNavigation(new CategoriesControl())).CallMenu();
+            new ProgramMenu(new CategoriesNavigation(new CategoriesControl(Categories.UnitOfWork))).CallMenu();
         }
     }
 }
