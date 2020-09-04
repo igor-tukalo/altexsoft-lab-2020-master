@@ -54,7 +54,7 @@ namespace task2.ViewNavigation.WindowNavigation
                     break;
                 default:
                     {
-                        new ProgramMenu(new IngredientsContextMenuNavigation(ItemsMenu[id].Id, PageIngredients, new IngredientsControl(Ingredients.UnitOfWork))).CallMenu();
+                        new ProgramMenu(new IngredientsContextMenuNavigation(ItemsMenu[id].Id, PageIngredients, Ingredients)).CallMenu();
                     }
                     break;
             }

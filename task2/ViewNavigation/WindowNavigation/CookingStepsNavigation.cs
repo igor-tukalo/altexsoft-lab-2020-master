@@ -40,12 +40,12 @@ namespace task2.ViewNavigation.WindowNavigation
                     break;
                 case 1:
                     {
-                        new ProgramMenu(new RecipesContextMenuNavigation(CookingSteps.IdRecipe, new RecipesControl(CookingSteps.UnitOfWork))).CallMenu();
+                        new ProgramMenu(new RecipesContextMenuNavigation(CookingSteps.IdRecipe, new RecipesControl(new UnitOfWork()))).CallMenu();
                     }
                     break;
                 default:
                     {
-                        new ProgramMenu(new CookingStepsContextMenuNavigation(ItemsMenu[id].Id, new CookingStepsControl(CookingSteps.IdRecipe, CookingSteps.UnitOfWork))).CallMenu();
+                        new ProgramMenu(new CookingStepsContextMenuNavigation(ItemsMenu[id].Id, CookingSteps)).CallMenu();
                     }
                     break;
             }

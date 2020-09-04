@@ -9,10 +9,11 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 {
     class RecipesContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
+        UnitOfWork unitOfWork = new UnitOfWork();
         readonly int IdRecipe;
         int IdCategory { get; set; }
         readonly IRecipesControl Recipes;
-        
+
         public RecipesContextMenuNavigation(int idRecipe, IRecipesControl recipes)
         {
             IdRecipe = idRecipe;
@@ -59,12 +60,12 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     break;
                 case 3:
                     {
-                        new ProgramMenu(new RecipesIngredientsNavigation(new IngredientsControl(Recipes.UnitOfWork), new RecipeIngredientsControl(IdRecipe, Recipes.UnitOfWork))).CallMenu();
+                        new ProgramMenu(new RecipesIngredientsNavigation(new IngredientsControl(unitOfWork), new RecipeIngredientsControl(IdRecipe, unitOfWork))).CallMenu();
                     }
                     break;
                 case 4:
                     {
-                        new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(IdRecipe, Recipes.UnitOfWork))).CallMenu();
+                        new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(IdRecipe, unitOfWork))).CallMenu();
                     }
                     break;
                 case 5:
@@ -83,7 +84,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            new RecipesNavigation(new CategoriesControl(Recipes.UnitOfWork), new RecipesControl(Recipes.UnitOfWork)).MovementCategoriesRecipes(IdCategory);
+            new RecipesNavigation(new CategoriesControl(unitOfWork), new RecipesControl(unitOfWork)).MovementCategoriesRecipes(IdCategory);
         }
     }
 }

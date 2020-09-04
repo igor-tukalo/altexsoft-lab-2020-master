@@ -51,7 +51,7 @@ namespace task2.ViewNavigation.WindowNavigation
                 default:
                     {
                         if (ItemsMenu[id].TypeEntity == "recipe")
-                            new ProgramMenu(new RecipesContextMenuNavigation(ItemsMenu[id].Id, new RecipesControl(Recipes.UnitOfWork))).CallMenu();
+                            new ProgramMenu(new RecipesContextMenuNavigation(ItemsMenu[id].Id, Recipes)).CallMenu();
                         else
                             MovementCategoriesRecipes(ItemsMenu[id].Id);
                     }
