@@ -8,20 +8,20 @@ namespace task2.Controls
 {
     class RecipeIngredientsControl : BaseControl, IRecipeIngredientsControl
     {
-        public List<AmountIngredient> AmountIngredients { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
         public int IdRecipe { get; set; }
 
+        readonly AmountIngredientRepository amountIngredientRepository;
+        readonly IngredientRepository ingredientRepository;
         public RecipeIngredientsControl(int idRecipe,IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             IdRecipe = idRecipe;
-            Ingredients = UnitOfWork.Ingredients.Items;
-            AmountIngredients = UnitOfWork.AmountIngredients.Items;
+            amountIngredientRepository = UnitOfWork.AmountIngredients;
+            ingredientRepository = UnitOfWork.Ingredients;
         }
 
         public void Add(int idIngredient)
         {
-            int idAmountIngredients = AmountIngredients.Count() > 0 ? AmountIngredients.Max(x => x.Id) + 1 : 1;
+            int idAmountIngredients = amountIngredientRepository.Items.Count() > 0 ? amountIngredientRepository.Items.Max(x => x.Id) + 1 : 1;
             Console.Write("\n    Enter the amount of ingredient: ");
             double amount = Validation.ValidDouble(Console.ReadLine().Replace(".", ","));
             Console.Write("    Enter the unit of ingredient: ");
@@ -38,10 +38,10 @@ namespace task2.Controls
 
         public List<EntityMenu> Get(List<EntityMenu> itemsMenu, int idRecipe)
         {
-            if (AmountIngredients != null)
-                foreach (var a in AmountIngredients.Where(x => x.IdRecipe == idRecipe))
+            if (amountIngredientRepository.Items != null)
+                foreach (var a in amountIngredientRepository.Items.Where(x => x.IdRecipe == idRecipe))
                 {
-                    foreach (var i in Ingredients.Where(x => x.Id == a.IdIngredient))
+                    foreach (var i in ingredientRepository.Items.Where(x => x.Id == a.IdIngredient))
                     {
                         itemsMenu.Add(new EntityMenu() { Id = a.Id, Name = $"    {i.Name} - {a.Amount} {a.Unit}", ParentId = a.IdRecipe, TypeEntity = "ingrRecipe" });
                     }
