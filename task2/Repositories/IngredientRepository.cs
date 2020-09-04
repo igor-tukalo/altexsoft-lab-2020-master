@@ -6,27 +6,27 @@ using task2.Repositories;
 
 namespace task2.Interfaces
 {
-    class IngredientRepository : BaseRepository<Ingredient>, IRepository<Ingredient>
+    class IngredientRepository : BaseRepository<Ingredient>
     {
         public IngredientRepository(List<Ingredient> context) : base(context)
         {
         }
 
-        public void Delete(int id)
+        public override void Delete(int id)
         {
             var ingredient = Get(id);
             if (ingredient != null)
                 Items.Remove(ingredient);
         }
 
-        public Ingredient Get(int id)
+        public override Ingredient Get(int id)
         {
             return (from i in Items
                     where i.Id == id
                     select i).FirstOrDefault();
         }
 
-        public void Update(Ingredient item)
+        public override void Update(Ingredient item)
         {
             Items = Items
             .Select(i => i.Id == item.Id

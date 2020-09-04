@@ -8,12 +8,12 @@ namespace task2.Repositories
 {
     class JsonManager
     {
-        public void JsonSerializer<T>(List<T> items) where T : class
+        public void Save<T>(List<T> items) where T : class
         {
             File.WriteAllText(GetJsonPathFile(typeof(T).Name + ".json"), JsonConvert.SerializeObject(items));
         }
 
-        public List<T> JsonDeSerializer<T>() where T : class
+        public List<T> Read<T>() where T : class
         {
             return JsonConvert.DeserializeObject<List<T>>(GetJsonData(typeof(T).Name + ".json"));
         }

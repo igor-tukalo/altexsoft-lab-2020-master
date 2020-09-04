@@ -5,9 +5,9 @@ namespace task2.Repositories
     interface IRepository<T> where T : class
     {
         List<T> Items { get; set; }
-        T Get(int id);
+        abstract T Get(int id);
         void Create(T item);
-        void Update(T item);
-        void Delete(int id);
+        abstract void Update(T item);
+        abstract void Delete(int id);
     }
 }

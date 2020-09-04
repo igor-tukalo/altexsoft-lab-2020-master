@@ -15,21 +15,21 @@ namespace task2.Interfaces
 
         public UnitOfWork()
         {
-            Categories = new CategoryRepository(jsonManager.JsonDeSerializer<Category>());
-            Ingredients = new IngredientRepository(jsonManager.JsonDeSerializer<Ingredient>());
-            Recipes = new RecipeRepository(jsonManager.JsonDeSerializer<Recipe>());
-            AmountIngredients = new AmountIngredientRepository(jsonManager.JsonDeSerializer<AmountIngredient>());
-            CookingSteps = new CookingStepRepository(jsonManager.JsonDeSerializer<CookingStep>());
+            Categories = new CategoryRepository(jsonManager.Read<Category>());
+            Ingredients = new IngredientRepository(jsonManager.Read<Ingredient>());
+            Recipes = new RecipeRepository(jsonManager.Read<Recipe>());
+            AmountIngredients = new AmountIngredientRepository(jsonManager.Read<AmountIngredient>());
+            CookingSteps = new CookingStepRepository(jsonManager.Read<CookingStep>());
         }
 
         public void SaveAllData()
         {
-            jsonManager.JsonSerializer(Recipes.Items);
-            jsonManager.JsonSerializer(AmountIngredients.Items);
-            jsonManager.JsonSerializer(CookingSteps.Items);
-            jsonManager.JsonSerializer(Categories.Items);
-            jsonManager.JsonSerializer(Ingredients.Items);
-            jsonManager.JsonSerializer(AmountIngredients.Items);
+            jsonManager.Save(Recipes.Items);
+            jsonManager.Save(AmountIngredients.Items);
+            jsonManager.Save(CookingSteps.Items);
+            jsonManager.Save(Categories.Items);
+            jsonManager.Save(Ingredients.Items);
+            jsonManager.Save(AmountIngredients.Items);
         }
     }
 }

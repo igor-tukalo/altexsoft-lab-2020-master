@@ -2,7 +2,7 @@
 
 namespace task2.Repositories
 {
-    class BaseRepository<T> where T : class
+    abstract class BaseRepository<T> : IRepository<T> where T : class
     {
         public List<T> Items { get; set; }
         public BaseRepository(List<T> context)
@@ -14,5 +14,11 @@ namespace task2.Repositories
         {
             Items.Add(item);
         }
+
+        public abstract T Get(int id);
+
+        public abstract void Update(T item);
+
+        public abstract void Delete(int id);
     }
 }

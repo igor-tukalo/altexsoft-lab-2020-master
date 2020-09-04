@@ -6,27 +6,27 @@ using task2.Repositories;
 
 namespace task2.Interfaces
 {
-    class CategoryRepository : BaseRepository<Category>, IRepository<Category>
+    class CategoryRepository : BaseRepository<Category>
     {
         public CategoryRepository(List<Category> context) : base(context)
         {
         }
 
-        public void Delete(int id)
+        public override void Delete(int id)
         {
             var category = Get(id);
             if (category != null)
                 Items.Remove(category);
         }
 
-        public Category Get(int id)
+        public override Category Get(int id)
         {
             return (from c in Items
                     where c.Id == id
                     select c).FirstOrDefault();
         }
 
-        public void Update(Category item)
+        public override void Update(Category item)
         {
             Items = Items
             .Select(c => c.Id == item.Id
