@@ -35,9 +35,7 @@ namespace task2.Controls
         {
             items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
             foreach (var child in categoryRepository.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
-            {
                 BuildHierarchicalCategories(items, child, level + 1);
-            }
         }
 
         public void RemoveHierarchicalCategory(Category thisEntity, int level)
@@ -50,9 +48,7 @@ namespace task2.Controls
             recipeRepository.Items.RemoveAll(x => x.IdCategory == thisEntity.Id);
             categoryRepository.Delete(thisEntity.Id);
             foreach (var child in categoryRepository.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
-            {
                 RemoveHierarchicalCategory(child, level + 1);
-            }
         }
 
         public void Edit(int id)

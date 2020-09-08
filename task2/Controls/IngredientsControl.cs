@@ -38,9 +38,7 @@ namespace task2.Controls
             {
                 if (counterBatch == idBatch)
                     foreach (var batch in ingr)
-                    {
                         itemsMenu.Add(new EntityMenu() { Id = batch.Id, Name = $"    {batch.Name}", TypeEntity = "ingr" });
-                    }
                 counterBatch++;
             }
             return itemsMenu = itemsMenu

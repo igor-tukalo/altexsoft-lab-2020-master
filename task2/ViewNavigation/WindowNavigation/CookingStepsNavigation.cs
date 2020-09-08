@@ -10,9 +10,10 @@ namespace task2.ViewNavigation.WindowNavigation
     class CookingStepsNavigation : BaseNavigation, INavigation
     {
         readonly ICookingStepsControl CookingSteps;
-
-        public CookingStepsNavigation(ICookingStepsControl cookingSteps)
+        int IdRecipe;
+        public CookingStepsNavigation(int idRecipe, ICookingStepsControl cookingSteps)
         {
+            IdRecipe = idRecipe;
             CookingSteps = cookingSteps;
         }
 
@@ -24,7 +25,7 @@ namespace task2.ViewNavigation.WindowNavigation
                     new EntityMenu(){ Name= "    Add step cooking" },
                     new EntityMenu(){ Name= "    Cancel" }
                 };
-            CookingSteps.Get(ItemsMenu,CookingSteps.IdRecipe);
+            CookingSteps.Get(ItemsMenu, IdRecipe);
             base.CallNavigation();
         }
 
@@ -40,12 +41,12 @@ namespace task2.ViewNavigation.WindowNavigation
                     break;
                 case 1:
                     {
-                        new ProgramMenu(new RecipesContextMenuNavigation(CookingSteps.IdRecipe, new RecipesControl(new UnitOfWork()))).CallMenu();
+                        new ProgramMenu(new RecipesContextMenuNavigation(IdRecipe, new RecipesControl(new UnitOfWork()))).CallMenu();
                     }
                     break;
                 default:
                     {
-                        new ProgramMenu(new CookingStepsContextMenuNavigation(ItemsMenu[id].Id, CookingSteps)).CallMenu();
+                        new ProgramMenu(new CookingStepsContextMenuNavigation(ItemsMenu[id].Id, IdRecipe, CookingSteps)).CallMenu();
                     }
                     break;
             }

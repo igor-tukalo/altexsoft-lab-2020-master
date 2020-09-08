@@ -4,7 +4,7 @@ using task2.Models;
 
 namespace task2.ViewNavigation
 {
-    public class Navigation
+    class Navigation
     {
         public delegate void Method(int id);
         List<EntityMenu> MenuItems;
@@ -27,7 +27,6 @@ namespace task2.ViewNavigation
             {
                 menuResult = PrintMenu();
                 methodsMenu[menuResult](menuResult);
-                //Console.WriteLine("Press any key to continue.");
                 Console.ReadKey();
             } while (menuResult != MenuItems.Count - 1);
         }
@@ -85,6 +84,5 @@ namespace task2.ViewNavigation
                 Console.BackgroundColor = colorBefore;
             }
         }
-
     }
 }

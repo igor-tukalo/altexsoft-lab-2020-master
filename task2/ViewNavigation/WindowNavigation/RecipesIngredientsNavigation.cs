@@ -12,8 +12,10 @@ namespace task2.ViewNavigation.WindowNavigation
         readonly IRecipeIngredientsControl RecipeIngredients;
         readonly IIngredientsControl Ingredients;
         public int PageIngredients = 1;
-        public RecipesIngredientsNavigation(IIngredientsControl ingredients, IRecipeIngredientsControl recipeIngredients)
+        int IdRecipe;
+        public RecipesIngredientsNavigation(int idRecipe,IIngredientsControl ingredients, IRecipeIngredientsControl recipeIngredients)
         {
+            IdRecipe = idRecipe;
             Ingredients = ingredients;
             RecipeIngredients = recipeIngredients;
         }
@@ -28,7 +30,7 @@ namespace task2.ViewNavigation.WindowNavigation
                     new EntityMenu(){ Name= "    Cancel" },
                 };
             ItemsMenu.Add(new EntityMenu() { Name = "\n    Recipe ingredients:\n" });
-            ItemsMenu = RecipeIngredients.Get(ItemsMenu, RecipeIngredients.IdRecipe);
+            ItemsMenu = RecipeIngredients.Get(ItemsMenu, IdRecipe);
             ItemsMenu.Add(new EntityMenu() { Name = "\n    Ingredients to add:\n" });
             ItemsMenu = Ingredients.GetIngredientsBatch(ItemsMenu, PageIngredients);
             base.CallNavigation();
@@ -53,7 +55,7 @@ namespace task2.ViewNavigation.WindowNavigation
                     break;
                 case 2:
                     {
-                        new ProgramMenu(new RecipesContextMenuNavigation(RecipeIngredients.IdRecipe, new RecipesControl(new UnitOfWork()))).CallMenu();
+                        new ProgramMenu(new RecipesContextMenuNavigation(IdRecipe, new RecipesControl(new UnitOfWork()))).CallMenu();
                     }
                     break;
                 default:
@@ -65,7 +67,7 @@ namespace task2.ViewNavigation.WindowNavigation
                         }
                         else if (ItemsMenu[id].TypeEntity == "ingr")
                         {
-                            RecipeIngredients.Add(ItemsMenu[id].Id);
+                            RecipeIngredients.Add(ItemsMenu[id].Id, IdRecipe);
                             CallNavigation();
                         }
                     }

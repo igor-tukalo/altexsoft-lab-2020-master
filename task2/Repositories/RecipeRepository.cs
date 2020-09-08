@@ -12,20 +12,6 @@ namespace task2.Interfaces
         {
         }
 
-        public override void Delete(int id)
-        {
-            var recipe = Get(id);
-            if (recipe != null)
-                Items.Remove(recipe);
-        }
-
-        public override Recipe Get(int id)
-        {
-            return (from r in Items
-                    where r.Id == id
-                    select r).FirstOrDefault();
-        }
-
         public override void Update(Recipe item)
         {
             Items = Items

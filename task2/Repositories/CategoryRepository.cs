@@ -12,20 +12,6 @@ namespace task2.Interfaces
         {
         }
 
-        public override void Delete(int id)
-        {
-            var category = Get(id);
-            if (category != null)
-                Items.Remove(category);
-        }
-
-        public override Category Get(int id)
-        {
-            return (from c in Items
-                    where c.Id == id
-                    select c).FirstOrDefault();
-        }
-
         public override void Update(Category item)
         {
             Items = Items
@@ -57,5 +43,4 @@ namespace task2.Interfaces
             return name;
         }
     }
-
 }

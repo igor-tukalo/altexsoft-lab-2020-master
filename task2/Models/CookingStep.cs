@@ -1,8 +1,7 @@
 ﻿namespace task2.Models
 {
-    public class CookingStep
+    class CookingStep : BaseEntity<int>
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public int Step { get; set; }
         public int IdRecipe { get; set; }

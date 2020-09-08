@@ -9,7 +9,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 {
     class RecipesContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
-        UnitOfWork unitOfWork = new UnitOfWork();
+        readonly UnitOfWork unitOfWork = new UnitOfWork();
         readonly int IdRecipe;
         int IdCategory { get; set; }
         readonly IRecipesControl Recipes;
@@ -60,12 +60,12 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     break;
                 case 3:
                     {
-                        new ProgramMenu(new RecipesIngredientsNavigation(new IngredientsControl(unitOfWork), new RecipeIngredientsControl(IdRecipe, unitOfWork))).CallMenu();
+                        new ProgramMenu(new RecipesIngredientsNavigation(IdRecipe, new IngredientsControl(unitOfWork), new RecipeIngredientsControl(unitOfWork))).CallMenu();
                     }
                     break;
                 case 4:
                     {
-                        new ProgramMenu(new CookingStepsNavigation(new CookingStepsControl(IdRecipe, unitOfWork))).CallMenu();
+                        new ProgramMenu(new CookingStepsNavigation(IdRecipe, new CookingStepsControl(unitOfWork))).CallMenu();
                     }
                     break;
                 case 5:

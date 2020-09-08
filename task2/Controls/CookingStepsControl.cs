@@ -9,11 +9,9 @@ namespace task2.Controls
     class CookingStepsControl : BaseControl, ICookingStepsControl
     {
         readonly CookingStepRepository cookingStepRepository;
-        public int IdRecipe { get; set; }
 
-        public CookingStepsControl(int idRecipe,IUnitOfWork unitOfWork) : base(unitOfWork)
+        public CookingStepsControl(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            IdRecipe = idRecipe;
             cookingStepRepository = UnitOfWork.CookingSteps;
         }
 
@@ -27,18 +25,18 @@ namespace task2.Controls
             return itemsMenu;
         }
 
-        public void Add()
+        public void Add(int idRecipe)
         {
             int idCookingStep = cookingStepRepository.Items.Count() > 0 ? cookingStepRepository.Items.Max(x => x.Id) + 1 : 1;
-            int CurrentStep = cookingStepRepository.Items.Where(x => x.IdRecipe == IdRecipe).Count() > 0 ?
-                cookingStepRepository.Items.Where(x => x.IdRecipe == IdRecipe).Max(x => x.Step) + 1 : 1;
+            int CurrentStep = cookingStepRepository.Items.Where(x => x.IdRecipe == idRecipe).Count() > 0 ?
+                cookingStepRepository.Items.Where(x => x.IdRecipe == idRecipe).Max(x => x.Step) + 1 : 1;
             Console.Write($"\n    Describe the cooking step {CurrentStep}: ");
             string stepName = Validation.NullOrEmptyText(Console.ReadLine());
-            cookingStepRepository.Create(new CookingStep() { Id = idCookingStep, Step = CurrentStep, Name = stepName, IdRecipe = IdRecipe });
+            cookingStepRepository.Create(new CookingStep() { Id = idCookingStep, Step = CurrentStep, Name = stepName, IdRecipe = idRecipe });
             UnitOfWork.SaveAllData();
             Console.Write("\n    Add another cooking step? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
-            Add();
+            Add(idRecipe);
         }
 
         public void Edit(int id)
@@ -51,11 +49,11 @@ namespace task2.Controls
             UnitOfWork.SaveAllData();
         }
 
-        public void Delete(int id)
+        public void Delete(int id, int idRecipe)
         {
             Console.Write("    Do you really want to remove the cooking step? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
-            foreach (var s in cookingStepRepository.Items.Where(x => x.IdRecipe == IdRecipe && x.Step > cookingStepRepository.Get(id).Step))
+            foreach (var s in cookingStepRepository.Items.Where(x => x.IdRecipe == idRecipe && x.Step > cookingStepRepository.Get(id).Step))
             {
                 s.Step--;
             }

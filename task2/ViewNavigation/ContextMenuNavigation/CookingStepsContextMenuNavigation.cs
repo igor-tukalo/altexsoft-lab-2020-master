@@ -11,10 +11,11 @@ namespace task2.ViewNavigation.ContextMenuNavigation
     {
         readonly ICookingStepsControl CookingSteps;
         readonly int IdCookingStep;
-
-        public CookingStepsContextMenuNavigation(int idCookingStep, ICookingStepsControl cookingSteps)
+        readonly int IdRecipe;
+        public CookingStepsContextMenuNavigation(int idCookingStep, int idRecipe, ICookingStepsControl cookingSteps)
         {
             IdCookingStep = idCookingStep;
+            IdRecipe = idRecipe;
             CookingSteps = cookingSteps;
         }
 
@@ -56,7 +57,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            new ProgramMenu(new CookingStepsNavigation(CookingSteps)).CallMenu();
+            new ProgramMenu(new CookingStepsNavigation(IdRecipe, CookingSteps)).CallMenu();
         }
     }
 }

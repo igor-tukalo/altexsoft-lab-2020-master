@@ -2,9 +2,8 @@
 
 namespace task2.Models
 {
-    public class CategoryNode
+    class CategoryNode : BaseEntity<int>
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public List<CategoryNode> Children { get; set; }
 

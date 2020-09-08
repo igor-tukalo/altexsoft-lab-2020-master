@@ -97,9 +97,7 @@ namespace task2.Controls
                 return;
             items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
             foreach (var recipe in recipeRepository.Items.Where(x => x.IdCategory == thisEntity.Id))
-            {
                 items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.IdCategory, TypeEntity = "recipe" });
-            }
             foreach (var child in categoryRepository.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
             {
                 var entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
@@ -119,11 +117,8 @@ namespace task2.Controls
             if (level <= levelLimitation)
             {
                 items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
-
                 foreach (var child in items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Id))
-                {
                     BuildCurrentOpenRecipesCategories(items, child, level + 1, levelLimitation);
-                }
             }
         }
     }

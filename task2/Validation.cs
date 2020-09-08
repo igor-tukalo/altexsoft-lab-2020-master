@@ -65,7 +65,6 @@ namespace task2
         public static ConsoleKey YesNo()
         {
             ConsoleKey response;
-
             do
             {
                 while (Console.KeyAvailable) // Flushes the input queue.
