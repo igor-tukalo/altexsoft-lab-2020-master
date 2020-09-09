@@ -12,7 +12,7 @@ namespace task2.ViewNavigation.WindowNavigation
         readonly IRecipeIngredientsControl RecipeIngredients;
         readonly IIngredientsControl Ingredients;
         public int PageIngredients = 1;
-        int IdRecipe;
+        readonly int IdRecipe;
         public RecipesIngredientsNavigation(int idRecipe,IIngredientsControl ingredients, IRecipeIngredientsControl recipeIngredients)
         {
             IdRecipe = idRecipe;

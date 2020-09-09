@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using task2.Controls;
 using task2.Interfaces;
 using task2.Models;
 using task2.ViewNavigation.WindowNavigation;
@@ -43,7 +42,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     break;
                 case 1:
                     {
-                        CookingSteps.Delete(IdCookingStep);
+                        CookingSteps.Delete(IdCookingStep, IdRecipe);
                         BackPrevMenu();
                     }
                     break;

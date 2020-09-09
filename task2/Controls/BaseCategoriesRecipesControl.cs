@@ -2,19 +2,19 @@
 
 namespace task2.Controls
 {
-    class BaseCategoriesRecipesControl : BaseControl
+    abstract class BaseCategoriesRecipesControl : BaseControl
     {
-        readonly protected CategoryRepository categoryRepository;
-        readonly protected RecipeRepository recipeRepository;
-        readonly protected AmountIngredientRepository amountIngredientRepository;
-        readonly protected CookingStepRepository cookingStepRepository;
+        protected readonly CategoryRepository CategoryRepository;
+        protected readonly RecipeRepository RecipeRepository;
+        protected readonly AmountIngredientRepository AamountIngredientRepository;
+        protected readonly CookingStepRepository CookingStepRepository;
 
-        public BaseCategoriesRecipesControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        protected BaseCategoriesRecipesControl(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            categoryRepository = UnitOfWork.Categories;
-            recipeRepository = UnitOfWork.Recipes;
-            amountIngredientRepository = UnitOfWork.AmountIngredients;
-            cookingStepRepository = UnitOfWork.CookingSteps;
+            CategoryRepository = UnitOfWork.Categories;
+            RecipeRepository = UnitOfWork.Recipes;
+            AamountIngredientRepository = UnitOfWork.AmountIngredients;
+            CookingStepRepository = UnitOfWork.CookingSteps;
         }
     }
 }

@@ -16,16 +16,16 @@ namespace task2.Controls
 
         public int GetIdCategory(int idRecipe)
         {
-            return recipeRepository.Get(idRecipe).IdCategory;
+            return RecipeRepository.Get(idRecipe).IdCategory;
         }
         public void View(int idRecipe)
         {
-            var recipe = recipeRepository.Get(idRecipe);
+            var recipe = RecipeRepository.Get(idRecipe);
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
             Console.WriteLine($"    {Validation.WrapText(10, recipe.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
             //ingredients recipe
-                foreach (var a in amountIngredientRepository.Items.Where(x => x.IdRecipe == recipe.Id))
+                foreach (var a in AamountIngredientRepository.Items.Where(x => x.IdRecipe == recipe.Id))
                 {
                 
                     foreach (var i in ingredientRepository.Items.Where(x => x.Id == a.IdIngredient))
@@ -35,7 +35,7 @@ namespace task2.Controls
                 }
             //steps recipe
             Console.WriteLine("\n    Сooking steps:\n");
-            foreach (var s in cookingStepRepository.Items.Where(x => x.IdRecipe == recipe.Id).OrderBy(x => x.Step))
+            foreach (var s in CookingStepRepository.Items.Where(x => x.IdRecipe == recipe.Id).OrderBy(x => x.Step))
             {
                 Console.WriteLine($"    {s.Step}. {Validation.WrapText(10, s.Name, "\n       ")}");
             }
@@ -44,10 +44,10 @@ namespace task2.Controls
         public void Edit(int id)
         {
             Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = recipeRepository.IsNameMustNotExist(Console.ReadLine());
-            var recipe = recipeRepository.Get(id);
+            string nameRecipe = RecipeRepository.IsNameMustNotExist(Console.ReadLine());
+            var recipe = RecipeRepository.Get(id);
             recipe.Name = nameRecipe;
-            recipeRepository.Update(recipe);
+            RecipeRepository.Update(recipe);
             UnitOfWork.SaveAllData();
         }
 
@@ -55,21 +55,21 @@ namespace task2.Controls
         {
             Console.Write("\n    Enter recipe description: ");
             string description = Validation.NullOrEmptyText(Console.ReadLine());
-            var recipe = recipeRepository.Get(idRecipe);
+            var recipe = RecipeRepository.Get(idRecipe);
             recipe.Description = description;
-            recipeRepository.Update(recipe);
+            RecipeRepository.Update(recipe);
             UnitOfWork.SaveAllData();
         }
 
         public void Add(int idCategory)
         {
-            int idRecipe = recipeRepository.Items.Count() > 0 ? recipeRepository.Items.Max(x => x.Id) + 1 : 1;
-            Console.WriteLine($"\n    The recipe will be added to the category: {categoryRepository.Get(idCategory).Name}");
+            int idRecipe = RecipeRepository.Items.Count() > 0 ? RecipeRepository.Items.Max(x => x.Id) + 1 : 1;
+            Console.WriteLine($"\n    The recipe will be added to the category: {CategoryRepository.Get(idCategory).Name}");
             Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = recipeRepository.IsNameMustNotExist(Console.ReadLine());
+            string nameRecipe = RecipeRepository.IsNameMustNotExist(Console.ReadLine());
             Console.Write("\n    Enter recipe description: ");
             string description = Validation.NullOrEmptyText(Console.ReadLine());
-            recipeRepository.Create(new Recipe() { Id = idRecipe, Name = nameRecipe, Description=description, IdCategory = idCategory });
+            RecipeRepository.Create(new Recipe() { Id = idRecipe, Name = nameRecipe, Description=description, IdCategory = idCategory });
             UnitOfWork.SaveAllData();
         }
 
@@ -78,9 +78,9 @@ namespace task2.Controls
             Console.Clear();
             Console.Write("Are you sure you want to delete the recipe? ");
             if (Validation.YesNo() == ConsoleKey.N) return;
-            amountIngredientRepository.Items.RemoveAll(r => r.IdRecipe == id);
-            cookingStepRepository.Items.RemoveAll(r => r.IdRecipe == id);
-            recipeRepository.Delete(id);
+            AamountIngredientRepository.Items.RemoveAll(r => r.IdRecipe == id);
+            CookingStepRepository.Items.RemoveAll(r => r.IdRecipe == id);
+            RecipeRepository.Delete(id);
             UnitOfWork.SaveAllData();
         }
 
@@ -96,9 +96,9 @@ namespace task2.Controls
             if (level > levelLimitation)
                 return;
             items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
-            foreach (var recipe in recipeRepository.Items.Where(x => x.IdCategory == thisEntity.Id))
+            foreach (var recipe in RecipeRepository.Items.Where(x => x.IdCategory == thisEntity.Id))
                 items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.IdCategory, TypeEntity = "recipe" });
-            foreach (var child in categoryRepository.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            foreach (var child in CategoryRepository.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
             {
                 var entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
                 BuildCurrentOpenRecipesCategories(items, entityMenu, level + 1, levelLimitation);

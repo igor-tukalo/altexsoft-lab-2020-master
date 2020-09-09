@@ -10,7 +10,7 @@ namespace task2.ViewNavigation.WindowNavigation
     class CookingStepsNavigation : BaseNavigation, INavigation
     {
         readonly ICookingStepsControl CookingSteps;
-        int IdRecipe;
+        readonly int IdRecipe;
         public CookingStepsNavigation(int idRecipe, ICookingStepsControl cookingSteps)
         {
             IdRecipe = idRecipe;
@@ -35,7 +35,7 @@ namespace task2.ViewNavigation.WindowNavigation
             {
                 case 0:
                     {
-                        CookingSteps.Add();
+                        CookingSteps.Add(IdRecipe);
                         CallNavigation();
                     }
                     break;

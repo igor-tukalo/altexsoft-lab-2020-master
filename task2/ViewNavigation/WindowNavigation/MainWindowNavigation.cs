@@ -9,6 +9,7 @@ namespace task2.ViewNavigation.WindowNavigation
 {
     class MainWindowNavigation : BaseNavigation, INavigation
     {
+        readonly UnitOfWork unitOfWork = new UnitOfWork();
         public override void CallNavigation()
         {
             Console.Clear();
@@ -38,7 +39,7 @@ namespace task2.ViewNavigation.WindowNavigation
             {
                 case 0:
                     {
-                        new ProgramMenu(new RecipesNavigation(new CategoriesControl(new UnitOfWork()),new RecipesControl(new UnitOfWork()))).CallMenu();
+                        new ProgramMenu(new RecipesNavigation(new CategoriesControl(unitOfWork),new RecipesControl(unitOfWork))).CallMenu();
                     }
                     break;
                 case 1:

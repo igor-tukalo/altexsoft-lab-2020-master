@@ -2,7 +2,7 @@
 
 namespace task2.Controls
 {
-    abstract class BaseControl : IBaseControl
+    abstract class BaseControl
     {
         protected IUnitOfWork UnitOfWork { get;set; }
 
