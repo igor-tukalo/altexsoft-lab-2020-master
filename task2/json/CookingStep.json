@@ -1,0 +1,324 @@
+[
+  {
+    "Step": 1,
+    "IdRecipe": 1,
+    "Id": 1,
+    "Name": "Melt butter and beat with sugar and vanilla sugar."
+  },
+  {
+    "Step": 2,
+    "IdRecipe": 1,
+    "Id": 2,
+    "Name": "Add eggs, beat."
+  },
+  {
+    "Step": 3,
+    "IdRecipe": 1,
+    "Id": 3,
+    "Name": "Pour in kefir, mix."
+  },
+  {
+    "Step": 4,
+    "IdRecipe": 1,
+    "Id": 4,
+    "Name": "Gradually add flour and baking powder and beat until smooth."
+  },
+  {
+    "Step": 5,
+    "IdRecipe": 1,
+    "Id": 5,
+    "Name": "Divide the dough into two parts, add cocoa to one part, mix thoroughly."
+  },
+  {
+    "Step": 6,
+    "IdRecipe": 1,
+    "Id": 6,
+    "Name": "In a baking dish (I have a silicone one), spread the dough with tablespoons alternately dark and light, in random order, without stirring. Bake Zebra cake at 190 degrees for 40-45 minutes. Willingness to check with a wooden stick."
+  },
+  {
+    "Step": 7,
+    "IdRecipe": 1,
+    "Id": 7,
+    "Name": "Sprinkle the finished Zebra cake with powdered sugar. Bon appetit, please your loved ones!"
+  },
+  {
+    "Step": 1,
+    "IdRecipe": 3,
+    "Id": 8,
+    "Name": "Mix all ingredients.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 2,
+    "IdRecipe": 3,
+    "Id": 9,
+    "Name": "Put butter to the baking muffin cups.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 3,
+    "IdRecipe": 3,
+    "Id": 10,
+    "Name": "Bake for 30 minutes at 350 °F (175 °C).",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 4,
+    "IdRecipe": 3,
+    "Id": 11,
+    "Name": "Let cool. Enjoy.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 1,
+    "IdRecipe": 4,
+    "Id": 12,
+    "Name": "Preheat oven to 425°F.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 2,
+    "IdRecipe": 4,
+    "Id": 13,
+    "Name": "In a medium bowl whisk together flour, baking powder, and salt. Cut butter into chunks and cut into flour using fingers or a pastry cutter until the size of small peas.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 3,
+    "IdRecipe": 4,
+    "Id": 14,
+    "Name": "Add sugar and slowly mix in kefir until a dough forms. The dough should just hold together and not be too sticky. Knead briefly to bring the dough together and turn out onto a floured surface.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 4,
+    "IdRecipe": 4,
+    "Id": 15,
+    "Name": "Roll out into a 1 1/2-inch thick round or rectangle. Use a 2-inch biscuit cutter to cut out the scones and transfer to a baking sheet. Knead together scraps and cut into more scones until all of the dough is used up.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 5,
+    "IdRecipe": 4,
+    "Id": 16,
+    "Name": "Bake 10-15 minutes. Transfer to a cooling rack and serve warm with cultured butter, clotted or whipped cream, and jam.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 1,
+    "IdRecipe": 5,
+    "Id": 17,
+    "Name": "Pre-heat oven to 350° F (175° C). Grease 8\" square baking pan.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 2,
+    "IdRecipe": 5,
+    "Id": 18,
+    "Name": "Combine flour, cocoa and salt in small bowl. Beat butter, granulated sugar and brown sugar in large mixer bowl until creamy. Add 2 eggs, one at a time, beating well after each addition. Add vanilla extract; mix well.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 3,
+    "IdRecipe": 5,
+    "Id": 19,
+    "Name": "Gradually beat in flour mixture. Reserve 3/4 cup batter. Spread remaining batter into prepared baking pan. Sprinkle nuts and white morsels over batter. Drizzle caramel topping over top.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 4,
+    "IdRecipe": 5,
+    "Id": 20,
+    "Name": "Beat remaining egg and reserved batter in same large bowl until light in color.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 5,
+    "IdRecipe": 5,
+    "Id": 21,
+    "Name": "Stir in semi-sweet morsels (like Toll House brand). Spread evenly over caramel topping.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 6,
+    "IdRecipe": 5,
+    "Id": 22,
+    "Name": "Bake for 30 to 35 minutes or until center is set.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 7,
+    "IdRecipe": 5,
+    "Id": 23,
+    "Name": "Cool completely in pan on wire rack. Cut into squares.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 8,
+    "IdRecipe": 5,
+    "Id": 24,
+    "Name": "Note: based on Nestle Toll House recipe.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 1,
+    "IdRecipe": 6,
+    "Id": 25,
+    "Name": "Heat the oil in a deep frying pan and add the onion. Cook over a medium heat for 5 mins until starting to soften. Add the chorizo and cook for another few mins to release the oil. Coat the onion in the chorizo oil, then tip in the tomatoes. Fill the can with water and tip that in too. Season and bring to the boil.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 2,
+    "IdRecipe": 6,
+    "Id": 26,
+    "Name": "Once boiling, season the cod fillets and nestle into the pan. Reduce the heat and gently simmer for about 7 mins. Gently mix in the butter beans and cook for 1-2 mins more until hot. Scatter with parsley and serve in bowls.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 1,
+    "IdRecipe": 7,
+    "Id": 27,
+    "Name": "In a medium saucepan, bring water to a boil. Add rice and stir. Reduce heat, cover and simmer for 20 minutes.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 2,
+    "IdRecipe": 7,
+    "Id": 28,
+    "Name": "Bring a large, wide saucepan of lightly salted water to a boil. Add cabbage leaves and cook for 2 to 4 minutes or until softened; drain.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 3,
+    "IdRecipe": 7,
+    "Id": 29,
+    "Name": "In a medium mixing bowl, combine the ground beef, 1 cup cooked rice, onion, egg, salt and pepper, along with 2 tablespoons of tomato soup. Mix thoroughly.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 4,
+    "IdRecipe": 7,
+    "Id": 30,
+    "Name": "Divide the beef mixture evenly among the cabbage leaves. Roll and secure them with toothpicks or string.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 5,
+    "IdRecipe": 7,
+    "Id": 31,
+    "Name": "In a large skillet over medium heat, place the cabbage rolls and pour the remaining tomato soup over the top. Cover and bring to a boil. Reduce heat to low and simmer for about 40 minutes, stirring and basting with the liquid often.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 1,
+    "IdRecipe": 8,
+    "Id": 32,
+    "Name": "In a deep dish skillet with a small amount of oil, brown ground beef, and onion. Drain.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 2,
+    "IdRecipe": 8,
+    "Id": 33,
+    "Name": "Add the minced garlic to the ground beef with onions and give it a quick saute.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 3,
+    "IdRecipe": 8,
+    "Id": 34,
+    "Name": "Add in water, diced tomatoes and tomato sauce. Season with salt and pepper. Toss in the uncooked rice at this point if using.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 4,
+    "IdRecipe": 8,
+    "Id": 35,
+    "Name": "Place chopped cabbage in pan, and toss to combine all ingredients.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 5,
+    "IdRecipe": 8,
+    "Id": 36,
+    "Name": "Cover the pan with lid and simmer for 30 minutes or until cabbage has cooked.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 1,
+    "IdRecipe": 9,
+    "Id": 37,
+    "Name": "Before marinating, you need to prepare the carcass: remove the remnants of feathers and down, if necessary, burn with a gas burner, wash and dry. I cut off the outer wing phalanges, which contain almost no meat and burn when baked. I also removed the sebaceous gland from the tail, which gives off an unpleasant odor when baked. The neck can be cut off or left as you wish.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 2,
+    "IdRecipe": 9,
+    "Id": 38,
+    "Name": "For the marinade, I combined in a small bowl: soy sauce, honey, grated ginger, salt, pepper, lemon juice, and garlic, passed through a press (you can use granulated). She whisked all the ingredients with a whisk to completely dissolve the honey and salt.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 3,
+    "IdRecipe": 9,
+    "Id": 39,
+    "Name": "The resulting fragrant mixture rubbed the carcass outside and inside.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 4,
+    "IdRecipe": 9,
+    "Id": 40,
+    "Name": "Packed it into a baking sleeve, poured the remaining sauce there. Left to marinate for at least 4-6 hours (preferably overnight) in the refrigerator.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 5,
+    "IdRecipe": 9,
+    "Id": 41,
+    "Name": "Then she sent the duck to the oven, heated to 160-180 degrees - the bird should lie breast down. Baked for 2 hours. After the indicated time, she carefully cut the sleeve and pierced a large joint with a knife to make sure the meat was ready. If a clear liquid flows out, you can turn off the oven.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  },
+  {
+    "Step": 6,
+    "IdRecipe": 9,
+    "Id": 42,
+    "Name": "Duck baked in a sleeve in the oven is very tasty, soft and juicy, ruddy, smells like ginger and honey. It remains to be divided into portions and can be served at the table. Buckwheat with mushrooms, mashed potatoes, sauerkraut and other pickles are suitable for garnish. Do not rush to pour out the melted duck fat, it is perfect for frying potatoes.",
+    "ParentId": 0,
+    "TypeEntity": ""
+  }
+]
