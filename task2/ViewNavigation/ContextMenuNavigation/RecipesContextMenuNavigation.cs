@@ -9,7 +9,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 {
     class RecipesContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
-        readonly UnitOfWork unitOfWork = new UnitOfWork();
+        UnitOfWork unitOfWork = new UnitOfWork();
         readonly int IdRecipe;
         int IdCategory { get; set; }
         readonly IRecipesControl Recipes;
@@ -84,6 +84,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
+            unitOfWork = new UnitOfWork();
             new RecipesNavigation(new CategoriesControl(unitOfWork), new RecipesControl(unitOfWork)).MovementCategoriesRecipes(IdCategory);
         }
     }

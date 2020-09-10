@@ -1,56 +1,116 @@
 [
   {
+    "Name": "Cupcake Zebra",
     "Description": "The recipe for Zebra cake is written down in old culinary notebooks of many housewives, possibly even mothers and grandmothers. Perhaps this is one of those recipes that do not age over the years. Zebra cake is fluffy, soft, very tasty and looks original. Such pastries are always useful at a family tea party.",
     "IdCategory": 12,
-    "Id": 1,
-    "Name": "Cupcake Zebra"
+    "Id": 1
   },
   {
+    "Name": "Cheese muffins",
     "Description": "Lovers of savory and hearty pastries will love them. Delicate, airy and aromatic muffins with a hint of cheese, can be served with tea, coffee or milk. They are good hot and cold.",
     "IdCategory": 13,
-    "Id": 2,
-    "Name": "Cheese muffins"
+    "Id": 2
   },
   {
+    "Name": "Pumpkin Muffins IV",
     "Description": "A festive pumpkin muffin recipe.",
     "IdCategory": 3,
-    "Id": 3,
-    "Name": "Pumpkin Muffins IV"
+    "Id": 3
   },
   {
+    "Name": "Simple scones kefir",
     "Description": "English scones are an unforgettable treat and nothing like the American scones sold at so many large-scale coffee shops. Try this simple recipe using cultured kefir for an extra-tender crumb to your very British scones.",
     "IdCategory": 9,
-    "Id": 4,
-    "Name": "Simple scones kefir"
+    "Id": 4
   },
   {
+    "Name": "Chocolate Brownies",
     "Description": "There are many layers of love in these chocolate brownies.",
     "IdCategory": 3,
-    "Id": 5,
-    "Name": "Chocolate Brownies"
+    "Id": 5
   },
   {
+    "Name": "Cod & chorizo stew",
     "Description": "Fancy a fish supper ready in under half an hour? Mix up your midweek meal with our satisfyingly spicy chorizo and cod stew.",
     "IdCategory": 5,
-    "Id": 6,
-    "Name": "Cod & chorizo stew"
+    "Id": 6
   },
   {
+    "Name": "Stuffed Cabbage Rolls",
     "Description": "I don't know where I got this recipe, but I have been using it for well over 20 years. Works well in a slow cooker.",
     "IdCategory": 16,
-    "Id": 7,
-    "Name": "Stuffed Cabbage Rolls"
+    "Id": 7
   },
   {
+    "Name": "Lazy Day Cabbage Roll Casserole",
     "Description": "Feeling lazy? Try this super simple and tasty Cabbage Roll Casserole recipe for a great weeknight or 'lazy day' meal.",
     "IdCategory": 17,
-    "Id": 8,
-    "Name": "Lazy Day Cabbage Roll Casserole"
+    "Id": 8
   },
   {
+    "Name": "Duck in the sleeve in the oven",
     "Description": "How do you cook duck in the oven? Do you stuff it with apples , rice, cabbage? Or messing around with the filling isn't yours? In this case, take note of a simple dish - duck marinated in soy sauce and honey. It is being prepared practically without your participation. The roasting sleeve and oven will do all the work for you.  A duck in a sleeve baked in the oven has a number of advantages: the meat cooks relatively quickly, retains a lot of moisture and turns out to be incredibly juicy, and besides, you don't need to wash a whole mountain of dishes. Rub the carcass with spices, marinate, wrap in a sleeve and put in the oven for 2 hours. The gala dinner will be ready by the appointed time!",
     "IdCategory": 4,
-    "Id": 9,
-    "Name": "Duck in the sleeve in the oven"
+    "Id": 9
+  },
+  {
+    "Name": "Oatmeal cinnamon cookies",
+    "Description": "Delicious oatmeal cookies",
+    "IdCategory": 3,
+    "Id": 10
+  },
+  {
+    "Name": "Oatmeal Raisin Cookies",
+    "Description": "Oatmeal Raisin Cookies",
+    "IdCategory": 3,
+    "Id": 11
+  },
+  {
+    "Name": "Oatmeal cookies with honey and sour cream",
+    "Description": "Oatmeal cookies with honey and sour cream",
+    "IdCategory": 3,
+    "Id": 12
+  },
+  {
+    "Name": "Kefir cake \"Village\"",
+    "Description": "A very simple and quick cake to prepare, which gives free rein to your imagination in terms of impregnation and fillings. Very tender sponge cake with kefir.",
+    "IdCategory": 9,
+    "Id": 13
+  },
+  {
+    "Name": "Semolina pie (manna)",
+    "Description": "When you need simple pastries on kefir, recipes with photos, simple and tasty, come in handy. Here is a pie with semolina on kefir, very good for tea. And you can serve semolina pie for breakfast, like a casserole, with sour cream or jam. Mannik is delicious baked goods! Recipes with photos will help you prepare it.",
+    "IdCategory": 9,
+    "Id": 14
+  },
+  {
+    "Name": "Cupcake \"Zebra\" with kefir and vegetable oil",
+    "Description": "I try to pamper my family with baked goods as often as possible - buns, pies, muffins, tortillas and pizza! Over the years, she has collected many secrets for perfect baking. Today I will share a recipe for Zebra pie with kefir and vegetable oil. Heat eggs for the most perfect result! It always turns out to be a plus!",
+    "IdCategory": 9,
+    "Id": 15
+  },
+  {
+    "Name": "Khichiny with cheese and potatoes",
+    "Description": "Traditional baking recipes are simple and proven. Do you have kefir or sour milk and a piece of cheese? This dish is for you! The recipe for making khychins - Caucasian flatbreads with cheese and potatoes. The dough for thin khychins on kefir is very simple to prepare, especially since it is baked goods without eggs. You will like kefir baked goods.",
+    "IdCategory": 9,
+    "Id": 16
+  },
+  {
+    "Name": "Kefir cupcakes",
+    "Description": "Airy kefir cupcakes! Prepare quickly and easily. Delicate and delicious. By adding different fillings (raisins, chocolate, nuts), you get different tastes.",
+    "IdCategory": 12,
+    "Id": 17
+  },
+  {
+    "Name": "Manna",
+    "Description": "Just bake a manna for tea. Recipe from the series \"Cheap and Angry\" :) Choosing the best recipe for manna is not easy, we suggest this time to try to cook manna in butter.",
+    "IdCategory": 12,
+    "Id": 18
+  },
+  {
+    "Name": "Kefir gingerbread with honey and protein fondant",
+    "Description": "If you bake gingerbread according to this recipe, they will turn out perfect for you - soft, airy and very appetizing. The dough is prepared with kefir, with the addition of honey. Protein fondant gives the gingerbread a complete look.",
+    "IdCategory": 12,
+    "Id": 19
   }
 ]

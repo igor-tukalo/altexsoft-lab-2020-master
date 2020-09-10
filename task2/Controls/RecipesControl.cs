@@ -44,7 +44,7 @@ namespace task2.Controls
         public void Edit(int id)
         {
             Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = RecipeRepository.IsNameMustNotExist(Console.ReadLine());
+            string nameRecipe = RecipeRepository.IsNameMustNotExist(Validation.NullOrEmptyText(Console.ReadLine()));
             var recipe = RecipeRepository.Get(id);
             recipe.Name = nameRecipe;
             RecipeRepository.Update(recipe);

@@ -39,7 +39,7 @@ namespace task2.ViewNavigation.WindowNavigation
                 case 0:
                     {
                         Recipes.Add(IdNextCategory);
-                        MovementCategoriesRecipes(IdNextCategory);
+                        CallNavigation();
                     }
                     break;
                 case 1:

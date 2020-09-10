@@ -36,4 +36,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties json_4amountingredient_1json__JsonSchema="https://github.com/go-vela/types/releases/latest/download/schema.json" /></VisualStudio></ProjectExtensions>
+
 </Project>
