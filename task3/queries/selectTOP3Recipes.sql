@@ -8,7 +8,7 @@ AS (
 
     UNION ALL
 
-    SELECT T2.id, T2.ParentId, T2.Name, T."level"+1, cast(T."path" +'.' + cast(T2.id as varchar) as varchar)
+    SELECT T2.id, T2.ParentId, T2.Name, T."level"+1, cast(T."path" +'.'  as varchar)
     FROM
         Categories T2 INNER JOIN tree T ON T.id = T2.ParentId
 )
@@ -16,7 +16,7 @@ SELECT Recipe, Ingredients, Category
 FROM
 	(
 	SELECT
-		row_number() over(PARTITION BY T."name" ORDER BY T."path") as rn,
+		row_number() over(PARTITION BY T."name" ORDER BY T."path", Recipes.Name) as rn, 
 		Recipes.Name Recipe,
 		T."path" "path",
 		space(T."level" * 5) + T."name" Category,
