@@ -7,7 +7,7 @@ GO
 
 CREATE TABLE [dbo].[Categories](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](50) NOT NULL,
+	[Name] [nvarchar](50) UNIQUE NOT NULL,
 	[ParentId] [int] NULL,
  CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED 
 (
