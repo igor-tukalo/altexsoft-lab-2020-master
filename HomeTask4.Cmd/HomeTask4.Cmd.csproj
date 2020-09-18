@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HomeTask4.Infrastructure\HomeTask4.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
