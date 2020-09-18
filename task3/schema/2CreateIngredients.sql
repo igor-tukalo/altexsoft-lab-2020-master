@@ -7,7 +7,7 @@ GO
 
 CREATE TABLE [dbo].[Ingredients](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](50) NOT NULL,
+	[Name] [nvarchar](50) UNIQUE NOT NULL,
  CONSTRAINT [PK_Ingredients] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
