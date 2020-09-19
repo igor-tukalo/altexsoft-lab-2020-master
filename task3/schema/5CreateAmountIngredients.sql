@@ -9,8 +9,8 @@ CREATE TABLE [dbo].[AmountIngredients](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Amount] [float] NULL,
 	[Unit] [nvarchar](50) NULL,
-	[IdRecipe] [int] NOT NULL,
-	[IdIngredient] [int] NOT NULL,
+	[RecipeId] [int] NOT NULL,
+	[IngredientId] [int] NOT NULL,
  CONSTRAINT [PK_AmountIngredients] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

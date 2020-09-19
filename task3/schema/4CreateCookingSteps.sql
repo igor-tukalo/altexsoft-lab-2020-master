@@ -9,7 +9,7 @@ CREATE TABLE [dbo].[CookingSteps](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [nvarchar](max) NOT NULL,
 	[Step] [int] NOT NULL,
-	[IdRecipe] [int] NOT NULL,
+	[RecipeId] [int] NOT NULL,
  CONSTRAINT [PK_CookingStep] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
