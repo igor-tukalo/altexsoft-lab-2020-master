@@ -9,7 +9,6 @@ namespace HomeTask4.Core.Interfaces
         void Edit(int id);
         void Delete(int id);
         void BuildRecipesCategories(List<EntityMenu> items, Category thisEntity, int level, int levelLimitation);
-        int GetIdCategory(int idRecipe);
         void View(int idRecipe);
         void ChangeDescription(int idRecipe);
     }

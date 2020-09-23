@@ -38,28 +38,14 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             {
                 case 0:
                     {
-                        RecipesNavigation recipeNav = new RecipesNavigation(new CategoriesControl(UnitOfWork), new RecipesControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(recipeNav).CallMenu();
-                        }
-                        finally
-                        {
-                            recipeNav.Dispose();
-                        }
+                        RecipesNavigation recipeNav = new RecipesNavigation(new RecipesControl(UnitOfWork));
+                        new ProgramMenu(recipeNav).CallMenu();
                     }
                     break;
                 case 1:
                     {
                         SettingsNavigation settNav = new SettingsNavigation(new SettingsControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(settNav).CallMenu();
-                        }
-                        finally
-                        {
-                            settNav.Dispose();
-                        }
+                        new ProgramMenu(settNav).CallMenu();
                     }
                     break;
             }

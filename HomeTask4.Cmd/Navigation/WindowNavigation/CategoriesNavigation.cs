@@ -23,7 +23,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     new EntityMenu(){ Name = "    Return to settings"},
                     new EntityMenu(){ Name = "    Return to main menu"}
                 };
-            Categories.BuildHierarchicalCategories(ItemsMenu, Categories.GetParentCategory(1), 1);
+            Categories.BuildHierarchicalCategories(ItemsMenu, UnitOfWork.Repository.GetByIdAsync<Category>(1).Result, 1);
             base.CallNavigation();
         }
 
@@ -40,40 +40,19 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 case 1:
                     {
                         SettingsNavigation settNav = new SettingsNavigation(new SettingsControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(settNav).CallMenu();
-                        }
-                        finally
-                        {
-                            settNav.Dispose();
-                        }
+                        new ProgramMenu(settNav).CallMenu();
                     }
                     break;
                 case 2:
                     {
                         MainWindowNavigation mainWnNav = new MainWindowNavigation();
-                        try
-                        {
-                            new ProgramMenu(mainWnNav).CallMenu();
-                        }
-                        finally
-                        {
-                            mainWnNav.Dispose();
-                        }
+                        new ProgramMenu(mainWnNav).CallMenu();
                     }
                     break;
                 default:
                     {
                         CategoriesContextMenuNavigation catContextNav = new CategoriesContextMenuNavigation(ItemsMenu[id].Id, Categories);
-                        try
-                        {
-                            new ProgramMenu(catContextNav).CallMenu();
-                        }
-                        finally
-                        {
-                            catContextNav.Dispose();
-                        }
+                        new ProgramMenu(catContextNav).CallMenu();
                     }
                     break;
             }

@@ -56,14 +56,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         public void BackPrevMenu()
         {
             CategoriesNavigation catNav = new CategoriesNavigation(Categories);
-            try
-            {
-                new ProgramMenu(catNav).CallMenu();
-            }
-            finally
-            {
-                catNav.Dispose();
-            }
+            new ProgramMenu(catNav).CallMenu();
         }
     }
 }

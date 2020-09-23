@@ -1,6 +1,7 @@
 ﻿using HomeTask4.Core.CRUD;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel;
 using System;
 using System.Collections.Generic;
 using task2.ViewNavigation.ContextMenuNavigation;
@@ -9,8 +10,8 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
     internal class IngredientsNavigation : BaseNavigation, INavigation
     {
+        private readonly Validation ValidManager = new Validation();
         private readonly IIngredientsControl Ingredients;
-
         public IngredientsNavigation(IIngredientsControl ingredients)
         {
             Ingredients = ingredients;
@@ -43,14 +44,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 case 1:
                     {
                         SettingsNavigation settNav = new SettingsNavigation(new SettingsControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(settNav).CallMenu();
-                        }
-                        finally
-                        {
-                            settNav.Dispose();
-                        }
+                        new ProgramMenu(settNav).CallMenu();
                     }
                     break;
                 case 2:
@@ -63,14 +57,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 default:
                     {
                         IngredientsContextMenuNavigation ingContextMenuNNav = new IngredientsContextMenuNavigation(ItemsMenu[id].Id, PageIngredients, Ingredients);
-                        try
-                        {
-                            new ProgramMenu(ingContextMenuNNav).CallMenu();
-                        }
-                        finally
-                        {
-                            ingContextMenuNNav.Dispose();
-                        }
+                        new ProgramMenu(ingContextMenuNNav).CallMenu();
                     }
                     break;
             }

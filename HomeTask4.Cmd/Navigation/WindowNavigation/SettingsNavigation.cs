@@ -35,27 +35,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 case 0:
                     {
                         CategoriesNavigation catNav = new CategoriesNavigation(new CategoriesControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(catNav).CallMenu();
-                        }
-                        finally
-                        {
-                            catNav.Dispose();
-                        }
+                        new ProgramMenu(catNav).CallMenu();
                     }
                     break;
                 case 1:
                     {
                         IngredientsNavigation ingrNav = new IngredientsNavigation(new IngredientsControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(ingrNav).CallMenu();
-                        }
-                        finally
-                        {
-                            ingrNav.Dispose();
-                        }
+                        new ProgramMenu(ingrNav).CallMenu();
                     }
                     break;
                 case 2:
@@ -67,14 +53,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 case 3:
                     {
                         MainWindowNavigation mainWinNav = new MainWindowNavigation();
-                        try
-                        {
-                            new ProgramMenu(mainWinNav).CallMenu();
-                        }
-                        finally
-                        {
-                            mainWinNav.Dispose();
-                        }
+                        new ProgramMenu(mainWinNav).CallMenu();
                     }
                     break;
             }

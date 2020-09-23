@@ -1,31 +1,24 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Repositories;
-using HomeTask4.Infrastructure.Data;
-using HomeTask4.SharedKernel;
-using System;
+using HomeTask4.Infrastructure.Extensions;
+using HomeTask4.SharedKernel.Interfaces;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace HomeTask4.Cmd.Navigation
 {
-    internal abstract class BaseNavigation : INavigation, IDisposable
+    public abstract class BaseNavigation : INavigation
     {
-        private readonly ApplicationContext db;
-        internal UnitOfWork UnitOfWork { get; set; }
-        protected Validation ValidManager { get; }
-
+        internal IUnitOfWork UnitOfWork { get; set; }
+        protected IHost HostBuild { get; set; }
 
         internal BaseNavigation()
         {
-            db = new ApplicationContext();
-            UnitOfWork = new UnitOfWork(db);
-            ValidManager = new Validation();
-
-        }
-
-        protected void RefreshData()
-        {
-            UnitOfWork = new UnitOfWork(db);
+            HostBuild = CreateHostBuilder(false).Build();
+            UnitOfWork = HostBuild.Services.GetRequiredService<IUnitOfWork>();
         }
 
         public List<EntityMenu> ItemsMenu { get; set; }
@@ -35,23 +28,27 @@ namespace HomeTask4.Cmd.Navigation
         }
         public virtual void SelectMethodMenu(int id) { }
 
-        private bool disposed;
-        protected virtual void Dispose(bool disposing)
+        /// <summary>
+        /// This method should be separate to support EF command-line tools in design time
+        /// https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dbcontext-creation
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns><see cref="IHostBuilder" /> hostBuilder</returns>
+        protected static IHostBuilder CreateHostBuilder(bool isConsole)
         {
-            if (!disposed)
+            return Host.CreateDefaultBuilder()
+            .ConfigureServices((context, services) =>
             {
-                if (disposing)
+                services.AddInfrastructure(context.Configuration.GetConnectionString("Default"));
+            })
+            .ConfigureLogging(config =>
+            {
+                config.ClearProviders();
+                if (isConsole)
                 {
-                    db.Dispose();
+                    config.AddConsole();
                 }
-            }
-            disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            });
         }
     }
 }

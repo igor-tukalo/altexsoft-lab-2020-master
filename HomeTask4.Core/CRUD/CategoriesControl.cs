@@ -1,21 +1,23 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Repositories;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace HomeTask4.Core.CRUD
 {
-    public class CategoriesControl : BaseCategoriesRecipesControl, ICategoriesControl
+    public class CategoriesControl : BaseControl, ICategoriesControl
     {
+        private List<Category> Categories => UnitOfWork.Repository.GetListAsync<Category>().Result;
         public CategoriesControl(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 
         public Category GetParentCategory(int id)
         {
-            return CategoryRepository.GetItem(id);
+            return UnitOfWork.Repository.GetByIdAsync<Category>(1).Result;
         }
 
         public void Add()
@@ -23,11 +25,11 @@ namespace HomeTask4.Core.CRUD
             Console.Write("\n    Enter name category: ");
             string name = Console.ReadLine();
             Console.Write("    Enter name main category: ");
-            string nameMainCategory = CategoryRepository.IsNameMustExist(ValidManager.NullOrEmptyText(Console.ReadLine()));
-            int idMainCategory = (from t in CategoryRepository.Items
+            string nameMainCategory = IsNameMustExist(ValidManager.NullOrEmptyText(Console.ReadLine()));
+            int idMainCategory = (from t in Categories
                                   where t.Name == nameMainCategory
                                   select t.Id).First();
-            CategoryRepository.Create(new Category() { Name = name, ParentId = idMainCategory });
+            UnitOfWork.Repository.AddAsync(new Category() { Name = name, ParentId = idMainCategory });
         }
 
         public void BuildHierarchicalCategories(List<EntityMenu> items, Category thisEntity, int level)
@@ -36,7 +38,7 @@ namespace HomeTask4.Core.CRUD
             {
                 items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
             }
-            foreach (Category child in CategoryRepository.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            foreach (Category child in Categories.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
             {
                 BuildHierarchicalCategories(items, child, level + 1);
             }
@@ -46,9 +48,9 @@ namespace HomeTask4.Core.CRUD
         {
             if (thisEntity != null)
             {
-                CategoryRepository.Delete(CategoryRepository.GetItem(thisEntity.Id));
+                UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<Category>(thisEntity.Id).Result);
             }
-            foreach (Category child in CategoryRepository.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            foreach (Category child in Categories.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
             {
                 RemoveHierarchicalCategory(child, level + 1);
             }
@@ -57,15 +59,15 @@ namespace HomeTask4.Core.CRUD
         public void Edit(int id)
         {
             Console.Write("    Enter new name: ");
-            string newName = CategoryRepository.IsNameMustNotExist(Console.ReadLine());
-            Category category = CategoryRepository.GetItem(id);
+            string newName = IsNameMustNotExist(Console.ReadLine());
+            Category category = UnitOfWork.Repository.GetByIdAsync<Category>(id).Result;
             category.Name = newName;
-            CategoryRepository.Update(category);
+            UnitOfWork.Repository.UpdateAsync(category);
         }
 
         public void Delete(int id)
         {
-            if (GetParentCategory(id).ParentId == 0)
+            if (UnitOfWork.Repository.GetByIdAsync<Category>(id).Result.ParentId == 0)
             {
                 return;
             }
@@ -74,8 +76,31 @@ namespace HomeTask4.Core.CRUD
             {
                 return;
             }
-            Category parent = CategoryRepository.GetItem(id);
+            Category parent = UnitOfWork.Repository.GetByIdAsync<Category>(id).Result;
             RemoveHierarchicalCategory(parent, 1);
+        }
+
+        private string IsNameMustExist(string name)
+        {
+            do
+            {
+                if (!Categories.Exists(x => x.Name.ToLower(CultureInfo.CurrentUICulture) == name.ToLower(CultureInfo.CurrentUICulture)))
+                {
+                    Console.Write("    No name found. Enter an existing name: ");
+                    name = ValidManager.NullOrEmptyText(Console.ReadLine());
+                }
+            } while (!Categories.Exists(x => x.Name == name));
+            return name;
+        }
+
+        private string IsNameMustNotExist(string name)
+        {
+            while (Categories.Exists(x => x.Name.ToLower(CultureInfo.CurrentUICulture) == name.ToLower(CultureInfo.CurrentUICulture)))
+            {
+                Console.Write("    This name is already in use. enter another name: ");
+                name = ValidManager.NullOrEmptyText(Console.ReadLine());
+            }
+            return name;
         }
     }
 }

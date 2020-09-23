@@ -40,7 +40,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public override void SelectMethodMenu(int id)
         {
-            IdCategory = Recipes.GetIdCategory(IdRecipe);
+            IdCategory = UnitOfWork.Repository.GetByIdAsync<Recipe>(IdRecipe).Result.CategoryId;
             switch (id)
             {
                 case 0:
@@ -64,27 +64,13 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     {
                         RecipesIngredientsNavigation recipesIngredientsNavigation = new RecipesIngredientsNavigation(
                             IdRecipe, new IngredientsControl(UnitOfWork), new RecipeIngredientsControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(recipesIngredientsNavigation).CallMenu();
-                        }
-                        finally
-                        {
-                            recipesIngredientsNavigation.Dispose();
-                        }
+                        new ProgramMenu(recipesIngredientsNavigation).CallMenu();
                     }
                     break;
                 case 4:
                     {
                         CookingStepsNavigation cookingStepsNav = new CookingStepsNavigation(IdRecipe, new CookingStepsControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(cookingStepsNav).CallMenu();
-                        }
-                        finally
-                        {
-                            cookingStepsNav.Dispose();
-                        }
+                        new ProgramMenu(cookingStepsNav).CallMenu();
                     }
                     break;
                 case 5:
@@ -103,15 +89,8 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            RecipesNavigation recipeNav = new RecipesNavigation(new CategoriesControl(UnitOfWork), Recipes);
-            try
-            {
-                recipeNav.MovementCategoriesRecipes(IdCategory);
-            }
-            finally
-            {
-                recipeNav.Dispose();
-            }
+            RecipesNavigation recipeNav = new RecipesNavigation(Recipes);
+            recipeNav.MovementCategoriesRecipes(IdCategory);
         }
     }
 }

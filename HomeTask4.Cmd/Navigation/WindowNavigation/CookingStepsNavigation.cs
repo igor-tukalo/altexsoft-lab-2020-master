@@ -42,29 +42,14 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 1:
                     {
-                        RefreshData();
                         RecipesContextMenuNavigation recipeNav = new RecipesContextMenuNavigation(IdRecipe, new RecipesControl(UnitOfWork));
-                        try
-                        {
-                            new ProgramMenu(recipeNav).CallMenu();
-                        }
-                        finally
-                        {
-                            recipeNav.Dispose();
-                        }
+                        new ProgramMenu(recipeNav).CallMenu();
                     }
                     break;
                 default:
                     {
                         CookingStepsContextMenuNavigation cookStepsContextNav = new CookingStepsContextMenuNavigation(ItemsMenu[id].Id, IdRecipe, CookingSteps);
-                        try
-                        {
-                            new ProgramMenu(cookStepsContextNav).CallMenu();
-                        }
-                        finally
-                        {
-                            cookStepsContextNav.Dispose();
-                        }
+                        new ProgramMenu(cookStepsContextNav).CallMenu();
                     }
                     break;
             }

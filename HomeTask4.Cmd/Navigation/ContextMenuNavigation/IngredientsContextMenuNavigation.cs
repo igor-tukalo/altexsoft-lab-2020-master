@@ -62,14 +62,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
             {
                 PageIngredients = Page
             };
-            try
-            {
-                new ProgramMenu(ingredientsNavigation).CallMenu();
-            }
-            finally
-            {
-                ingredientsNavigation.Dispose();
-            }
+            new ProgramMenu(ingredientsNavigation).CallMenu();
         }
     }
 }

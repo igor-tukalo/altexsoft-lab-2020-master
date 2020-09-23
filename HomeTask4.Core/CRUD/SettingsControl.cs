@@ -1,5 +1,5 @@
 ﻿using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Repositories;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Configuration;
 

@@ -1,6 +1,6 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Repositories;
+using HomeTask4.SharedKernel.Interfaces;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
@@ -12,18 +12,17 @@ namespace HomeTask4.Core.CRUD
 {
     public class IngredientsControl : BaseControl, IIngredientsControl
     {
-        private readonly IngredientRepository ingredientRepository;
+        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetListAsync<Ingredient>().Result;
         public IngredientsControl(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            ingredientRepository = UnitOfWork.Ingredients;
         }
 
         public void Add()
         {
             Console.Write("\n    Enter name ingredient: ");
-            string name = ingredientRepository.IsNameMustNotExist(Console.ReadLine());
+            string name = IsNameMustNotExist(Console.ReadLine());
             string nameIngredient = name;
-            ingredientRepository.Create(new Ingredient() { Name = nameIngredient });
+            UnitOfWork.Repository.AddAsync(new Ingredient() { Name = nameIngredient });
         }
 
         /// <summary>
@@ -34,7 +33,7 @@ namespace HomeTask4.Core.CRUD
         public List<EntityMenu> GetIngredientsBatch(List<EntityMenu> itemsMenu, int idBatch = 1)
         {
             int counterBatch = 1;
-            foreach (IEnumerable<Ingredient> ingr in ingredientRepository.Items.OrderBy(x => x.Name).Batch(int.Parse(ConfigurationManager.AppSettings.Get("Batch"), CultureInfo.CurrentCulture)))
+            foreach (IEnumerable<Ingredient> ingr in Ingredients.OrderBy(x => x.Name).Batch(int.Parse(ConfigurationManager.AppSettings.Get("Batch"), CultureInfo.CurrentCulture)))
             {
                 if (counterBatch == idBatch)
                 {
@@ -46,7 +45,6 @@ namespace HomeTask4.Core.CRUD
                         }
                     }
                 }
-
                 counterBatch++;
             }
             return itemsMenu = itemsMenu
@@ -57,10 +55,10 @@ namespace HomeTask4.Core.CRUD
         public void Edit(int id)
         {
             Console.Write("    Enter new name: ");
-            string newName = ingredientRepository.IsNameMustNotExist(Console.ReadLine());
-            Ingredient ingredient = ingredientRepository.GetItem(id);
+            string newName = IsNameMustNotExist(Console.ReadLine());
+            Ingredient ingredient = UnitOfWork.Repository.GetByIdAsync<Ingredient>(id).Result;
             ingredient.Name = newName;
-            ingredientRepository.Update(ingredient);
+            UnitOfWork.Repository.UpdateAsync(ingredient);
         }
         public void Delete(int id)
         {
@@ -69,8 +67,17 @@ namespace HomeTask4.Core.CRUD
             {
                 return;
             }
+            UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<Ingredient>(id).Result);
+        }
 
-            ingredientRepository.Delete(ingredientRepository.GetItem(id));
+        private string IsNameMustNotExist(string name)
+        {
+            while (Ingredients.Exists(x => x.Name.ToLower(CultureInfo.CurrentUICulture) == name.ToLower(CultureInfo.CurrentUICulture)))
+            {
+                Console.Write("    This name is already in use. enter another name: ");
+                name = ValidManager.NullOrEmptyText(Console.ReadLine());
+            }
+            return name;
         }
     }
 }

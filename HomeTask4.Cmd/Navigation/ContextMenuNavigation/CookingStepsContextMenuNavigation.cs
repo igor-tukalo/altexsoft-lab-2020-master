@@ -57,14 +57,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         public void BackPrevMenu()
         {
             CookingStepsNavigation CookStepNav = new CookingStepsNavigation(IdRecipe, CookingSteps);
-            try
-            {
-                new ProgramMenu(CookStepNav).CallMenu();
-            }
-            finally
-            {
-                CookStepNav.Dispose();
-            }
+            new ProgramMenu(CookStepNav).CallMenu();
         }
     }
 }

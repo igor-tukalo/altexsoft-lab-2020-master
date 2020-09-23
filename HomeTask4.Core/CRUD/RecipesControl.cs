@@ -1,44 +1,40 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Repositories;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace HomeTask4.Core.CRUD
 {
-    public class RecipesControl : BaseCategoriesRecipesControl, IRecipesControl
+    public class RecipesControl : BaseControl, IRecipesControl
     {
-        private readonly IngredientRepository ingredientRepository;
+        private List<AmountIngredient> AmountIngredients => UnitOfWork.Repository.GetListAsync<AmountIngredient>().Result;
+        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetListAsync<Ingredient>().Result;
+        private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetListAsync<CookingStep>().Result;
+        private List<Recipe> Recipes => UnitOfWork.Repository.GetListAsync<Recipe>().Result;
+        private List<Category> Categories => UnitOfWork.Repository.GetListAsync<Category>().Result;
         public RecipesControl(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            if (unitOfWork != null)
-            {
-                ingredientRepository = unitOfWork.Ingredients;
-            }
-        }
-
-        public int GetIdCategory(int idRecipe)
-        {
-            return RecipeRepository.GetItem(idRecipe).CategoryId;
         }
         public void View(int idRecipe)
         {
-            Recipe recipe = RecipeRepository.GetItem(idRecipe);
+            Recipe recipe = UnitOfWork.Repository.GetByIdAsync<Recipe>(idRecipe).Result;
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
             Console.WriteLine($"    {ValidManager.WrapText(10, recipe.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
             //ingredients recipe
-            foreach (AmountIngredient a in AmountIngredientRepository.Items.Where(x => x.RecipeId == recipe.Id))
+            foreach (AmountIngredient a in AmountIngredients.Where(x => x.RecipeId == recipe.Id))
             {
-                foreach (Ingredient i in ingredientRepository.Items.Where(x => x.Id == a.IngredientId))
+                foreach (Ingredient i in Ingredients.Where(x => x.Id == a.IngredientId))
                 {
                     Console.WriteLine($"    {i.Name} - {a.Amount} {a.Unit}");
                 }
             }
             //steps recipe
             Console.WriteLine("\n    Сooking steps:\n");
-            foreach (CookingStep s in CookingStepRepository.Items.Where(x => x.RecipeId == recipe.Id).OrderBy(x => x.Step))
+            foreach (CookingStep s in CookingSteps.Where(x => x.RecipeId == recipe.Id).OrderBy(x => x.Step))
             {
                 Console.WriteLine($"    {s.Step}. {ValidManager.WrapText(10, s.Name, "\n       ")}");
             }
@@ -47,29 +43,29 @@ namespace HomeTask4.Core.CRUD
         public void Edit(int id)
         {
             Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = RecipeRepository.IsNameMustNotExist(ValidManager.NullOrEmptyText(Console.ReadLine()));
-            Recipe recipe = RecipeRepository.GetItem(id);
+            string nameRecipe = IsNameMustNotExist(ValidManager.NullOrEmptyText(Console.ReadLine()));
+            Recipe recipe = UnitOfWork.Repository.GetByIdAsync<Recipe>(id).Result;
             recipe.Name = nameRecipe;
-            RecipeRepository.Update(recipe);
+            UnitOfWork.Repository.UpdateAsync(recipe);
         }
 
         public void ChangeDescription(int idRecipe)
         {
             Console.Write("\n    Enter recipe description: ");
             string description = ValidManager.NullOrEmptyText(Console.ReadLine());
-            Recipe recipe = RecipeRepository.GetItem(idRecipe);
+            Recipe recipe = UnitOfWork.Repository.GetByIdAsync<Recipe>(idRecipe).Result;
             recipe.Description = description;
-            RecipeRepository.Update(recipe);
+            UnitOfWork.Repository.UpdateAsync(recipe);
         }
 
         public void Add(int idCategory)
         {
-            Console.WriteLine($"\n    The recipe will be added to the category: {CategoryRepository.GetItem(idCategory).Name}");
+            Console.WriteLine($"\n    The recipe will be added to the category: {UnitOfWork.Repository.GetByIdAsync<Category>(idCategory).Result.Name}");
             Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = RecipeRepository.IsNameMustNotExist(Console.ReadLine());
+            string nameRecipe = IsNameMustNotExist(Console.ReadLine());
             Console.Write("\n    Enter recipe description: ");
             string description = ValidManager.NullOrEmptyText(Console.ReadLine());
-            RecipeRepository.Create(new Recipe() { Name = nameRecipe, Description = description, CategoryId = idCategory });
+            UnitOfWork.Repository.AddAsync(new Recipe() { Name = nameRecipe, Description = description, CategoryId = idCategory });
         }
 
         public void Delete(int id)
@@ -80,7 +76,7 @@ namespace HomeTask4.Core.CRUD
             {
                 return;
             }
-            RecipeRepository.Delete(RecipeRepository.GetItem(id));
+            UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<Recipe>(id).Result);
         }
 
         /// <summary>
@@ -99,12 +95,12 @@ namespace HomeTask4.Core.CRUD
             if (items != null && thisEntity != null)
             {
                 items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
-                foreach (Recipe recipe in RecipeRepository.Items.Where(x => x.CategoryId == thisEntity.Id))
+                foreach (Recipe recipe in Recipes.Where(x => x.CategoryId == thisEntity.Id))
                 {
                     items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.CategoryId, TypeEntity = "recipe" });
                 }
             }
-            foreach (Category child in CategoryRepository.Items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            foreach (Category child in Categories.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
             {
                 EntityMenu entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
                 if (items != null)
@@ -131,6 +127,16 @@ namespace HomeTask4.Core.CRUD
                     BuildCurrentOpenRecipesCategories(items, child, level + 1, levelLimitation);
                 }
             }
+        }
+
+        private string IsNameMustNotExist(string name)
+        {
+            while (Recipes.Exists(x => x.Name.ToLower(CultureInfo.CurrentUICulture) == name.ToLower(CultureInfo.CurrentUICulture)))
+            {
+                Console.Write("    This name is already in use. enter another name: ");
+                name = ValidManager.NullOrEmptyText(Console.ReadLine());
+            }
+            return name;
         }
     }
 }

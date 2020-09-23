@@ -1,6 +1,6 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Repositories;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +9,10 @@ namespace HomeTask4.Core.CRUD
 {
     public class RecipeIngredientsControl : BaseControl, IRecipeIngredientsControl
     {
-        private readonly AmountIngredientRepository amountIngredientRepository;
-        private readonly IngredientRepository ingredientRepository;
+        private List<AmountIngredient> AmountIngredients => UnitOfWork.Repository.GetListAsync<AmountIngredient>().Result;
+        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetListAsync<Ingredient>().Result;
         public RecipeIngredientsControl(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            amountIngredientRepository = UnitOfWork.AmountIngredients;
-            ingredientRepository = UnitOfWork.Ingredients;
         }
 
         public void Add(int idIngredient, int idRecipe)
@@ -23,21 +21,21 @@ namespace HomeTask4.Core.CRUD
             double amount = ValidManager.ValidDouble(Console.ReadLine().Replace(".", ","));
             Console.Write("    Enter the unit of ingredient: ");
             string unit = ValidManager.NullOrEmptyText(Console.ReadLine());
-            amountIngredientRepository.Create(new AmountIngredient { Amount = amount, Unit = unit, IngredientId = idIngredient, RecipeId = idRecipe });
+            UnitOfWork.Repository.AddAsync(new AmountIngredient { Amount = amount, Unit = unit, IngredientId = idIngredient, RecipeId = idRecipe });
         }
 
         public void Delete(int id)
         {
-            amountIngredientRepository.Delete(amountIngredientRepository.GetItem(id));
+            UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<AmountIngredient>(id).Result);
         }
 
         public List<EntityMenu> GetItems(List<EntityMenu> itemsMenu, int idRecipe)
         {
-            if (amountIngredientRepository.Items != null)
+            if (AmountIngredients != null)
             {
-                foreach (AmountIngredient a in amountIngredientRepository.Items.Where(x => x.RecipeId == idRecipe))
+                foreach (AmountIngredient a in AmountIngredients.Where(x => x.RecipeId == idRecipe))
                 {
-                    foreach (Ingredient i in ingredientRepository.Items.Where(x => x.Id == a.IngredientId))
+                    foreach (Ingredient i in Ingredients.Where(x => x.Id == a.IngredientId))
                     {
                         if (itemsMenu != null)
                         {
@@ -46,7 +44,6 @@ namespace HomeTask4.Core.CRUD
                     }
                 }
             }
-
             return itemsMenu;
         }
     }
