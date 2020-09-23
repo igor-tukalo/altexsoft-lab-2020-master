@@ -6,7 +6,7 @@ namespace HomeTask4.Cmd.Navigation
 {
     internal class Navigation
     {
-        public delegate void Method(int id);
+        public delegate void MenuMethodsCallback(int id);
 
         private List<EntityMenu> MenuItems;
         private int counter;
@@ -16,17 +16,16 @@ namespace HomeTask4.Cmd.Navigation
         /// </summary>
         /// <param name="menuItems"></param>
         /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
-        public void CallNavigation(List<EntityMenu> menuItems, Method selectedMethod)
+        public void CallNavigation(List<EntityMenu> menuItems, MenuMethodsCallback selectedMethod)
         {
             MenuItems = menuItems;
             int menuResult;
 
-            List<Method> methodsMenu = new List<Method>();
+            List<MenuMethodsCallback> methodsMenu = new List<MenuMethodsCallback>();
             for (int i = 0; i < MenuItems.Count; i++)
             {
                 methodsMenu.Add(selectedMethod);
             }
-
             do
             {
                 menuResult = PrintMenu();

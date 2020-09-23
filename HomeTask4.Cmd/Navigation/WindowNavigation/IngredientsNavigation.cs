@@ -1,4 +1,4 @@
-﻿using HomeTask4.Core.CRUD;
+﻿using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel;
@@ -43,7 +43,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 1:
                     {
-                        SettingsNavigation settNav = new SettingsNavigation(new SettingsControl(UnitOfWork));
+                        SettingsNavigation settNav = new SettingsNavigation(new SettingsController(UnitOfWork));
                         new ProgramMenu(settNav).CallMenu();
                     }
                     break;

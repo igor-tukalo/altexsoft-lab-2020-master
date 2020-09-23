@@ -1,4 +1,4 @@
-﻿using HomeTask4.Core.CRUD;
+﻿using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel;
@@ -57,7 +57,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 2:
                     {
-                        RecipesContextMenuNavigation recipeContextMenuNav = new RecipesContextMenuNavigation(IdRecipe, new RecipesControl(UnitOfWork));
+                        RecipesContextMenuNavigation recipeContextMenuNav = new RecipesContextMenuNavigation(IdRecipe, new RecipesController(UnitOfWork));
                         new ProgramMenu(recipeContextMenuNav).CallMenu();
                     }
                     break;

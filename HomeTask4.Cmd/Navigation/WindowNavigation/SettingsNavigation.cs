@@ -1,4 +1,4 @@
-﻿using HomeTask4.Core.CRUD;
+﻿using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using System;
@@ -34,7 +34,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             {
                 case 0:
                     {
-                        CategoriesNavigation catNav = new CategoriesNavigation(new CategoriesControl(UnitOfWork));
+                        CategoriesNavigation catNav = new CategoriesNavigation(new CategoriesController(UnitOfWork));
                         new ProgramMenu(catNav).CallMenu();
                     }
                     break;

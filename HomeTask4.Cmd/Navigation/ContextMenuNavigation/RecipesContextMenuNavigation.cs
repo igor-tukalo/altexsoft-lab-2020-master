@@ -1,7 +1,7 @@
 ﻿using HomeTask4.Cmd;
 using HomeTask4.Cmd.Navigation;
 using HomeTask4.Cmd.Navigation.WindowNavigation;
-using HomeTask4.Core.CRUD;
+using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using System;
@@ -63,13 +63,13 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                 case 3:
                     {
                         RecipesIngredientsNavigation recipesIngredientsNavigation = new RecipesIngredientsNavigation(
-                            IdRecipe, new IngredientsControl(UnitOfWork), new RecipeIngredientsControl(UnitOfWork));
+                            IdRecipe, new IngredientsControl(UnitOfWork), new RecipeIngredientsController(UnitOfWork));
                         new ProgramMenu(recipesIngredientsNavigation).CallMenu();
                     }
                     break;
                 case 4:
                     {
-                        CookingStepsNavigation cookingStepsNav = new CookingStepsNavigation(IdRecipe, new CookingStepsControl(UnitOfWork));
+                        CookingStepsNavigation cookingStepsNav = new CookingStepsNavigation(IdRecipe, new CookingStepsController(UnitOfWork));
                         new ProgramMenu(cookingStepsNav).CallMenu();
                     }
                     break;

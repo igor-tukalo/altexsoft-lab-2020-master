@@ -1,14 +1,14 @@
 ﻿using HomeTask4.SharedKernel;
 using HomeTask4.SharedKernel.Interfaces;
 
-namespace HomeTask4.Core.CRUD
+namespace HomeTask4.Core.Controllers
 {
-    public abstract class BaseControl
+    public abstract class BaseController
     {
         protected Validation ValidManager { get; }
         protected IUnitOfWork UnitOfWork { get; }
 
-        public BaseControl(IUnitOfWork unitOfWork)
+        public BaseController(IUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork;
             ValidManager = new Validation();

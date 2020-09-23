@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace HomeTask4.Core.CRUD
+namespace HomeTask4.Core.Controllers
 {
-    public class CategoriesControl : BaseControl, ICategoriesControl
+    public class CategoriesController : BaseController, ICategoriesControl
     {
         private List<Category> Categories => UnitOfWork.Repository.GetListAsync<Category>().Result;
-        public CategoriesControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public CategoriesController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 

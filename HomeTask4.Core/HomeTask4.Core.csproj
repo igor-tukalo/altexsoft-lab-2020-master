@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="CRUD\BaseCategoriesRecipesControl.cs" />
+    <Compile Remove="Controllers\BaseCategoriesRecipesControl.cs" />
   </ItemGroup>
 
   <ItemGroup>

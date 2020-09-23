@@ -8,9 +8,9 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 
-namespace HomeTask4.Core.CRUD
+namespace HomeTask4.Core.Controllers
 {
-    public class IngredientsControl : BaseControl, IIngredientsControl
+    public class IngredientsControl : BaseController, IIngredientsControl
     {
         private List<Ingredient> Ingredients => UnitOfWork.Repository.GetListAsync<Ingredient>().Result;
         public IngredientsControl(IUnitOfWork unitOfWork) : base(unitOfWork)

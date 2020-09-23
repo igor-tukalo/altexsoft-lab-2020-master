@@ -3,11 +3,11 @@ using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Configuration;
 
-namespace HomeTask4.Core.CRUD
+namespace HomeTask4.Core.Controllers
 {
-    public class SettingsControl : BaseControl, ISettingsControl
+    public class SettingsController : BaseController, ISettingsControl
     {
-        public SettingsControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public SettingsController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 

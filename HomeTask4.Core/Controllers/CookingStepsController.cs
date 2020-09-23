@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HomeTask4.Core.CRUD
+namespace HomeTask4.Core.Controllers
 {
-    public class CookingStepsControl : BaseControl, ICookingStepsControl
+    public class CookingStepsController : BaseController, ICookingStepsControl
     {
         private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetListAsync<CookingStep>().Result;
 
-        public CookingStepsControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public CookingStepsController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 

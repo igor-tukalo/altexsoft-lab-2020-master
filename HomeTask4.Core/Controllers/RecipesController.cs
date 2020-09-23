@@ -6,16 +6,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace HomeTask4.Core.CRUD
+namespace HomeTask4.Core.Controllers
 {
-    public class RecipesControl : BaseControl, IRecipesControl
+    public class RecipesController : BaseController, IRecipesControl
     {
         private List<AmountIngredient> AmountIngredients => UnitOfWork.Repository.GetListAsync<AmountIngredient>().Result;
         private List<Ingredient> Ingredients => UnitOfWork.Repository.GetListAsync<Ingredient>().Result;
         private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetListAsync<CookingStep>().Result;
         private List<Recipe> Recipes => UnitOfWork.Repository.GetListAsync<Recipe>().Result;
         private List<Category> Categories => UnitOfWork.Repository.GetListAsync<Category>().Result;
-        public RecipesControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public RecipesController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
         public void View(int idRecipe)
