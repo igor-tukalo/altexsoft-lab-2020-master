@@ -1,6 +1,7 @@
 ﻿using HomeTask4.Cmd.Navigation.WindowNavigation;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -8,10 +9,10 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
 {
     internal class CookingStepsContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
-        private readonly ICookingStepsControl CookingSteps;
+        private readonly ICookingStepsController CookingSteps;
         private readonly int IdCookingStep;
         private readonly int IdRecipe;
-        public CookingStepsContextMenuNavigation(int idCookingStep, int idRecipe, ICookingStepsControl cookingSteps)
+        public CookingStepsContextMenuNavigation(IUnitOfWork unitOfWork, int idCookingStep, int idRecipe, ICookingStepsController cookingSteps) : base(unitOfWork)
         {
             IdCookingStep = idCookingStep;
             IdRecipe = idRecipe;
@@ -56,7 +57,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            CookingStepsNavigation CookStepNav = new CookingStepsNavigation(IdRecipe, CookingSteps);
+            CookingStepsNavigation CookStepNav = new CookingStepsNavigation(UnitOfWork, IdRecipe, CookingSteps);
             new ProgramMenu(CookStepNav).CallMenu();
         }
     }

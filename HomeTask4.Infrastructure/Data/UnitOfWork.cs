@@ -1,5 +1,4 @@
 ﻿using HomeTask4.SharedKernel.Interfaces;
-using System.Threading.Tasks;
 
 namespace HomeTask4.Infrastructure.Data
 {
@@ -15,9 +14,9 @@ namespace HomeTask4.Infrastructure.Data
             Repository = repository;
         }
 
-        public Task SaveChangesAsync()
+        public void SaveChanges()
         {
-            return _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
         }
     }
 }

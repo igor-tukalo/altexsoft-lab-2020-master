@@ -5,7 +5,7 @@ using System.Configuration;
 
 namespace HomeTask4.Core.Controllers
 {
-    public class SettingsController : BaseController, ISettingsControl
+    public class SettingsController : BaseController, ISettingsController
     {
         public SettingsController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {

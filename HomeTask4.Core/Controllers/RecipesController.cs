@@ -8,19 +8,19 @@ using System.Linq;
 
 namespace HomeTask4.Core.Controllers
 {
-    public class RecipesController : BaseController, IRecipesControl
+    public class RecipesController : BaseController, IRecipesController
     {
-        private List<AmountIngredient> AmountIngredients => UnitOfWork.Repository.GetListAsync<AmountIngredient>().Result;
-        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetListAsync<Ingredient>().Result;
-        private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetListAsync<CookingStep>().Result;
-        private List<Recipe> Recipes => UnitOfWork.Repository.GetListAsync<Recipe>().Result;
-        private List<Category> Categories => UnitOfWork.Repository.GetListAsync<Category>().Result;
+        private List<AmountIngredient> AmountIngredients => UnitOfWork.Repository.GetList<AmountIngredient>();
+        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetList<Ingredient>();
+        private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetList<CookingStep>();
+        private List<Recipe> Recipes => UnitOfWork.Repository.GetList<Recipe>();
+        private List<Category> Categories => UnitOfWork.Repository.GetList<Category>();
         public RecipesController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
         public void View(int idRecipe)
         {
-            Recipe recipe = UnitOfWork.Repository.GetByIdAsync<Recipe>(idRecipe).Result;
+            Recipe recipe = UnitOfWork.Repository.GetById<Recipe>(idRecipe);
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
             Console.WriteLine($"    {ValidManager.WrapText(10, recipe.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
@@ -44,28 +44,28 @@ namespace HomeTask4.Core.Controllers
         {
             Console.Write("\n    Enter the name of the recipe: ");
             string nameRecipe = IsNameMustNotExist(ValidManager.NullOrEmptyText(Console.ReadLine()));
-            Recipe recipe = UnitOfWork.Repository.GetByIdAsync<Recipe>(id).Result;
+            Recipe recipe = UnitOfWork.Repository.GetById<Recipe>(id);
             recipe.Name = nameRecipe;
-            UnitOfWork.Repository.UpdateAsync(recipe);
+            UnitOfWork.Repository.Update(recipe);
         }
 
         public void ChangeDescription(int idRecipe)
         {
             Console.Write("\n    Enter recipe description: ");
             string description = ValidManager.NullOrEmptyText(Console.ReadLine());
-            Recipe recipe = UnitOfWork.Repository.GetByIdAsync<Recipe>(idRecipe).Result;
+            Recipe recipe = UnitOfWork.Repository.GetById<Recipe>(idRecipe);
             recipe.Description = description;
-            UnitOfWork.Repository.UpdateAsync(recipe);
+            UnitOfWork.Repository.Update(recipe);
         }
 
         public void Add(int idCategory)
         {
-            Console.WriteLine($"\n    The recipe will be added to the category: {UnitOfWork.Repository.GetByIdAsync<Category>(idCategory).Result.Name}");
+            Console.WriteLine($"\n    The recipe will be added to the category: {UnitOfWork.Repository.GetById<Category>(idCategory).Name}");
             Console.Write("\n    Enter the name of the recipe: ");
             string nameRecipe = IsNameMustNotExist(Console.ReadLine());
             Console.Write("\n    Enter recipe description: ");
             string description = ValidManager.NullOrEmptyText(Console.ReadLine());
-            UnitOfWork.Repository.AddAsync(new Recipe() { Name = nameRecipe, Description = description, CategoryId = idCategory });
+            UnitOfWork.Repository.Add(new Recipe() { Name = nameRecipe, Description = description, CategoryId = idCategory });
         }
 
         public void Delete(int id)
@@ -76,7 +76,7 @@ namespace HomeTask4.Core.Controllers
             {
                 return;
             }
-            UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<Recipe>(id).Result);
+            UnitOfWork.Repository.Delete(UnitOfWork.Repository.GetById<Recipe>(id));
         }
 
         /// <summary>

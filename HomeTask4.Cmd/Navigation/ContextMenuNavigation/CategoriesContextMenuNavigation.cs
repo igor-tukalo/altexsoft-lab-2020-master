@@ -1,6 +1,7 @@
 ﻿using HomeTask4.Cmd.Navigation.WindowNavigation;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -9,9 +10,9 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
     internal class CategoriesContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
         private readonly int Idcategory;
-        private readonly ICategoriesControl Categories;
+        private readonly ICategoriesController Categories;
 
-        public CategoriesContextMenuNavigation(int idCategory, ICategoriesControl categories)
+        public CategoriesContextMenuNavigation(IUnitOfWork unitOfWork, int idCategory, ICategoriesController categories) : base(unitOfWork)
         {
             Idcategory = idCategory;
             Categories = categories;
@@ -55,7 +56,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            CategoriesNavigation catNav = new CategoriesNavigation(Categories);
+            CategoriesNavigation catNav = new CategoriesNavigation(UnitOfWork, Categories);
             new ProgramMenu(catNav).CallMenu();
         }
     }

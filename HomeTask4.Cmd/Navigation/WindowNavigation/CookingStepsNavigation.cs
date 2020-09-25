@@ -2,6 +2,7 @@
 using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 using task2.ViewNavigation.ContextMenuNavigation;
@@ -10,9 +11,10 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
     internal class CookingStepsNavigation : BaseNavigation, INavigation
     {
-        private readonly ICookingStepsControl CookingSteps;
+        private readonly ICookingStepsController CookingSteps;
         private readonly int IdRecipe;
-        public CookingStepsNavigation(int idRecipe, ICookingStepsControl cookingSteps)
+
+        public CookingStepsNavigation(IUnitOfWork unitOfWork, int idRecipe, ICookingStepsController cookingSteps) : base(unitOfWork)
         {
             IdRecipe = idRecipe;
             CookingSteps = cookingSteps;
@@ -42,13 +44,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 1:
                     {
-                        RecipesContextMenuNavigation recipeNav = new RecipesContextMenuNavigation(IdRecipe, new RecipesController(UnitOfWork));
+                        RecipesContextMenuNavigation recipeNav = new RecipesContextMenuNavigation(UnitOfWork, IdRecipe, new RecipesController(UnitOfWork));
                         new ProgramMenu(recipeNav).CallMenu();
                     }
                     break;
                 default:
                     {
-                        CookingStepsContextMenuNavigation cookStepsContextNav = new CookingStepsContextMenuNavigation(ItemsMenu[id].Id, IdRecipe, CookingSteps);
+                        CookingStepsContextMenuNavigation cookStepsContextNav = new CookingStepsContextMenuNavigation(UnitOfWork, ItemsMenu[id].Id, IdRecipe, CookingSteps);
                         new ProgramMenu(cookStepsContextNav).CallMenu();
                     }
                     break;

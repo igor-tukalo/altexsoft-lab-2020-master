@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HomeTask4.Core.Interfaces
 {
-    public interface IRecipesControl
+    public interface IRecipesController
     {
         void Add(int idCategory);
         void Edit(int id);

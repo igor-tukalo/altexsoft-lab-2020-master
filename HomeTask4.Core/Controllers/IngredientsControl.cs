@@ -10,9 +10,9 @@ using System.Linq;
 
 namespace HomeTask4.Core.Controllers
 {
-    public class IngredientsControl : BaseController, IIngredientsControl
+    public class IngredientsControl : BaseController, IIngredientsController
     {
-        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetListAsync<Ingredient>().Result;
+        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetList<Ingredient>();
         public IngredientsControl(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
@@ -22,7 +22,7 @@ namespace HomeTask4.Core.Controllers
             Console.Write("\n    Enter name ingredient: ");
             string name = IsNameMustNotExist(Console.ReadLine());
             string nameIngredient = name;
-            UnitOfWork.Repository.AddAsync(new Ingredient() { Name = nameIngredient });
+            UnitOfWork.Repository.Add(new Ingredient() { Name = nameIngredient });
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace HomeTask4.Core.Controllers
         {
             Console.Write("    Enter new name: ");
             string newName = IsNameMustNotExist(Console.ReadLine());
-            Ingredient ingredient = UnitOfWork.Repository.GetByIdAsync<Ingredient>(id).Result;
+            Ingredient ingredient = UnitOfWork.Repository.GetById<Ingredient>(id);
             ingredient.Name = newName;
-            UnitOfWork.Repository.UpdateAsync(ingredient);
+            UnitOfWork.Repository.Update(ingredient);
         }
         public void Delete(int id)
         {
@@ -67,7 +67,7 @@ namespace HomeTask4.Core.Controllers
             {
                 return;
             }
-            UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<Ingredient>(id).Result);
+            UnitOfWork.Repository.Delete(UnitOfWork.Repository.GetById<Ingredient>(id));
         }
 
         private string IsNameMustNotExist(string name)

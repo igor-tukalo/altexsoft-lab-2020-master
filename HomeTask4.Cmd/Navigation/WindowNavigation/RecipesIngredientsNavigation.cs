@@ -2,6 +2,7 @@
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 using task2.ViewNavigation.ContextMenuNavigation;
@@ -11,11 +12,12 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     internal class RecipesIngredientsNavigation : BaseNavigation, INavigation
     {
         private readonly Validation ValidManager = new Validation();
-        private readonly IRecipeIngredientsControl RecipeIngredients;
-        private readonly IIngredientsControl Ingredients;
+        private readonly IRecipeIngredientsController RecipeIngredients;
+        private readonly IIngredientsController Ingredients;
         public int PageIngredients = 1;
         private readonly int IdRecipe;
-        public RecipesIngredientsNavigation(int idRecipe, IIngredientsControl ingredients, IRecipeIngredientsControl recipeIngredients)
+
+        public RecipesIngredientsNavigation(IUnitOfWork unitOfWork, int idRecipe, IIngredientsController ingredients, IRecipeIngredientsController recipeIngredients) : base(unitOfWork)
         {
             IdRecipe = idRecipe;
             Ingredients = ingredients;
@@ -57,7 +59,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 2:
                     {
-                        RecipesContextMenuNavigation recipeContextMenuNav = new RecipesContextMenuNavigation(IdRecipe, new RecipesController(UnitOfWork));
+                        RecipesContextMenuNavigation recipeContextMenuNav = new RecipesContextMenuNavigation(UnitOfWork, IdRecipe, new RecipesController(UnitOfWork));
                         new ProgramMenu(recipeContextMenuNav).CallMenu();
                     }
                     break;

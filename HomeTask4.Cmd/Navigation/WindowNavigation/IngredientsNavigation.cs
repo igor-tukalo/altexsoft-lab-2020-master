@@ -2,6 +2,7 @@
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 using task2.ViewNavigation.ContextMenuNavigation;
@@ -11,11 +12,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     internal class IngredientsNavigation : BaseNavigation, INavigation
     {
         private readonly Validation ValidManager = new Validation();
-        private readonly IIngredientsControl Ingredients;
-        public IngredientsNavigation(IIngredientsControl ingredients)
+        private readonly IIngredientsController Ingredients;
+
+        public IngredientsNavigation(IUnitOfWork unitOfWork, IIngredientsController ingredients) : base(unitOfWork)
         {
             Ingredients = ingredients;
         }
+
         public int PageIngredients = 1;
         public override void CallNavigation()
         {
@@ -43,7 +46,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 1:
                     {
-                        SettingsNavigation settNav = new SettingsNavigation(new SettingsController(UnitOfWork));
+                        SettingsNavigation settNav = new SettingsNavigation(UnitOfWork, new SettingsController(UnitOfWork));
                         new ProgramMenu(settNav).CallMenu();
                     }
                     break;
@@ -56,7 +59,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 default:
                     {
-                        IngredientsContextMenuNavigation ingContextMenuNNav = new IngredientsContextMenuNavigation(ItemsMenu[id].Id, PageIngredients, Ingredients);
+                        IngredientsContextMenuNavigation ingContextMenuNNav = new IngredientsContextMenuNavigation(UnitOfWork, ItemsMenu[id].Id, PageIngredients, Ingredients);
                         new ProgramMenu(ingContextMenuNNav).CallMenu();
                     }
                     break;

@@ -3,6 +3,7 @@ using HomeTask4.Cmd.Navigation;
 using HomeTask4.Cmd.Navigation.WindowNavigation;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -10,10 +11,11 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 {
     internal class IngredientsContextMenuNavigation : BaseNavigation, IContextMenuNavigation
     {
-        private readonly IIngredientsControl Ingredients;
+        private readonly IIngredientsController Ingredients;
         private readonly int IdIngredient;
         private readonly int Page;
-        public IngredientsContextMenuNavigation(int idIngredient, int page, IIngredientsControl ingredients)
+
+        public IngredientsContextMenuNavigation(IUnitOfWork unitOfWork, int idIngredient, int page, IIngredientsController ingredients) : base(unitOfWork)
         {
             Ingredients = ingredients;
             IdIngredient = idIngredient;
@@ -58,7 +60,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(Ingredients)
+            IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(UnitOfWork, Ingredients)
             {
                 PageIngredients = Page
             };

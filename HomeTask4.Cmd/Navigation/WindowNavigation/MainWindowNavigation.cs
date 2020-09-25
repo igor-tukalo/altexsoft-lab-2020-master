@@ -1,6 +1,7 @@
 ﻿using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -8,6 +9,10 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
     internal class MainWindowNavigation : BaseNavigation, INavigation
     {
+        public MainWindowNavigation(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
+        }
+
         public override void CallNavigation()
         {
             Console.Clear();
@@ -38,13 +43,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             {
                 case 0:
                     {
-                        RecipesNavigation recipeNav = new RecipesNavigation(new RecipesController(UnitOfWork));
+                        RecipesNavigation recipeNav = new RecipesNavigation(UnitOfWork, new RecipesController(UnitOfWork));
                         new ProgramMenu(recipeNav).CallMenu();
                     }
                     break;
                 case 1:
                     {
-                        SettingsNavigation settNav = new SettingsNavigation(new SettingsController(UnitOfWork));
+                        SettingsNavigation settNav = new SettingsNavigation(UnitOfWork, new SettingsController(UnitOfWork));
                         new ProgramMenu(settNav).CallMenu();
                     }
                     break;

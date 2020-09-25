@@ -1,5 +1,6 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 using task2.ViewNavigation.ContextMenuNavigation;
@@ -8,14 +9,15 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
     internal class RecipesNavigation : BaseNavigation, INavigation
     {
-        private readonly IRecipesControl Recipes;
+        private readonly IRecipesController Recipes;
         private int IdNextCategory = 1;
         private int IdPrevCategory;
 
-        public RecipesNavigation(IRecipesControl recipes)
+        public RecipesNavigation(IUnitOfWork unitOfWork, IRecipesController recipes) : base(unitOfWork)
         {
             Recipes = recipes;
         }
+
         public override void CallNavigation()
         {
             Console.Clear();
@@ -24,7 +26,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     new EntityMenu(){ Name = "    Add recipe" },
                     new EntityMenu(){ Name = "    Return to main menu" }
                 };
-            Category parent = UnitOfWork.Repository.GetByIdAsync<Category>(IdNextCategory).Result;
+            Category parent = UnitOfWork.Repository.GetById<Category>(IdNextCategory);
             IdPrevCategory = parent.ParentId;
             Recipes.BuildRecipesCategories(ItemsMenu, parent, 1, 2);
             base.CallNavigation();
@@ -42,7 +44,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 1:
                     {
-                        MainWindowNavigation mainWinNav = new MainWindowNavigation();
+                        MainWindowNavigation mainWinNav = new MainWindowNavigation(UnitOfWork);
                         new ProgramMenu(mainWinNav).CallMenu();
 
                     }
@@ -51,7 +53,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     {
                         if (ItemsMenu[id].TypeEntity == "recipe")
                         {
-                            RecipesContextMenuNavigation recipeContextManuNav = new RecipesContextMenuNavigation(ItemsMenu[id].Id, Recipes);
+                            RecipesContextMenuNavigation recipeContextManuNav = new RecipesContextMenuNavigation(UnitOfWork, ItemsMenu[id].Id, Recipes);
                             new ProgramMenu(recipeContextManuNav).CallMenu();
                         }
                         else

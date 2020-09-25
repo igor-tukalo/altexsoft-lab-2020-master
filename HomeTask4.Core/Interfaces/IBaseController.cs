@@ -1,6 +1,6 @@
 ﻿namespace HomeTask4.Core.Interfaces
 {
-    public interface IBaseControl
+    public interface IBaseController
     {
         void Add();
         void Edit(int id);

@@ -1,6 +1,6 @@
 ﻿namespace HomeTask4.Core.Interfaces
 {
-    public interface ISettingsControl
+    public interface ISettingsController
     {
         void EditBatch();
     }

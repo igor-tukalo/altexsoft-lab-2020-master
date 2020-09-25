@@ -7,9 +7,9 @@ using System.Linq;
 
 namespace HomeTask4.Core.Controllers
 {
-    public class CookingStepsController : BaseController, ICookingStepsControl
+    public class CookingStepsController : BaseController, ICookingStepsController
     {
-        private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetListAsync<CookingStep>().Result;
+        private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetList<CookingStep>();
 
         public CookingStepsController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
@@ -36,7 +36,7 @@ namespace HomeTask4.Core.Controllers
                 CookingSteps.Where(x => x.RecipeId == idRecipe).Max(x => x.Step) + 1 : 1;
             Console.Write($"\n    Describe the cooking step {CurrentStep}: ");
             string stepName = ValidManager.NullOrEmptyText(Console.ReadLine());
-            UnitOfWork.Repository.AddAsync(new CookingStep() { Step = CurrentStep, Name = stepName, RecipeId = idRecipe });
+            UnitOfWork.Repository.Add(new CookingStep() { Step = CurrentStep, Name = stepName, RecipeId = idRecipe });
             Console.Write("\n    Add another cooking step? ");
             if (ValidManager.YesNo() == ConsoleKey.N)
             {
@@ -47,11 +47,11 @@ namespace HomeTask4.Core.Controllers
 
         public void Edit(int id)
         {
-            CookingStep cookingStep = UnitOfWork.Repository.GetByIdAsync<CookingStep>(id).Result;
+            CookingStep cookingStep = UnitOfWork.Repository.GetById<CookingStep>(id);
             Console.Write($"    Describe the cooking step {cookingStep.Step}: ");
             string stepName = ValidManager.NullOrEmptyText(Console.ReadLine());
             cookingStep.Name = stepName;
-            UnitOfWork.Repository.UpdateAsync(cookingStep);
+            UnitOfWork.Repository.Update(cookingStep);
         }
 
         public void Delete(int id, int idRecipe)
@@ -61,11 +61,11 @@ namespace HomeTask4.Core.Controllers
             {
                 return;
             }
-            foreach (CookingStep s in CookingSteps.Where(x => x.RecipeId == idRecipe && x.Step > UnitOfWork.Repository.GetByIdAsync<CookingStep>(id).Result.Step))
+            foreach (CookingStep s in CookingSteps.Where(x => x.RecipeId == idRecipe && x.Step > UnitOfWork.Repository.GetById<CookingStep>(id).Step))
             {
                 s.Step--;
             }
-            UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<CookingStep>(id).Result);
+            UnitOfWork.Repository.Delete(UnitOfWork.Repository.GetById<CookingStep>(id));
         }
     }
 }

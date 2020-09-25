@@ -1,10 +1,7 @@
 ﻿using HomeTask4.SharedKernel;
 using HomeTask4.SharedKernel.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace HomeTask4.Infrastructure.Data
 {
@@ -16,37 +13,32 @@ namespace HomeTask4.Infrastructure.Data
             _context = context;
         }
 
-        public async Task AddAsync<T>(T entity) where T : BaseEntity
+        public void Add<T>(T entity) where T : BaseEntity
         {
             _context.Set<T>().Add(entity);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            _context.SaveChanges();
         }
 
-        public async Task DeleteAsync<T>(T entity) where T : BaseEntity
+        public void Delete<T>(T entity) where T : BaseEntity
         {
             _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            _context.SaveChanges();
         }
 
-        public async Task<T> GetByIdAsync<T>(int id) where T : BaseEntity
+        public T GetById<T>(int id) where T : BaseEntity
         {
-            return await _context.Set<T>().FindAsync(id).ConfigureAwait(false);
+            return _context.Set<T>().Find(id);
         }
 
-        public async Task<List<T>> GetByCondition<T>(Func<T, bool> predicate) where T : BaseEntity
+        public List<T> GetList<T>() where T : BaseEntity
         {
-            return await Task.Run(() => _context.Set<T>().AsNoTracking().Where(predicate).ToList()).ConfigureAwait(false);
+            return _context.Set<T>().ToList();
         }
 
-        public async Task<List<T>> GetListAsync<T>() where T : BaseEntity
-        {
-            return await Task.Run(() => _context.Set<T>().ToList()).ConfigureAwait(false);
-        }
-
-        public async Task UpdateAsync<T>(T entity) where T : BaseEntity
+        public void Update<T>(T entity) where T : BaseEntity
         {
             _context.Set<T>().Update(entity);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            _context.SaveChanges();
         }
     }
 }

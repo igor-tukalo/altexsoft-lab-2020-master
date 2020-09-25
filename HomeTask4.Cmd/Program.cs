@@ -1,7 +1,6 @@
-﻿using HomeTask4.Cmd.Navigation;
-using HomeTask4.Cmd.Navigation.WindowNavigation;
-using HomeTask4.Core.Entities;
-using HomeTask4.SharedKernel.Interfaces;
+﻿using HomeTask4.Cmd.Navigation.WindowNavigation;
+using HomeTask4.Infrastructure.Extensions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -23,41 +22,35 @@ using System;
 /// </summary>
 namespace HomeTask4.Cmd
 {
-    internal class Program : BaseNavigation
+    internal class Program
     {
         private static void Main(string[] args)
         {
-            IHost host = CreateHostBuilder(true).Build();
-            ILogger<Program> logger = host.Services.GetRequiredService<ILogger<Program>>();
-
-            logger.LogInformation("Hello World!");
-
-            logger.LogDebug("Trying to get repository...");
-            IUnitOfWork unitOfWork = host.Services.GetRequiredService<IUnitOfWork>();
-
-            try
-            {
-                logger.LogDebug("Trying to get temp entity...");
-                Category entity = unitOfWork.Repository.GetByIdAsync<Category>(1).Result;
-                if (entity != null)
-                {
-                    logger.LogInformation(entity.Name);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error occurred durign getting temp entity");
-            }
-
-            logger.LogInformation("Good bye!");
-
-            Console.ReadLine();
-
+            IHost host = CreateHostBuilder().Build();
             Console.WindowHeight = Console.LargestWindowHeight;
-
-            MainWindowNavigation mainWindowNav = new MainWindowNavigation();
-            ProgramMenu programMenu = new ProgramMenu(mainWindowNav);
+            MainWindowNavigation nav = host.Services.GetRequiredService<MainWindowNavigation>();
+            ProgramMenu programMenu = new ProgramMenu(nav);
             programMenu.CallMenu();
+        }
+
+        /// <summary>
+        /// This method should be separate to support EF command-line tools in design time
+        /// https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dbcontext-creation
+        /// </summary>
+        /// <param name = "args" ></ param >
+        /// < returns >< see cref="IHostBuilder" /> hostBuilder</returns>
+        public static IHostBuilder CreateHostBuilder()
+        {
+            return Host.CreateDefaultBuilder()
+            .ConfigureServices((context, services) =>
+            {
+                services.AddInfrastructure(context.Configuration.GetConnectionString("Default"));
+                services.AddTransient<MainWindowNavigation>();
+            })
+            .ConfigureLogging(config =>
+            {
+                config.ClearProviders();
+            });
         }
     }
 }

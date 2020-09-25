@@ -1,6 +1,7 @@
 ﻿using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -8,9 +9,8 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
     internal class SettingsNavigation : BaseNavigation, INavigation
     {
-        private readonly ISettingsControl SettingsControl;
-
-        public SettingsNavigation(ISettingsControl settingsControl)
+        private readonly ISettingsController SettingsControl;
+        public SettingsNavigation(IUnitOfWork unitOfWork, ISettingsController settingsControl) : base(unitOfWork)
         {
             SettingsControl = settingsControl;
         }
@@ -34,13 +34,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             {
                 case 0:
                     {
-                        CategoriesNavigation catNav = new CategoriesNavigation(new CategoriesController(UnitOfWork));
+                        CategoriesNavigation catNav = new CategoriesNavigation(UnitOfWork, new CategoriesController(UnitOfWork));
                         new ProgramMenu(catNav).CallMenu();
                     }
                     break;
                 case 1:
                     {
-                        IngredientsNavigation ingrNav = new IngredientsNavigation(new IngredientsControl(UnitOfWork));
+                        IngredientsNavigation ingrNav = new IngredientsNavigation(UnitOfWork, new IngredientsControl(UnitOfWork));
                         new ProgramMenu(ingrNav).CallMenu();
                     }
                     break;
@@ -52,7 +52,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 3:
                     {
-                        MainWindowNavigation mainWinNav = new MainWindowNavigation();
+                        MainWindowNavigation mainWinNav = new MainWindowNavigation(UnitOfWork);
                         new ProgramMenu(mainWinNav).CallMenu();
                     }
                     break;

@@ -4,6 +4,7 @@ using HomeTask4.Cmd.Navigation.WindowNavigation;
 using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -14,9 +15,9 @@ namespace task2.ViewNavigation.ContextMenuNavigation
         private readonly int IdRecipe;
         private int IdCategory { get; set; }
 
-        private readonly IRecipesControl Recipes;
+        private readonly IRecipesController Recipes;
 
-        public RecipesContextMenuNavigation(int idRecipe, IRecipesControl recipes)
+        public RecipesContextMenuNavigation(IUnitOfWork unitOfWork, int idRecipe, IRecipesController recipes) : base(unitOfWork)
         {
             IdRecipe = idRecipe;
             Recipes = recipes;
@@ -40,7 +41,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public override void SelectMethodMenu(int id)
         {
-            IdCategory = UnitOfWork.Repository.GetByIdAsync<Recipe>(IdRecipe).Result.CategoryId;
+            IdCategory = UnitOfWork.Repository.GetById<Recipe>(IdRecipe).CategoryId;
             switch (id)
             {
                 case 0:
@@ -62,14 +63,14 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     break;
                 case 3:
                     {
-                        RecipesIngredientsNavigation recipesIngredientsNavigation = new RecipesIngredientsNavigation(
+                        RecipesIngredientsNavigation recipesIngredientsNavigation = new RecipesIngredientsNavigation(UnitOfWork,
                             IdRecipe, new IngredientsControl(UnitOfWork), new RecipeIngredientsController(UnitOfWork));
                         new ProgramMenu(recipesIngredientsNavigation).CallMenu();
                     }
                     break;
                 case 4:
                     {
-                        CookingStepsNavigation cookingStepsNav = new CookingStepsNavigation(IdRecipe, new CookingStepsController(UnitOfWork));
+                        CookingStepsNavigation cookingStepsNav = new CookingStepsNavigation(UnitOfWork, IdRecipe, new CookingStepsController(UnitOfWork));
                         new ProgramMenu(cookingStepsNav).CallMenu();
                     }
                     break;
@@ -89,7 +90,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
 
         public void BackPrevMenu()
         {
-            RecipesNavigation recipeNav = new RecipesNavigation(Recipes);
+            RecipesNavigation recipeNav = new RecipesNavigation(UnitOfWork, Recipes);
             recipeNav.MovementCategoriesRecipes(IdCategory);
         }
     }

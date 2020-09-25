@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace HomeTask4.Core.Controllers
 {
-    public class RecipeIngredientsController : BaseController, IRecipeIngredientsControl
+    public class RecipeIngredientsController : BaseController, IRecipeIngredientsController
     {
-        private List<AmountIngredient> AmountIngredients => UnitOfWork.Repository.GetListAsync<AmountIngredient>().Result;
-        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetListAsync<Ingredient>().Result;
+        private List<AmountIngredient> AmountIngredients => UnitOfWork.Repository.GetList<AmountIngredient>();
+        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetList<Ingredient>();
         public RecipeIngredientsController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
@@ -21,12 +21,12 @@ namespace HomeTask4.Core.Controllers
             double amount = ValidManager.ValidDouble(Console.ReadLine().Replace(".", ","));
             Console.Write("    Enter the unit of ingredient: ");
             string unit = ValidManager.NullOrEmptyText(Console.ReadLine());
-            UnitOfWork.Repository.AddAsync(new AmountIngredient { Amount = amount, Unit = unit, IngredientId = idIngredient, RecipeId = idRecipe });
+            UnitOfWork.Repository.Add(new AmountIngredient { Amount = amount, Unit = unit, IngredientId = idIngredient, RecipeId = idRecipe });
         }
 
         public void Delete(int id)
         {
-            UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<AmountIngredient>(id).Result);
+            UnitOfWork.Repository.Delete(UnitOfWork.Repository.GetById<AmountIngredient>(id));
         }
 
         public List<EntityMenu> GetItems(List<EntityMenu> itemsMenu, int idRecipe)

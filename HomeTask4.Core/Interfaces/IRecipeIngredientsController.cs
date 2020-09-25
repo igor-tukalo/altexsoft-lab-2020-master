@@ -3,11 +3,10 @@ using System.Collections.Generic;
 
 namespace HomeTask4.Core.Interfaces
 {
-    public interface ICookingStepsControl
+    public interface IRecipeIngredientsController
     {
-        void Add(int idRecipe);
-        void Edit(int id);
-        void Delete(int id, int idRecipe);
         List<EntityMenu> GetItems(List<EntityMenu> itemsMenu, int idRecipe);
+        void Add(int idIngredient, int idRecipe);
+        void Delete(int id);
     }
 }

@@ -8,16 +8,16 @@ using System.Linq;
 
 namespace HomeTask4.Core.Controllers
 {
-    public class CategoriesController : BaseController, ICategoriesControl
+    public class CategoriesController : BaseController, ICategoriesController
     {
-        private List<Category> Categories => UnitOfWork.Repository.GetListAsync<Category>().Result;
+        private List<Category> Categories => UnitOfWork.Repository.GetList<Category>();
         public CategoriesController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 
         public Category GetParentCategory(int id)
         {
-            return UnitOfWork.Repository.GetByIdAsync<Category>(1).Result;
+            return UnitOfWork.Repository.GetById<Category>(1);
         }
 
         public void Add()
@@ -29,7 +29,7 @@ namespace HomeTask4.Core.Controllers
             int idMainCategory = (from t in Categories
                                   where t.Name == nameMainCategory
                                   select t.Id).First();
-            UnitOfWork.Repository.AddAsync(new Category() { Name = name, ParentId = idMainCategory });
+            UnitOfWork.Repository.Add(new Category() { Name = name, ParentId = idMainCategory });
         }
 
         public void BuildHierarchicalCategories(List<EntityMenu> items, Category thisEntity, int level)
@@ -48,7 +48,7 @@ namespace HomeTask4.Core.Controllers
         {
             if (thisEntity != null)
             {
-                UnitOfWork.Repository.DeleteAsync(UnitOfWork.Repository.GetByIdAsync<Category>(thisEntity.Id).Result);
+                UnitOfWork.Repository.Delete(UnitOfWork.Repository.GetById<Category>(thisEntity.Id));
             }
             foreach (Category child in Categories.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
             {
@@ -60,14 +60,14 @@ namespace HomeTask4.Core.Controllers
         {
             Console.Write("    Enter new name: ");
             string newName = IsNameMustNotExist(Console.ReadLine());
-            Category category = UnitOfWork.Repository.GetByIdAsync<Category>(id).Result;
+            Category category = UnitOfWork.Repository.GetById<Category>(id);
             category.Name = newName;
-            UnitOfWork.Repository.UpdateAsync(category);
+            UnitOfWork.Repository.Update(category);
         }
 
         public void Delete(int id)
         {
-            if (UnitOfWork.Repository.GetByIdAsync<Category>(id).Result.ParentId == 0)
+            if (UnitOfWork.Repository.GetById<Category>(id).ParentId == 0)
             {
                 return;
             }
@@ -76,7 +76,7 @@ namespace HomeTask4.Core.Controllers
             {
                 return;
             }
-            Category parent = UnitOfWork.Repository.GetByIdAsync<Category>(id).Result;
+            Category parent = UnitOfWork.Repository.GetById<Category>(id);
             RemoveHierarchicalCategory(parent, 1);
         }
 

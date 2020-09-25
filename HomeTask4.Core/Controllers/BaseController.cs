@@ -1,5 +1,6 @@
 ﻿using HomeTask4.SharedKernel;
 using HomeTask4.SharedKernel.Interfaces;
+using System;
 
 namespace HomeTask4.Core.Controllers
 {
@@ -10,7 +11,7 @@ namespace HomeTask4.Core.Controllers
 
         public BaseController(IUnitOfWork unitOfWork)
         {
-            UnitOfWork = unitOfWork;
+            UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             ValidManager = new Validation();
         }
     }
