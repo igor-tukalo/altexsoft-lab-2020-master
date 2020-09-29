@@ -5,7 +5,6 @@ namespace HomeTask4.Core.Entities
 {
     public class Category : BaseEntity
     {
-        [Required]
         public string Name { get; set; }
         public int ParentId { get; set; }
     }

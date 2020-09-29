@@ -10,10 +10,10 @@ using System.Linq;
 
 namespace HomeTask4.Core.Controllers
 {
-    public class IngredientsControl : BaseController, IIngredientsController
+    public class IngredientsController : BaseController, IIngredientsController
     {
         private List<Ingredient> Ingredients => UnitOfWork.Repository.GetList<Ingredient>();
-        public IngredientsControl(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public IngredientsController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 

@@ -5,7 +5,6 @@ namespace HomeTask4.Core.Entities
 {
     public class Recipe : BaseEntity
     {
-        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public int CategoryId { get; set; }

@@ -5,7 +5,6 @@ namespace HomeTask4.Core.Entities
 {
     public class Ingredient : BaseEntity
     {
-        [Required]
         public string Name { get; set; }
     }
 }

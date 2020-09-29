@@ -6,12 +6,6 @@ namespace HomeTask4.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<AmountIngredient> AmountIngredients { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<CookingStep> CookingSteps { get; set; }
-        public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<Recipe> Recipes { get; set; }
-
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
@@ -23,7 +17,11 @@ namespace HomeTask4.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
             if (modelBuilder != null)
             {
-                modelBuilder.ApplyConfiguration(new TempEntityConfig());
+                modelBuilder.ApplyConfiguration(new AmountIngredientConfig());
+                modelBuilder.ApplyConfiguration(new CategoryConfig());
+                modelBuilder.ApplyConfiguration(new CookingStepConfig());
+                modelBuilder.ApplyConfiguration(new IngredientConfig());
+                modelBuilder.ApplyConfiguration(new RecipeConfig());
             }
         }
     }

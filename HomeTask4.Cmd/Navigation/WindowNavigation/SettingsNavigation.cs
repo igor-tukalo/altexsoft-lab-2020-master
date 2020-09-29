@@ -40,7 +40,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 1:
                     {
-                        IngredientsNavigation ingrNav = new IngredientsNavigation(UnitOfWork, new IngredientsControl(UnitOfWork));
+                        IngredientsNavigation ingrNav = new IngredientsNavigation(UnitOfWork, new IngredientsController(UnitOfWork));
                         new ProgramMenu(ingrNav).CallMenu();
                     }
                     break;

@@ -64,7 +64,7 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                 case 3:
                     {
                         RecipesIngredientsNavigation recipesIngredientsNavigation = new RecipesIngredientsNavigation(UnitOfWork,
-                            IdRecipe, new IngredientsControl(UnitOfWork), new RecipeIngredientsController(UnitOfWork));
+                            IdRecipe, new IngredientsController(UnitOfWork), new RecipeIngredientsController(UnitOfWork));
                         new ProgramMenu(recipesIngredientsNavigation).CallMenu();
                     }
                     break;
