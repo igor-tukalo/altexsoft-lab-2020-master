@@ -15,6 +15,7 @@ namespace HomeTask4.Infrastructure.Data.Config
             {
                 builder.ToTable("AmountIngredients").HasKey(x => x.Id);
                 builder.Property(p => p.Amount).IsRequired();
+                builder.Property(p => p.Unit).IsRequired().HasMaxLength(30);
                 builder.Property(p => p.RecipeId).IsRequired();
                 builder.Property(p => p.IngredientId).IsRequired();
             }
