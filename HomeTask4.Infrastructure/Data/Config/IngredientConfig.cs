@@ -14,7 +14,7 @@ namespace HomeTask4.Infrastructure.Data.Config
             if (builder != null)
             {
                 builder.ToTable("Ingredients").HasKey(x => x.Id);
-                builder.Property(p => p.Name).IsRequired().HasMaxLength(30);
+                builder.Property(p => p.Name).IsRequired().HasMaxLength(50);
             }
         }
     }
