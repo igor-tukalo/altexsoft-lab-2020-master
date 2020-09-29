@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 /// <summary>
 /// A skeleton for the Home Task 4 in AltexSoft Lab 2020
@@ -22,15 +23,12 @@ using System;
 /// </summary>
 namespace HomeTask4.Cmd
 {
-    internal class Program
+    class Program
     {
-        private static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            IHost host = CreateHostBuilder().Build();
-            Console.WindowHeight = Console.LargestWindowHeight;
-            MainWindowNavigation nav = host.Services.GetRequiredService<MainWindowNavigation>();
-            ProgramMenu programMenu = new ProgramMenu(nav);
-            programMenu.CallMenu();
+            var host = CreateHostBuilder(args).Build();
+            await host.RunAsync();
         }
 
         /// <summary>
@@ -39,18 +37,18 @@ namespace HomeTask4.Cmd
         /// </summary>
         /// <param name = "args" ></ param >
         /// < returns >< see cref="IHostBuilder" /> hostBuilder</returns>
-        public static IHostBuilder CreateHostBuilder()
+        public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder()
             .ConfigureServices((context, services) =>
             {
                 services.AddInfrastructure(context.Configuration.GetConnectionString("Default"));
-                services.AddTransient<MainWindowNavigation>();
             })
             .ConfigureLogging(config =>
             {
                 config.ClearProviders();
-            });
+            })
+            .UseStartup<Startup>();
         }
     }
 }
