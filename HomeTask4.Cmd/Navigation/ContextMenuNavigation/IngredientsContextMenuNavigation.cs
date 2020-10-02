@@ -1,5 +1,4 @@
-﻿using HomeTask4.Cmd.Navigation;
-using HomeTask4.Core.Entities;
+﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.Core.Interfaces.Navigation;
 using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
@@ -7,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace task2.ViewNavigation.ContextMenuNavigation
+namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
 {
     public class IngredientsContextMenuNavigation : NavigationManager, IIngredientsContextMenuNavigation
     {

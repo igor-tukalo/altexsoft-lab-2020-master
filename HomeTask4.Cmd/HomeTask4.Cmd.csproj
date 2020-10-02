@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Navigation\ContextMenuNavigation\CategoriesContextMenuNavigation.cs" />
     <Compile Remove="Navigation\ContextMenuNavigation\CookingStepsContextMenuNavigation.cs" />
     <Compile Remove="Navigation\ContextMenuNavigation\RecipesContextMenuNavigation.cs" />
     <Compile Remove="Navigation\WindowNavigation\CookingStepsNavigation.cs" />

@@ -1,12 +1,9 @@
 ﻿using HomeTask4.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HomeTask4.Infrastructure.Data.Config
 {
-    class CookingStepConfig : IEntityTypeConfiguration<CookingStep>
+    internal class CookingStepConfig : IEntityTypeConfiguration<CookingStep>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<CookingStep> builder)
         {

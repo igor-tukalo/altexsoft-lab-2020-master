@@ -1,5 +1,4 @@
-﻿using HomeTask4.Core.Entities;
-using HomeTask4.Infrastructure.Data.Config;
+﻿using HomeTask4.Infrastructure.Data.Config;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeTask4.Infrastructure.Data

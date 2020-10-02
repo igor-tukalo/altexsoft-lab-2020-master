@@ -1,5 +1,4 @@
 ﻿using HomeTask4.SharedKernel;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Interfaces

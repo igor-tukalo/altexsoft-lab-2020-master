@@ -12,17 +12,15 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     public class CategoriesNavigation : NavigationManager, ICategoriesNavigation
     {
         private readonly ICategoriesController _categoriesController;
-        //private readonly ICategoriesContextMenuNavigation _categoriesContextMenuNavigation;
+        private readonly ICategoriesContextMenuNavigation _categoriesContextMenuNavigation;
         private List<EntityMenu> ItemsMenu { get; set; }
 
         public CategoriesNavigation(IValidationNavigation validationNavigation,
-            ICategoriesController categoriesController
-            //,
-            //ICategoriesContextMenuNavigation categoriesContextMenuNavigation
-            ) : base(validationNavigation)
+            ICategoriesController categoriesController,
+            ICategoriesContextMenuNavigation categoriesContextMenuNavigation) : base(validationNavigation)
         {
             _categoriesController = categoriesController;
-            //_categoriesContextMenuNavigation = categoriesContextMenuNavigation;
+            _categoriesContextMenuNavigation = categoriesContextMenuNavigation;
         }
         private async Task AddCategory()
         {
@@ -40,21 +38,21 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             {
                 items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = category.ParentId });
             }
-            var categoriesWhereParentId = await _categoriesController.GetItemsWhereParentIdAsync(category.Id);
+            List<Category> categoriesWhereParentId = await _categoriesController.GetItemsWhereParentIdAsync(category.Id);
             foreach (Category child in categoriesWhereParentId.OrderBy(x => x.Name))
             {
                 await BuildHierarchicalCategories(items, child, level + 1);
             }
         }
-        private async Task CallContextMenuItem(int id)
+        private async Task ShowContextMenu(int id)
         {
-            //Task task;
-            //do
-            //{
-            //    task = _categoriesContextMenuNavigation.ShowMenu(ItemsMenu[id].Id);
-            //    await task;
-            //}
-            //while (!task.IsCompleted);
+            Task task;
+            do
+            {
+                task = _categoriesContextMenuNavigation.ShowMenu(ItemsMenu[id].Id);
+                await task;
+            }
+            while (!task.IsCompleted);
             await ShowMenu();
         }
 
@@ -66,7 +64,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     new EntityMenu(){ Name = "    Add category" },
                     new EntityMenu(){ Name = "    Return to settings"},
                 };
-            var category = await _categoriesController.GetByIdAsync(1);
+            Category category = await _categoriesController.GetByIdAsync(1);
             await BuildHierarchicalCategories(ItemsMenu, category, 1);
             await CallNavigation(ItemsMenu, SelectMethodMenu);
         }
@@ -85,7 +83,14 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 default:
                     {
-                        await CallContextMenuItem(id);
+                        if (ItemsMenu[id].ParentId != 0)
+                        {
+                            await ShowContextMenu(id);
+                        }
+                        else
+                        {
+                            await ShowMenu();
+                        }
                     }
                     break;
             }

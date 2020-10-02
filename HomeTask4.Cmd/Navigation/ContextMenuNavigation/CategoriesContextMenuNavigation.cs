@@ -1,65 +1,65 @@
-﻿using HomeTask4.Cmd.Navigation.WindowNavigation;
-using HomeTask4.Core.Entities;
+﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.Core.Interfaces.Navigation;
 using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
-using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
 {
-    class CategoriesContextMenuNavigation : CategoriesNavigation, ICategoriesContextMenuNavigation
+    public class CategoriesContextMenuNavigation : NavigationManager, ICategoriesContextMenuNavigation
     {
+        private readonly ICategoriesController _categoriesController;
+
         private int CategoryId { get; set; }
 
-        public CategoriesContextMenuNavigation(ICategoriesController categoriesController) : base(categoriesController)
+        public CategoriesContextMenuNavigation(IValidationNavigation validationNavigation, ICategoriesController categoriesController) : base(validationNavigation)
         {
+            _categoriesController = categoriesController;
         }
-        public void ShowMenu(int categoryId)
+
+        private async Task Rename()
         {
-            if (categoryId == 0)
-                throw new Exception("Invalid categoryId");
-            else
+            Console.Write("    Enter new name: ");
+            string newName = await ValidationNavigation.NullOrEmptyText(Console.ReadLine());
+            await _categoriesController.RenameAsync(CategoryId, newName);
+        }
+
+        private async Task Delete()
+        {
+            Console.Write("    Attention! Are you sure you want to delete the category? You will also delete all the recipes that are in them! ");
+            if ((await ValidationNavigation.YesNoAsync()) == ConsoleKey.N)
             {
-                CategoryId = categoryId;
-                Console.Clear();
-                var itemsMenu = new List<EntityMenu>
+                return;
+            }
+            await _categoriesController.DeleteAsync(CategoryId);
+        }
+        public async Task ShowMenu(int categoryId)
+        {
+            CategoryId = categoryId;
+            Console.Clear();
+            List<EntityMenu> itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Rename" },
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-                CallNavigation(itemsMenu, SelectMethodMenu);
-            }
-        }
-        public void Rename()
-        {
-            Console.Write("    Enter new name: ");
-            string newName = Console.ReadLine();
-            categoriesController.RenameAsync(CategoryId, newName);
+            await CallNavigation(itemsMenu, SelectMethodMenu);
         }
 
-        public void Delete()
-        {
-            if (categoriesController == null)
-                throw new Exception("Fiasko");
-             categoriesController.DeleteAsync(CategoryId);
-        }
-
-        public override void SelectMethodMenu(int id)
+        public async Task SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        Rename();
+                        await Rename();
                     }
                     break;
                 case 1:
                     {
-                        Delete();
+                        await Delete();
                     }
                     break;
                 case 2:

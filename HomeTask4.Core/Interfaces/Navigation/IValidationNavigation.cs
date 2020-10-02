@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Interfaces.Navigation
 {
-   public interface IValidationNavigation
+    public interface IValidationNavigation
     {
         Task<int> BatchExist(int batch, int countBatch);
         Task<string> NullOrEmptyText(string text);
