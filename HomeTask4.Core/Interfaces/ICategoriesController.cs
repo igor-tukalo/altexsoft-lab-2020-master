@@ -1,12 +1,13 @@
 ﻿using HomeTask4.Core.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Interfaces
 {
-    public interface ICategoriesController : IBaseController
+    public interface ICategoriesController : IBaseController<Category>
     {
-        void BuildHierarchicalCategories(List<EntityMenu> items, Category thisEntity, int level);
-        void RemoveHierarchicalCategory(Category thisEntity, int level);
-        Category GetParentCategory(int id);
+        Task AddAsync(string nameCategory, string parentСategoryName);
+        Task<List<Category>> GetItemsWhereParentIdAsync(int categoryId);
+        Task<Category> GetByIdAsync(int id);
     }
 }

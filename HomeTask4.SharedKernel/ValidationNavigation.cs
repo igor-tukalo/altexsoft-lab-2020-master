@@ -2,7 +2,7 @@
 
 namespace HomeTask4.SharedKernel
 {
-    public class Validation
+    public class ValidationNavigation
     {
         /// <summary>
         /// Check string value for number

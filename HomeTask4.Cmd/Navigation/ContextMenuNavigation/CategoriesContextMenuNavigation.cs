@@ -1,33 +1,51 @@
 ﻿using HomeTask4.Cmd.Navigation.WindowNavigation;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using HomeTask4.Core.Interfaces.Navigation;
+using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using HomeTask4.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
 {
-    internal class CategoriesContextMenuNavigation : BaseNavigation, IContextMenuNavigation
+    class CategoriesContextMenuNavigation : CategoriesNavigation, ICategoriesContextMenuNavigation
     {
-        private readonly int Idcategory;
-        private readonly ICategoriesController Categories;
+        private int CategoryId { get; set; }
 
-        public CategoriesContextMenuNavigation(IUnitOfWork unitOfWork, int idCategory, ICategoriesController categories) : base(unitOfWork)
+        public CategoriesContextMenuNavigation(ICategoriesController categoriesController) : base(categoriesController)
         {
-            Idcategory = idCategory;
-            Categories = categories;
         }
-
-        public override void CallNavigation()
+        public void ShowMenu(int categoryId)
         {
-            Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            if (categoryId == 0)
+                throw new Exception("Invalid categoryId");
+            else
+            {
+                CategoryId = categoryId;
+                Console.Clear();
+                var itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Rename" },
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-            base.CallNavigation();
+                CallNavigation(itemsMenu, SelectMethodMenu);
+            }
+        }
+        public void Rename()
+        {
+            Console.Write("    Enter new name: ");
+            string newName = Console.ReadLine();
+            categoriesController.RenameAsync(CategoryId, newName);
+        }
+
+        public void Delete()
+        {
+            if (categoriesController == null)
+                throw new Exception("Fiasko");
+             categoriesController.DeleteAsync(CategoryId);
         }
 
         public override void SelectMethodMenu(int id)
@@ -36,28 +54,21 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             {
                 case 0:
                     {
-                        Categories.Edit(Idcategory);
-                        BackPrevMenu();
+                        Rename();
                     }
                     break;
                 case 1:
                     {
-                        Categories.Delete(Idcategory);
-                        BackPrevMenu();
+                        Delete();
                     }
                     break;
                 case 2:
                     {
-                        BackPrevMenu();
+
                     }
                     break;
             }
         }
 
-        public void BackPrevMenu()
-        {
-            CategoriesNavigation catNav = new CategoriesNavigation(UnitOfWork, Categories);
-            new ProgramMenu(catNav).CallMenu();
-        }
     }
 }

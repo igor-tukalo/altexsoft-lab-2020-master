@@ -1,23 +1,13 @@
-﻿using HomeTask4.Core.Entities;
-using HomeTask4.Core.Interfaces;
-using HomeTask4.SharedKernel.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using HomeTask4.Core.Interfaces.Navigation;
 
 namespace HomeTask4.Cmd.Navigation
 {
-    public abstract class BaseNavigation : INavigation
+    public abstract class BaseNavigation
     {
-        internal IUnitOfWork UnitOfWork { get; set; }
-        internal BaseNavigation(IUnitOfWork unitOfWork)
+        protected IValidationNavigation ValidationNavigation { get; }
+        protected BaseNavigation(IValidationNavigation validationNavigation)
         {
-            UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            ValidationNavigation = validationNavigation;
         }
-        public List<EntityMenu> ItemsMenu { get; set; }
-        public virtual void CallNavigation()
-        {
-            new Navigation().CallNavigation(ItemsMenu, SelectMethodMenu);
-        }
-        public virtual void SelectMethodMenu(int id) { }
     }
 }

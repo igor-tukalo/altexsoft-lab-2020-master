@@ -1,9 +1,12 @@
-﻿namespace HomeTask4.Core.Interfaces
+﻿using HomeTask4.SharedKernel;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace HomeTask4.Core.Interfaces
 {
-    public interface IBaseController
+    public interface IBaseController<T> where T : BaseEntity
     {
-        void Add();
-        void Edit(int id);
-        void Delete(int id);
+        Task RenameAsync(int id, string newName);
+        Task DeleteAsync(int id);
     }
 }

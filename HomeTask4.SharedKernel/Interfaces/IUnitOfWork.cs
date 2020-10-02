@@ -1,4 +1,6 @@
-﻿namespace HomeTask4.SharedKernel.Interfaces
+﻿using Microsoft.Extensions.Options;
+
+namespace HomeTask4.SharedKernel.Interfaces
 {
     public interface IUnitOfWork
     {

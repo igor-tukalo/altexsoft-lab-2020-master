@@ -1,10 +1,7 @@
-﻿using HomeTask4.Cmd.Navigation.WindowNavigation;
-using HomeTask4.Infrastructure.Extensions;
+﻿using HomeTask4.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -23,11 +20,11 @@ using System.Threading.Tasks;
 /// </summary>
 namespace HomeTask4.Cmd
 {
-    class Program
+    public class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            IHost host = CreateHostBuilder(args).Build();
             await host.RunAsync();
         }
 
@@ -43,6 +40,7 @@ namespace HomeTask4.Cmd
             .ConfigureServices((context, services) =>
             {
                 services.AddInfrastructure(context.Configuration.GetConnectionString("Default"));
+
             })
             .ConfigureLogging(config =>
             {

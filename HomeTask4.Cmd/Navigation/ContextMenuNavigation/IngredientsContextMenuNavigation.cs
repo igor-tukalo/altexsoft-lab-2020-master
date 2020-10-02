@@ -1,70 +1,74 @@
-﻿using HomeTask4.Cmd;
-using HomeTask4.Cmd.Navigation;
-using HomeTask4.Cmd.Navigation.WindowNavigation;
+﻿using HomeTask4.Cmd.Navigation;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.SharedKernel.Interfaces;
+using HomeTask4.Core.Interfaces.Navigation;
+using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace task2.ViewNavigation.ContextMenuNavigation
 {
-    internal class IngredientsContextMenuNavigation : BaseNavigation, IContextMenuNavigation
+    public class IngredientsContextMenuNavigation : NavigationManager, IIngredientsContextMenuNavigation
     {
-        private readonly IIngredientsController Ingredients;
-        private readonly int IdIngredient;
-        private readonly int Page;
+        private readonly IIngredientsController _ingredientsController;
+        private int IngredientId { get; set; }
 
-        public IngredientsContextMenuNavigation(IUnitOfWork unitOfWork, int idIngredient, int page, IIngredientsController ingredients) : base(unitOfWork)
+        public IngredientsContextMenuNavigation(IValidationNavigation validationNavigation,
+            IIngredientsController ingredientsController) : base(validationNavigation)
         {
-            Ingredients = ingredients;
-            IdIngredient = idIngredient;
-            Page = page;
+            _ingredientsController = ingredientsController;
+        }
+        private async Task Rename()
+        {
+            Console.Write("    Enter new name: ");
+            string newName = await ValidationNavigation.NullOrEmptyText(Console.ReadLine());
+            await _ingredientsController.RenameAsync(IngredientId, newName);
         }
 
-        public override void CallNavigation()
+        private async Task Delete()
         {
+            Console.WriteLine("    Do you really want to remove the ingredient? ");
+            if ((await ValidationNavigation.YesNoAsync()) == ConsoleKey.N)
+            {
+                return;
+            }
+            await _ingredientsController.DeleteAsync(IngredientId);
+        }
+
+        public async Task ShowMenu(int id)
+        {
+            IngredientId = id;
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            List<EntityMenu> itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Rename" },
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-            base.CallNavigation();
+            await CallNavigation(itemsMenu, SelectMethodMenu);
         }
 
-        public override void SelectMethodMenu(int id)
+        public async Task SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        Ingredients.Edit(IdIngredient);
-                        BackPrevMenu();
+                        await Rename();
                     }
                     break;
                 case 1:
                     {
-                        Ingredients.Delete(IdIngredient);
-                        BackPrevMenu();
+                        await Delete();
                     }
                     break;
                 case 2:
                     {
-                        BackPrevMenu();
+
                     }
                     break;
             }
-        }
-
-        public void BackPrevMenu()
-        {
-            IngredientsNavigation ingredientsNavigation = new IngredientsNavigation(UnitOfWork, Ingredients)
-            {
-                PageIngredients = Page
-            };
-            new ProgramMenu(ingredientsNavigation).CallMenu();
         }
     }
 }

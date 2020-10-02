@@ -1,58 +1,40 @@
 ﻿using HomeTask4.Core.Entities;
+using HomeTask4.Core.Interfaces.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Navigation
 {
-    internal class Navigation
+    public class NavigationManager : BaseNavigation
     {
-        public delegate void MenuMethodsCallback(int id);
-
-        private List<EntityMenu> MenuItems;
+        protected delegate Task MenuMethodsCallback(int id);
+        private List<EntityMenu> menuItems;
         private int counter;
 
-        /// <summary>
-        /// Navigation menu
-        /// </summary>
-        /// <param name="menuItems"></param>
-        /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
-        public void CallNavigation(List<EntityMenu> menuItems, MenuMethodsCallback selectedMethod)
+        public NavigationManager(IValidationNavigation validationNavigation) : base(validationNavigation)
         {
-            MenuItems = menuItems;
-            int menuResult;
-
-            List<MenuMethodsCallback> methodsMenu = new List<MenuMethodsCallback>();
-            for (int i = 0; i < MenuItems.Count; i++)
-            {
-                methodsMenu.Add(selectedMethod);
-            }
-            do
-            {
-                menuResult = PrintMenu();
-                methodsMenu[menuResult](menuResult);
-                Console.ReadKey();
-            } while (menuResult != MenuItems.Count - 1);
         }
 
-        private int PrintMenu()
+        private Task<int> PrintMenu()
         {
             ConsoleKeyInfo key;
             do
             {
                 ClearArea(0, 0, 6, 0);
-                for (int i = 0; i < MenuItems.Count; i++)
+                for (int i = 0; i < menuItems.Count; i++)
                 {
                     if (counter == i)
                     {
                         Console.BackgroundColor = ConsoleColor.Green;
                         Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine(MenuItems[i].Name);
+                        Console.WriteLine(menuItems[i].Name);
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
                     else
                     {
-                        Console.WriteLine(MenuItems[i].Name);
+                        Console.WriteLine(menuItems[i].Name);
                     }
                 }
                 key = Console.ReadKey();
@@ -61,23 +43,23 @@ namespace HomeTask4.Cmd.Navigation
                     counter--;
                     if (counter == -1)
                     {
-                        counter = MenuItems.Count - 1;
+                        counter = menuItems.Count - 1;
                     }
                 }
                 if (key.Key == ConsoleKey.DownArrow)
                 {
                     counter++;
-                    if (counter == MenuItems.Count)
+                    if (counter == menuItems.Count)
                     {
                         counter = 0;
                     }
                 }
             }
             while (key.Key != ConsoleKey.Enter);
-            return counter;
+            return Task.FromResult(counter);
         }
 
-        private static void ClearArea(int top, int left, int height, int width)
+        private static Task ClearArea(int top, int left, int height, int width)
         {
             ConsoleColor colorBefore = Console.BackgroundColor;
             try
@@ -94,6 +76,29 @@ namespace HomeTask4.Cmd.Navigation
             {
                 Console.BackgroundColor = colorBefore;
             }
+            return Task.CompletedTask;
+        }
+        /// <summary>
+        /// Navigation menu
+        /// </summary>
+        /// <param name="menuItems"></param>
+        /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
+        protected async Task CallNavigation(List<EntityMenu> menuItems, MenuMethodsCallback selectedMethod)
+        {
+            this.menuItems = menuItems;
+            int menuResult;
+
+            List<MenuMethodsCallback> methodsMenu = new List<MenuMethodsCallback>();
+            for (int i = 0; i < this.menuItems.Count; i++)
+            {
+                methodsMenu.Add(selectedMethod);
+            }
+            do
+            {
+                menuResult = await PrintMenu();
+                await methodsMenu[menuResult](menuResult);
+                break;
+            } while (menuResult != this.menuItems.Count - 1);
         }
     }
 }

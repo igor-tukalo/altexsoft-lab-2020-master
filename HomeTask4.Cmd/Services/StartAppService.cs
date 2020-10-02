@@ -1,23 +1,22 @@
-﻿using HomeTask4.Cmd.Navigation.WindowNavigation;
-using HomeTask4.SharedKernel.Interfaces;
+﻿using HomeTask4.Core.Interfaces.Navigation;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Services
 {
-    public class StartAppService : BackgroundService
+    internal class StartAppService : BackgroundService
     {
-        private readonly IUnitOfWork unitOfWork;
-        public StartAppService(IUnitOfWork unitOfWork)
+        private readonly IMainWindowNavigation mainWindowNavigation;
+
+        public StartAppService(IMainWindowNavigation mainWindowNavigation)
         {
-            this.unitOfWork = unitOfWork;
+            this.mainWindowNavigation = mainWindowNavigation;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            MainWindowNavigation mainWinNav = new MainWindowNavigation(unitOfWork);
-            new ProgramMenu(mainWinNav).CallMenu();
+            mainWindowNavigation.ShowMenu();
             return Task.CompletedTask;
         }
     }

@@ -1,22 +1,41 @@
-﻿using HomeTask4.Core.Controllers;
-using HomeTask4.Core.Entities;
-using HomeTask4.Core.Interfaces;
-using HomeTask4.SharedKernel.Interfaces;
+﻿using HomeTask4.Core.Entities;
+using HomeTask4.Core.Interfaces.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
-    internal class MainWindowNavigation : BaseNavigation, INavigation
+    public class MainWindowNavigation : NavigationManager, IMainWindowNavigation
     {
-        public MainWindowNavigation(IUnitOfWork unitOfWork) : base(unitOfWork)
+        private readonly ISettingsNavigation _settingsNavigation;
+
+        public MainWindowNavigation(IValidationNavigation validationNavigation,
+            ISettingsNavigation settingsNavigation) : base(validationNavigation)
         {
+            _settingsNavigation = settingsNavigation;
         }
 
-        public override void CallNavigation()
+        private Task GotoRecipes()
+        {
+            return Task.CompletedTask;
+        }
+
+        private async Task GoToSettings()
+        {
+            Task task;
+            do
+            {
+                task = _settingsNavigation.ShowMenu();
+                await task;
+            }
+            while (!task.IsCompleted);
+            await ShowMenu();
+        }
+
+        public async Task ShowMenu()
         {
             Console.Clear();
-
             Console.WriteLine(@"
                  _.--._  _.--._
             ,-=.-':;:;:;\':;:;:;'-._
@@ -29,28 +48,26 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                   \\\_.-'      :      ''-.\
                    \`_..--''--.;.--'''--.._\
                     ");
-            ItemsMenu = new List<EntityMenu>
+            List<EntityMenu> itemsMenu = new List<EntityMenu>
             {
                 new EntityMenu() { Name = "    Recipes" },
                 new EntityMenu() { Name = "    Settings" }
             };
-            base.CallNavigation();
+            await CallNavigation(itemsMenu, SelectMethodMenu);
         }
 
-        public override void SelectMethodMenu(int id)
+        public async Task SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        RecipesNavigation recipeNav = new RecipesNavigation(UnitOfWork, new RecipesController(UnitOfWork));
-                        new ProgramMenu(recipeNav).CallMenu();
+                        await GotoRecipes();
                     }
                     break;
                 case 1:
                     {
-                        SettingsNavigation settNav = new SettingsNavigation(UnitOfWork, new SettingsController(UnitOfWork));
-                        new ProgramMenu(settNav).CallMenu();
+                        await GoToSettings();
                     }
                     break;
             }

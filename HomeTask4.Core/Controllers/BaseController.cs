@@ -1,18 +1,22 @@
 ﻿using HomeTask4.SharedKernel;
 using HomeTask4.SharedKernel.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Controllers
 {
     public abstract class BaseController
     {
-        protected Validation ValidManager { get; }
+        protected ValidationNavigation ValidManager { get; }
         protected IUnitOfWork UnitOfWork { get; }
+        protected IOptions<CustomSettings> CustomSettingsApp { get; }
 
-        public BaseController(IUnitOfWork unitOfWork)
+        protected BaseController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings)
         {
             UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            ValidManager = new Validation();
+            CustomSettingsApp = settings;
+            ValidManager = new ValidationNavigation();
         }
     }
 }

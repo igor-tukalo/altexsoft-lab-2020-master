@@ -1,73 +1,88 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Controllers
 {
     public class CategoriesController : BaseController, ICategoriesController
     {
-        private List<Category> Categories => UnitOfWork.Repository.GetList<Category>();
-        public CategoriesController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public CategoriesController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
         {
         }
-
-        public Category GetParentCategory(int id)
+        public async Task<Category> GetByIdAsync(int id)
         {
-            return UnitOfWork.Repository.GetById<Category>(1);
-        }
-
-        public void Add()
-        {
-            Console.Write("\n    Enter name category: ");
-            string name = Console.ReadLine();
-            Console.Write("    Enter name main category: ");
-            string nameMainCategory = IsNameMustExist(ValidManager.NullOrEmptyText(Console.ReadLine()));
-            int idMainCategory = (from t in Categories
-                                  where t.Name == nameMainCategory
-                                  select t.Id).First();
-            UnitOfWork.Repository.Add(new Category() { Name = name, ParentId = idMainCategory });
-        }
-
-        public void BuildHierarchicalCategories(List<EntityMenu> items, Category thisEntity, int level)
-        {
-            if (items != null && thisEntity != null)
+            Task<Category> taskCategory = null;
+            try
             {
-                items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
+                taskCategory = UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == id);
             }
-            foreach (Category child in Categories.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            catch (Exception ex)
             {
-                BuildHierarchicalCategories(items, child, level + 1);
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+            }
+            return await taskCategory;
+        }
+
+        public async Task<Category> GetCategoryByParentIdAsync(int parentId)
+        {
+            return await UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == parentId);
+        }
+
+        public async Task<List<Category>> GetItemsAsync()
+        {
+            return await UnitOfWork.Repository.GetListAsync<Category>();
+        }
+
+        public async Task<List<Category>> GetItemsWhereParentIdAsync(int categoryId)
+        {
+            return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.ParentId == categoryId);
+        }
+
+        public async Task AddAsync(string nameCategory, string parentСategoryName)
+        {
+            try
+            {
+                var category = await UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Name == parentСategoryName);
+                int idMainCategory = category.Id;
+                await UnitOfWork.Repository.AddAsync(new Category() { Name = nameCategory, ParentId = idMainCategory });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
             }
         }
 
-        public void RemoveHierarchicalCategory(Category thisEntity, int level)
+        private async Task RemoveHierarchicalCategoryAsync(Category category, int level)
         {
-            if (thisEntity != null)
+            if (category != null)
             {
-                UnitOfWork.Repository.Delete(UnitOfWork.Repository.GetById<Category>(thisEntity.Id));
+                await UnitOfWork.Repository.DeleteAsync(await GetByIdAsync(category.Id));
             }
-            foreach (Category child in Categories.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
+            foreach (Category child in (await GetItemsWhereParentIdAsync(category.Id)).OrderBy(x => x.Name))
             {
-                RemoveHierarchicalCategory(child, level + 1);
+                await RemoveHierarchicalCategoryAsync(child, level + 1);
             }
         }
 
-        public void Edit(int id)
+        public async Task RenameAsync(int id, string newName)
         {
-            Console.Write("    Enter new name: ");
-            string newName = IsNameMustNotExist(Console.ReadLine());
-            Category category = UnitOfWork.Repository.GetById<Category>(id);
+            Category category = (await GetByIdAsync(id));
             category.Name = newName;
-            UnitOfWork.Repository.Update(category);
+            await UnitOfWork.Repository.UpdateAsync(category);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            if (UnitOfWork.Repository.GetById<Category>(id).ParentId == 0)
+            Category parent = (await UnitOfWork.Repository.GetByIdAsync<Category>(id));
+            if (parent.ParentId == 0)
             {
                 return;
             }
@@ -76,31 +91,7 @@ namespace HomeTask4.Core.Controllers
             {
                 return;
             }
-            Category parent = UnitOfWork.Repository.GetById<Category>(id);
-            RemoveHierarchicalCategory(parent, 1);
-        }
-
-        private string IsNameMustExist(string name)
-        {
-            do
-            {
-                if (!Categories.Exists(x => x.Name.ToLower(CultureInfo.CurrentUICulture) == name.ToLower(CultureInfo.CurrentUICulture)))
-                {
-                    Console.Write("    No name found. Enter an existing name: ");
-                    name = ValidManager.NullOrEmptyText(Console.ReadLine());
-                }
-            } while (!Categories.Exists(x => x.Name == name));
-            return name;
-        }
-
-        private string IsNameMustNotExist(string name)
-        {
-            while (Categories.Exists(x => x.Name.ToLower(CultureInfo.CurrentUICulture) == name.ToLower(CultureInfo.CurrentUICulture)))
-            {
-                Console.Write("    This name is already in use. enter another name: ");
-                name = ValidManager.NullOrEmptyText(Console.ReadLine());
-            }
-            return name;
+            await RemoveHierarchicalCategoryAsync(parent, 1);
         }
     }
 }

@@ -1,3 +1,5 @@
+using HomeTask4.Core.Controllers;
+using HomeTask4.Core.Interfaces;
 using HomeTask4.Infrastructure.Data;
 using HomeTask4.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +14,8 @@ namespace HomeTask4.Infrastructure.Extensions
             services.AddDbContext<AppDbContext>(opts => opts.UseSqlServer(connectionString));
             services.AddScoped<IRepository, EfRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IIngredientsController, IngredientsController>();
+            services.AddScoped<ICategoriesController, CategoriesController>();
 
             return services;
         }

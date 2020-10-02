@@ -2,13 +2,17 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace HomeTask4.Infrastructure.Extensions
 {
+	/// <summary>
+	/// Extensions to emulate a typical "Startup.cs" pattern for <see cref="IHostBuilder"/>
+	/// </summary>
 	public static class HostBuilderExtensions
 	{
 		private const string ConfigureServicesMethodName = "ConfigureServices";
-
 		/// <summary>
 		/// Specify the startup type to be used by the host.
 		/// </summary>
@@ -20,6 +24,7 @@ namespace HomeTask4.Infrastructure.Extensions
 		public static IHostBuilder UseStartup<TStartup>(
 			this IHostBuilder hostBuilder) where TStartup : class
 		{
+			hostBuilder = hostBuilder ?? throw new ArgumentNullException(nameof(hostBuilder));
 			// Invoke the ConfigureServices method on IHostBuilder...
 			hostBuilder.ConfigureServices((ctx, serviceCollection) =>
 			{

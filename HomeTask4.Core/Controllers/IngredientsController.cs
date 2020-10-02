@@ -1,83 +1,47 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel.Interfaces;
+using Microsoft.Extensions.Options;
 using MoreLinq;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Controllers
 {
     public class IngredientsController : BaseController, IIngredientsController
     {
-        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetList<Ingredient>();
-        public IngredientsController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public IngredientsController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
         {
         }
 
-        public void Add()
+        public async Task<Ingredient> GetByIdAsync(int id)
         {
-            Console.Write("\n    Enter name ingredient: ");
-            string name = IsNameMustNotExist(Console.ReadLine());
-            string nameIngredient = name;
-            UnitOfWork.Repository.Add(new Ingredient() { Name = nameIngredient });
+            return await UnitOfWork.Repository.GetByPredicateAsync<Ingredient>(x => x.Id == id);
         }
 
-        /// <summary>
-        /// Get the ingredients of the specified batch
-        /// </summary>
-        /// <param name="itemsMenu"></param>
-        /// <param name="idBatch"></param>
-        public List<EntityMenu> GetIngredientsBatch(List<EntityMenu> itemsMenu, int idBatch = 1)
+        public async Task<List<IEnumerable<Ingredient>>> GetItemsBatchAsync()
         {
-            int counterBatch = 1;
-            foreach (IEnumerable<Ingredient> ingr in Ingredients.OrderBy(x => x.Name).Batch(int.Parse(ConfigurationManager.AppSettings.Get("Batch"), CultureInfo.CurrentCulture)))
-            {
-                if (counterBatch == idBatch)
-                {
-                    foreach (Ingredient batch in ingr)
-                    {
-                        if (itemsMenu != null)
-                        {
-                            itemsMenu.Add(new EntityMenu() { Id = batch.Id, Name = $"    {batch.Name}", TypeEntity = "ingr" });
-                        }
-                    }
-                }
-                counterBatch++;
-            }
-            return itemsMenu = itemsMenu
-            .Select(i => i.TypeEntity == "pages"
-            ? new EntityMenu { Name = $"    Go to page. Pages: {idBatch}/{counterBatch}", ParentId = counterBatch, TypeEntity = "pages" }
-            : i).ToList();
+            int batchSize = CustomSettingsApp.Value.NumberConsoleLines;
+            List<IEnumerable<Ingredient>> batchList = (await UnitOfWork.Repository.GetListAsync<Ingredient>()).OrderBy(x => x.Name).Batch(batchSize).ToList();
+            return batchList;
         }
-        public void Edit(int id)
+
+        public async Task AddAsync(string name)
         {
-            Console.Write("    Enter new name: ");
-            string newName = IsNameMustNotExist(Console.ReadLine());
-            Ingredient ingredient = UnitOfWork.Repository.GetById<Ingredient>(id);
+            await UnitOfWork.Repository.AddAsync(new Ingredient() { Name = name });
+        }
+
+        public async Task RenameAsync(int id, string newName)
+        {
+            Ingredient ingredient = await GetByIdAsync(id);
             ingredient.Name = newName;
-            UnitOfWork.Repository.Update(ingredient);
+            await UnitOfWork.Repository.UpdateAsync(ingredient);
         }
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Console.Write("    Do you really want to remove the ingredient? ");
-            if (ValidManager.YesNo() == ConsoleKey.N)
-            {
-                return;
-            }
-            UnitOfWork.Repository.Delete(UnitOfWork.Repository.GetById<Ingredient>(id));
-        }
-
-        private string IsNameMustNotExist(string name)
-        {
-            while (Ingredients.Exists(x => x.Name.ToLower(CultureInfo.CurrentUICulture) == name.ToLower(CultureInfo.CurrentUICulture)))
-            {
-                Console.Write("    This name is already in use. enter another name: ");
-                name = ValidManager.NullOrEmptyText(Console.ReadLine());
-            }
-            return name;
+            Ingredient ingredient = await GetByIdAsync(id);
+            await UnitOfWork.Repository.DeleteAsync(ingredient);
         }
     }
 }

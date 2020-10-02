@@ -12,6 +12,9 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\BaseCategoriesRecipesControl.cs" />
+    <Compile Remove="Controllers\CookingStepsController.cs" />
+    <Compile Remove="Controllers\RecipeIngredientsController.cs" />
+    <Compile Remove="Controllers\RecipesController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +26,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.8" />
     <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>

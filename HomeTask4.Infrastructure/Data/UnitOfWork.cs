@@ -1,4 +1,6 @@
-﻿using HomeTask4.SharedKernel.Interfaces;
+﻿using HomeTask4.Core;
+using HomeTask4.SharedKernel.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace HomeTask4.Infrastructure.Data
 {
@@ -7,11 +9,13 @@ namespace HomeTask4.Infrastructure.Data
         private readonly AppDbContext _context;
 
         public IRepository Repository { get; }
+        public IOptions<CustomSettings> Settings { get; }
 
-        public UnitOfWork(AppDbContext context, IRepository repository)
+        public UnitOfWork(AppDbContext context, IRepository repository, IOptions<CustomSettings> settings)
         {
             _context = context;
             Repository = repository;
+            Settings = settings;
         }
 
         public void SaveChanges()

@@ -1,26 +1,98 @@
-﻿using HomeTask4.Core.Controllers;
-using HomeTask4.Core.Entities;
+﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.SharedKernel;
-using HomeTask4.SharedKernel.Interfaces;
+using HomeTask4.Core.Interfaces.Navigation;
+using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
 using System.Collections.Generic;
-using task2.ViewNavigation.ContextMenuNavigation;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
-    internal class IngredientsNavigation : BaseNavigation, INavigation
+    public class IngredientsNavigation : NavigationManager, IIngredientsNavigation
     {
-        private readonly Validation ValidManager = new Validation();
-        private readonly IIngredientsController Ingredients;
+        private int pageIngredients = 1;
+        private readonly IIngredientsController _ingredientsController;
+        private readonly IIngredientsContextMenuNavigation _ingredientsContextMenuNavigation;
+        private List<EntityMenu> ItemsMenu { get; set; }
 
-        public IngredientsNavigation(IUnitOfWork unitOfWork, IIngredientsController ingredients) : base(unitOfWork)
+        public IngredientsNavigation(IValidationNavigation validationNavigation,
+            IIngredientsController ingredientsController,
+            IIngredientsContextMenuNavigation ingredientsContextMenuNavigation) : base(validationNavigation)
         {
-            Ingredients = ingredients;
+            _ingredientsController = ingredientsController;
+            _ingredientsContextMenuNavigation = ingredientsContextMenuNavigation;
         }
 
-        public int PageIngredients = 1;
-        public override void CallNavigation()
+        #region private methods
+        /// <summary>
+        /// Get the ingredients of the specified batch
+        /// </summary>
+        /// <param name="itemsMenu"></param>
+        /// <param name="idBatch"></param>
+        private async Task<List<EntityMenu>> GetIngredientsBatch(List<EntityMenu> itemsMenu, int idBatch = 1)
+        {
+            List<IEnumerable<Ingredient>> ingredientsBatch = await _ingredientsController.GetItemsBatchAsync();
+            int countBatch = ingredientsBatch.Count;
+            if (idBatch > ingredientsBatch.Count || idBatch < 0)
+            {
+                idBatch = await ValidationNavigation.BatchExist(idBatch, countBatch);
+            }
+            idBatch--;
+            IEnumerable<Ingredient> ingredients = ingredientsBatch.ElementAt(idBatch);
+            foreach (Ingredient batch in ingredients)
+            {
+                if (itemsMenu != null)
+                {
+                    itemsMenu.Add(new EntityMenu() { Id = batch.Id, Name = $"    {batch.Name}", TypeEntity = "ingr" });
+                }
+            }
+            idBatch++;
+            itemsMenu = itemsMenu
+            .Select(i => i.TypeEntity == "pages"
+            ? new EntityMenu { Name = $"    Go to page. Pages: {idBatch}/{countBatch}", TypeEntity = "pages" }
+            : i).ToList();
+            return itemsMenu;
+        }
+
+        private async Task AddIngredient()
+        {
+            Console.Write("\n    Enter name ingredient: ");
+            string name = await ValidationNavigation.NullOrEmptyText(Console.ReadLine());
+            await _ingredientsController.AddAsync(name);
+            await ShowMenu();
+        }
+
+        private async Task GoToPage()
+        {
+            Console.Write("\n    Enter page number: ");
+            try
+            {
+                pageIngredients = int.Parse(Console.ReadLine());
+                await ShowMenu();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"    {ex.Message} Press any key...");
+                Console.ReadKey();
+            }
+        }
+
+        private async Task ShowContextMenu(int id)
+        {
+            Task task;
+            do
+            {
+                task = _ingredientsContextMenuNavigation.ShowMenu(ItemsMenu[id].Id);
+                await task;
+            }
+            while (!task.IsCompleted);
+            await ShowMenu();
+        }
+        #endregion
+
+        #region public methods
+        public async Task ShowMenu()
         {
             Console.Clear();
             ItemsMenu = new List<EntityMenu>
@@ -30,41 +102,43 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     new EntityMenu(){ Name = "    Go to page", TypeEntity="pages"},
                     new EntityMenu(){ Name = "\n    Ingredients:\n" }
                 };
-            ItemsMenu = Ingredients.GetIngredientsBatch(ItemsMenu, PageIngredients);
-            base.CallNavigation();
+            ItemsMenu = await GetIngredientsBatch(ItemsMenu, pageIngredients);
+            await CallNavigation(ItemsMenu, SelectMethodMenu);
         }
 
-        public override void SelectMethodMenu(int id)
+        public async Task SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        Ingredients.Add();
-                        CallNavigation();
+                        await AddIngredient();
                     }
                     break;
                 case 1:
                     {
-                        SettingsNavigation settNav = new SettingsNavigation(UnitOfWork, new SettingsController(UnitOfWork));
-                        new ProgramMenu(settNav).CallMenu();
+
                     }
                     break;
                 case 2:
                     {
-                        Console.Write("\n    Enter page number: ");
-                        PageIngredients = ValidManager.BatchExist(Console.ReadLine(), ItemsMenu[id].ParentId);
-                        CallNavigation();
+                        await GoToPage();
                     }
                     break;
                 default:
                     {
-                        IngredientsContextMenuNavigation ingContextMenuNNav = new IngredientsContextMenuNavigation(UnitOfWork, ItemsMenu[id].Id, PageIngredients, Ingredients);
-                        new ProgramMenu(ingContextMenuNNav).CallMenu();
+                        if (ItemsMenu[id].Id != 0)
+                        {
+                            await ShowContextMenu(id);
+                        }
+                        else
+                        {
+                            await ShowMenu();
+                        }
                     }
                     break;
             }
+            #endregion
         }
-
     }
 }

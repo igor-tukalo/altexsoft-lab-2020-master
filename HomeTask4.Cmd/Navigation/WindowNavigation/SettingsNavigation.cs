@@ -1,59 +1,76 @@
-﻿using HomeTask4.Core.Controllers;
-using HomeTask4.Core.Entities;
-using HomeTask4.Core.Interfaces;
-using HomeTask4.SharedKernel.Interfaces;
+﻿using HomeTask4.Core.Entities;
+using HomeTask4.Core.Interfaces.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
-    internal class SettingsNavigation : BaseNavigation, INavigation
+    public class SettingsNavigation : NavigationManager, ISettingsNavigation
     {
-        private readonly ISettingsController SettingsControl;
-        public SettingsNavigation(IUnitOfWork unitOfWork, ISettingsController settingsControl) : base(unitOfWork)
+        private readonly ICategoriesNavigation _categoriesNavigation;
+        private readonly IIngredientsNavigation _ingredientsNavigation;
+
+        public SettingsNavigation(IValidationNavigation validationNavigation,
+            IIngredientsNavigation ingredientsNavigation,
+            ICategoriesNavigation categoriesNavigation) : base(validationNavigation)
         {
-            SettingsControl = settingsControl;
+            _ingredientsNavigation = ingredientsNavigation;
+            _categoriesNavigation = categoriesNavigation;
         }
 
-        public override void CallNavigation()
+        private async Task CustomizeCategories()
+        {
+            Task task;
+            do
+            {
+                task = _categoriesNavigation.ShowMenu();
+                await task;
+            }
+            while (!task.IsCompleted);
+            await ShowMenu();
+        }
+
+        private async Task CustomizeIngredients()
+        {
+            Task task;
+            do
+            {
+                task = _ingredientsNavigation.ShowMenu();
+                await task;
+            }
+            while (!task.IsCompleted);
+            await ShowMenu();
+        }
+
+        public async Task ShowMenu()
         {
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            List<EntityMenu> itemsMenu = new List<EntityMenu>
             {
                  new EntityMenu() { Name = "    Customize сategories" },
                  new EntityMenu() { Name = "    Customize ingredients" },
-                 new EntityMenu() { Name = "    Сhange the number of rows in the navigation menu" },
                  new EntityMenu() { Name = "    Return to main menu" }
             };
-            base.CallNavigation();
+            await CallNavigation(itemsMenu, SelectMethodMenu);
         }
 
-        public override void SelectMethodMenu(int id)
+        public async Task SelectMethodMenu(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        CategoriesNavigation catNav = new CategoriesNavigation(UnitOfWork, new CategoriesController(UnitOfWork));
-                        new ProgramMenu(catNav).CallMenu();
+                        await CustomizeCategories();
                     }
                     break;
                 case 1:
                     {
-                        IngredientsNavigation ingrNav = new IngredientsNavigation(UnitOfWork, new IngredientsController(UnitOfWork));
-                        new ProgramMenu(ingrNav).CallMenu();
+                        await CustomizeIngredients();
                     }
                     break;
                 case 2:
                     {
-                        SettingsControl.EditBatch();
-                        CallNavigation();
-                    }
-                    break;
-                case 3:
-                    {
-                        MainWindowNavigation mainWinNav = new MainWindowNavigation(UnitOfWork);
-                        new ProgramMenu(mainWinNav).CallMenu();
                     }
                     break;
             }
