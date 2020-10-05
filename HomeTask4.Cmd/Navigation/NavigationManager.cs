@@ -8,8 +8,8 @@ namespace HomeTask4.Cmd.Navigation
 {
     public class NavigationManager : BaseNavigation
     {
-        private List<EntityMenu> menuItems;
-        private int counter;
+        private List<EntityMenu> _menuItems;
+        private int _counter;
         protected delegate Task MenuMethodsCallback(int id);
 
         public NavigationManager(IValidationNavigation validationNavigation) : base(validationNavigation)
@@ -22,41 +22,41 @@ namespace HomeTask4.Cmd.Navigation
             do
             {
                 await ClearAreaAsync(0, 0, 6, 0);
-                for (int i = 0; i < menuItems.Count; i++)
+                for (int i = 0; i < _menuItems.Count; i++)
                 {
-                    if (counter == i)
+                    if (_counter == i)
                     {
                         Console.BackgroundColor = ConsoleColor.Green;
                         Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine(menuItems[i].Name);
+                        Console.WriteLine(_menuItems[i].Name);
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
                     else
                     {
-                        Console.WriteLine(menuItems[i].Name);
+                        Console.WriteLine(_menuItems[i].Name);
                     }
                 }
                 key = Console.ReadKey();
                 if (key.Key == ConsoleKey.UpArrow)
                 {
-                    counter--;
-                    if (counter == -1)
+                    _counter--;
+                    if (_counter == -1)
                     {
-                        counter = menuItems.Count - 1;
+                        _counter = _menuItems.Count - 1;
                     }
                 }
                 if (key.Key == ConsoleKey.DownArrow)
                 {
-                    counter++;
-                    if (counter == menuItems.Count)
+                    _counter++;
+                    if (_counter == _menuItems.Count)
                     {
-                        counter = 0;
+                        _counter = 0;
                     }
                 }
             }
             while (key.Key != ConsoleKey.Enter);
-            return counter;
+            return _counter;
         }
 
         private Task ClearAreaAsync(int top, int left, int height, int width)
@@ -85,11 +85,11 @@ namespace HomeTask4.Cmd.Navigation
         /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
         protected async Task CallNavigationAsync(List<EntityMenu> menuItems, MenuMethodsCallback selectedMethod)
         {
-            this.menuItems = menuItems;
+            this._menuItems = menuItems;
             int menuResult;
 
             List<MenuMethodsCallback> methodsMenu = new List<MenuMethodsCallback>();
-            for (int i = 0; i < this.menuItems.Count; i++)
+            for (int i = 0; i < this._menuItems.Count; i++)
             {
                 methodsMenu.Add(selectedMethod);
             }
@@ -98,7 +98,7 @@ namespace HomeTask4.Cmd.Navigation
                 menuResult = await PrintMenuAsync();
                 await methodsMenu[menuResult](menuResult);
                 break;
-            } while (menuResult != this.menuItems.Count - 1);
+            } while (menuResult != this._menuItems.Count - 1);
         }
     }
 }

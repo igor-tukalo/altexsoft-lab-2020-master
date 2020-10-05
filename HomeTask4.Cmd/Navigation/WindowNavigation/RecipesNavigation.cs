@@ -11,9 +11,9 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
     public class RecipesNavigation : NavigationManager, IRecipesNavigation
     {
-        private int currentCategoryId = 1;
-        private int prevCategoryId;
-        private List<EntityMenu> itemsMenu;
+        private int _currentCategoryId = 1;
+        private int _prevCategoryId;
+        private List<EntityMenu> _itemsMenu;
         private readonly IRecipesController _recipesController;
         private readonly IRecipesContextMenuNavigation _recipesContextMenuNavigation;
 
@@ -81,42 +81,42 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private async Task MovementCategoriesRecipesAsync(int nextCategoryid)
         {
             // forward movement. one levels below
-            if (currentCategoryId != nextCategoryid)
+            if (_currentCategoryId != nextCategoryid)
             {
-                currentCategoryId = nextCategoryid;
+                _currentCategoryId = nextCategoryid;
             }
             // backward movement. one level up
             else
             {
-                currentCategoryId = prevCategoryId == 0 ? 1 : prevCategoryId;
+                _currentCategoryId = _prevCategoryId == 0 ? 1 : _prevCategoryId;
             }
             await ShowMenuAsync();
         }
 
         private async Task AddRecipeAsync()
         {
-            Console.WriteLine($"\n    The recipe will be added to the category: {(await _recipesController.GetCategoryByIdAsync(currentCategoryId)).Name}");
+            Console.WriteLine($"\n    The recipe will be added to the category: {(await _recipesController.GetCategoryByIdAsync(_currentCategoryId)).Name}");
             Console.Write("\n    Enter the name of the recipe: ");
             string nameRecipe = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
             Console.Write("\n    Enter recipe description: ");
             string description = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            await _recipesController.AddAsync(nameRecipe, description, currentCategoryId);
+            await _recipesController.AddAsync(nameRecipe, description, _currentCategoryId);
             await ShowMenuAsync();
-        } 
+        }
         #endregion
 
         public async Task ShowMenuAsync()
         {
             Console.Clear();
-            itemsMenu = new List<EntityMenu>
+            _itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Add recipe" },
                     new EntityMenu(){ Name = "    Return to main menu" }
                 };
-            Category parent = await _recipesController.GetCategoryByIdAsync(currentCategoryId);
-            prevCategoryId = parent.ParentId;
-            await BuildRecipesCategoriesAsync(itemsMenu, parent, 1, 2);
-            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
+            Category parent = await _recipesController.GetCategoryByIdAsync(_currentCategoryId);
+            _prevCategoryId = parent.ParentId;
+            await BuildRecipesCategoriesAsync(_itemsMenu, parent, 1, 2);
+            await CallNavigationAsync(_itemsMenu, SelectMethodMenuAsync);
         }
 
         public async Task SelectMethodMenuAsync(int id)
@@ -135,14 +135,14 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 default:
                     {
-                        if (itemsMenu[id].TypeEntity == "recipe")
+                        if (_itemsMenu[id].TypeEntity == "recipe")
                         {
-                            await _recipesContextMenuNavigation.ShowMenuAsync(itemsMenu[id].Id);
+                            await _recipesContextMenuNavigation.ShowMenuAsync(_itemsMenu[id].Id);
                             await ShowMenuAsync();
                         }
                         else
                         {
-                            await MovementCategoriesRecipesAsync(itemsMenu[id].Id);
+                            await MovementCategoriesRecipesAsync(_itemsMenu[id].Id);
                         }
                     }
                     break;

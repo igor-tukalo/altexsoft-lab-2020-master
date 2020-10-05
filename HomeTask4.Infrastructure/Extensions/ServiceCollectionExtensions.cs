@@ -18,6 +18,7 @@ namespace HomeTask4.Infrastructure.Extensions
             services.AddScoped<ICategoriesController, CategoriesController>();
             services.AddScoped<IRecipesController, RecipesController>();
             services.AddScoped<ICookingStepsController, CookingStepsController>();
+            services.AddScoped<IAmountRecipeIngredientsController, AmountRecipeIngredientsController>();
 
             return services;
         }

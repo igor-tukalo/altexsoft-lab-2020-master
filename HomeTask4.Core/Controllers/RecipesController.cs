@@ -74,7 +74,7 @@ namespace HomeTask4.Core.Controllers
         {
             Recipe recipe = await GetRecipeByIdAsync(id);
             await UnitOfWork.Repository.DeleteAsync(recipe);
-        } 
+        }
         #endregion
     }
 }

@@ -21,7 +21,7 @@ namespace HomeTask4.Cmd
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //// inject a BackgroundService
+            services.Configure<CustomSettings>(Configuration.GetSection("CustomSettings"));
             services.AddHostedService<StartAppService>();
             services.AddScoped<IValidationNavigation, ValidationNavigation>();
             services.AddScoped<IMainWindowNavigation, MainWindowNavigation>();
@@ -34,14 +34,7 @@ namespace HomeTask4.Cmd
             services.AddScoped<IRecipesContextMenuNavigation, RecipesContextMenuNavigation>();
             services.AddScoped<ICookingStepsNavigation, CookingStepsNavigation>();
             services.AddScoped<ICookingStepsContextMenuNavigation, CookingStepsContextMenuNavigation>();
-
-
-            services.Configure<CustomSettings>(Configuration.GetSection("CustomSettings"));
-            // add in an IHttpClientFactory
-            services.AddHttpClient();
-
-            // add in IMemoryCache
-            services.AddMemoryCache();
+            services.AddScoped<IAmountRecipeIngredientsNavigation, AmountRecipeIngredientsNavigation>();
         }
     }
 }

@@ -7,17 +7,16 @@ namespace HomeTask4.Cmd.Services
 {
     internal class StartAppService : BackgroundService
     {
-        private readonly IMainWindowNavigation mainWindowNavigation;
+        private readonly IMainWindowNavigation _mainWindowNavigation;
 
         public StartAppService(IMainWindowNavigation mainWindowNavigation)
         {
-            this.mainWindowNavigation = mainWindowNavigation;
+            _mainWindowNavigation = mainWindowNavigation;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            mainWindowNavigation.ShowMenuAsync();
-            return Task.CompletedTask;
+           await _mainWindowNavigation.ShowMenuAsync();
         }
     }
 }

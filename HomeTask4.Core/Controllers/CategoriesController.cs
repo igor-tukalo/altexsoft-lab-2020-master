@@ -77,7 +77,7 @@ namespace HomeTask4.Core.Controllers
                 return;
             }
             await RemoveHierarchicalCategoryAsync(parent, 1);
-        } 
+        }
         #endregion
     }
 }

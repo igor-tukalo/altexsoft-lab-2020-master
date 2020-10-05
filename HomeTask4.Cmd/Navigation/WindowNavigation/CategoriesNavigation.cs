@@ -13,7 +13,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     {
         private readonly ICategoriesController _categoriesController;
         private readonly ICategoriesContextMenuNavigation _categoriesContextMenuNavigation;
-        private List<EntityMenu> itemsMenu;
+        private List<EntityMenu> _itemsMenu;
 
         public CategoriesNavigation(IValidationNavigation validationNavigation,
             ICategoriesController categoriesController,
@@ -44,27 +44,27 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 await BuildHierarchicalCategoriesAsync(items, child, level + 1);
             }
         }
-        private async Task ShowContextMenuAsync(int id)
+        private async Task ShowContextMenuAsync(int categoryId)
         {
-            await _categoriesContextMenuNavigation.ShowMenuAsync(itemsMenu[id].Id);
+            await _categoriesContextMenuNavigation.ShowMenuAsync(categoryId);
             await ShowMenuAsync();
         }
 
         public async Task ShowMenuAsync()
         {
             Console.Clear();
-            itemsMenu = new List<EntityMenu>
+            _itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Add category" },
                     new EntityMenu(){ Name = "    Return to settings"},
                 };
             Category category = await _categoriesController.GetByIdAsync(1);
-            await BuildHierarchicalCategoriesAsync(itemsMenu, category, 1);
-            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
+            await BuildHierarchicalCategoriesAsync(_itemsMenu, category, 1);
+            await CallNavigationAsync(_itemsMenu, SelectMethodMenuAsync);
         }
-        public async Task SelectMethodMenuAsync(int id)
+        public async Task SelectMethodMenuAsync(int menuId)
         {
-            switch (id)
+            switch (menuId)
             {
                 case 0:
                     {
@@ -77,9 +77,9 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 default:
                     {
-                        if (itemsMenu[id].ParentId != 0)
+                        if (_itemsMenu[menuId].ParentId != 0)
                         {
-                            await ShowContextMenuAsync(id);
+                            await ShowContextMenuAsync(_itemsMenu[menuId].Id);
                         }
                         else
                         {

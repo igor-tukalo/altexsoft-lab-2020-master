@@ -13,8 +13,8 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     {
         private readonly ICookingStepsController _cookingStepsController;
         private readonly ICookingStepsContextMenuNavigation _cookingStepsContextMenuNavigation;
-        private List<EntityMenu> itemsMenu;
-        private int recipeId;
+        private List<EntityMenu> _itemsMenu;
+        private int _recipeId;
 
         public CookingStepsNavigation(IValidationNavigation validationNavigation,
             ICookingStepsController cookingStepsController,
@@ -24,9 +24,9 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             _cookingStepsContextMenuNavigation = cookingStepsContextMenuNavigation;
         }
 
-        private async Task<List<EntityMenu>> GetItemsAsync(List<EntityMenu> itemsMenu, int idRecipe)
+        private async Task<List<EntityMenu>> GetItemsAsync(List<EntityMenu> itemsMenu, int recipeId)
         {
-            List<CookingStep> cookingSteps = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(idRecipe);
+            List<CookingStep> cookingSteps = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId);
             foreach (CookingStep s in cookingSteps)
             {
                 if (itemsMenu != null)
@@ -52,26 +52,26 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             await AddAsync(recipeId);
         }
 
-        public async Task ShowMenuAsync(int id)
+        public async Task ShowMenuAsync(int recipeId)
         {
-            recipeId = id;
+            _recipeId = recipeId;
             Console.Clear();
-            itemsMenu = new List<EntityMenu>
+            _itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name= "    Add step cooking" },
                     new EntityMenu(){ Name= "    Cancel" }
                 };
-            await GetItemsAsync(itemsMenu, id);
-            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
+            await GetItemsAsync(_itemsMenu, _recipeId);
+            await CallNavigationAsync(_itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenuAsync(int id)
+        public async Task SelectMethodMenuAsync(int menuId)
         {
-            switch (id)
+            switch (menuId)
             {
                 case 0:
                     {
-                        await AddAsync(recipeId);
+                        await AddAsync(_recipeId);
                     }
                     break;
                 case 1:
@@ -81,8 +81,8 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 default:
                     {
-                        await _cookingStepsContextMenuNavigation.ShowMenuAsync(itemsMenu[id].Id);
-                        await ShowMenuAsync(recipeId);
+                        await _cookingStepsContextMenuNavigation.ShowMenuAsync(_itemsMenu[menuId].Id);
+                        await ShowMenuAsync(_recipeId);
                     }
                     break;
             }

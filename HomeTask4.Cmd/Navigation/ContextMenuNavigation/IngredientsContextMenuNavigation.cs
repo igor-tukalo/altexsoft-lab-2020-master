@@ -11,7 +11,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
     public class IngredientsContextMenuNavigation : NavigationManager, IIngredientsContextMenuNavigation
     {
         private readonly IIngredientsController _ingredientsController;
-        private int ingredientId;
+        private int _ingredientId;
 
         public IngredientsContextMenuNavigation(IValidationNavigation validationNavigation,
             IIngredientsController ingredientsController) : base(validationNavigation)
@@ -22,7 +22,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             Console.Write("    Enter new name: ");
             string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            await _ingredientsController.RenameAsync(ingredientId, newName);
+            await _ingredientsController.RenameAsync(_ingredientId, newName);
         }
 
         private async Task DeleteAsync()
@@ -32,12 +32,12 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             {
                 return;
             }
-            await _ingredientsController.DeleteAsync(ingredientId);
+            await _ingredientsController.DeleteAsync(_ingredientId);
         }
 
-        public async Task ShowMenuAsync(int id)
+        public async Task ShowMenuAsync(int ingredientId)
         {
-            ingredientId = id;
+            _ingredientId = ingredientId;
             Console.Clear();
             List<EntityMenu> itemsMenu = new List<EntityMenu>
                 {
@@ -48,9 +48,9 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenuAsync(int id)
+        public async Task SelectMethodMenuAsync(int menuId)
         {
-            switch (id)
+            switch (menuId)
             {
                 case 0:
                     {

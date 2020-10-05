@@ -21,7 +21,7 @@ namespace HomeTask4.Infrastructure.Data
 
         public async Task SaveChanges()
         {
-           await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

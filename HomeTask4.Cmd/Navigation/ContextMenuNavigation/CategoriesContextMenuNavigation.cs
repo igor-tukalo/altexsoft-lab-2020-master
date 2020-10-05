@@ -11,8 +11,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
     public class CategoriesContextMenuNavigation : NavigationManager, ICategoriesContextMenuNavigation
     {
         private readonly ICategoriesController _categoriesController;
-
-        private int categoryId;
+        private int _categoryId;
 
         public CategoriesContextMenuNavigation(IValidationNavigation validationNavigation, ICategoriesController categoriesController) : base(validationNavigation)
         {
@@ -23,7 +22,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             Console.Write("    Enter new name: ");
             string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            await _categoriesController.RenameAsync(categoryId, newName);
+            await _categoriesController.RenameAsync(_categoryId, newName);
         }
 
         private async Task DeleteAsync()
@@ -33,11 +32,11 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             {
                 return;
             }
-            await _categoriesController.DeleteAsync(categoryId);
+            await _categoriesController.DeleteAsync(_categoryId);
         }
         public async Task ShowMenuAsync(int categoryId)
         {
-            this.categoryId = categoryId;
+            _categoryId = categoryId;
             Console.Clear();
             List<EntityMenu> itemsMenu = new List<EntityMenu>
                 {
@@ -48,9 +47,9 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenuAsync(int id)
+        public async Task SelectMethodMenuAsync(int menuId)
         {
-            switch (id)
+            switch (menuId)
             {
                 case 0:
                     {
@@ -64,7 +63,6 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
                     break;
                 case 2:
                     {
-
                     }
                     break;
             }

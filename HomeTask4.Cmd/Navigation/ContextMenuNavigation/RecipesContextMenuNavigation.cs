@@ -13,25 +13,29 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
     public class RecipesContextMenuNavigation : NavigationManager, IRecipesContextMenuNavigation
     {
         private readonly IRecipesController _recipesController;
+        private readonly IAmountRecipeIngredientsNavigation _amountRecipeIngredientsNavigation;
         private readonly ICookingStepsNavigation _cookingStepsNavigation;
-        private int recipeId;
+        private int _recipeId;
 
         public RecipesContextMenuNavigation(IValidationNavigation validationNavigation,
             IRecipesController recipesController,
+            IAmountRecipeIngredientsNavigation amountRecipeIngredientsNavigation,
             ICookingStepsNavigation cookingStepsNavigation) : base(validationNavigation)
         {
             _recipesController = recipesController;
+            _amountRecipeIngredientsNavigation = amountRecipeIngredientsNavigation;
             _cookingStepsNavigation = cookingStepsNavigation;
         }
 
-        private async Task OpenRecipeAync(int id)
+        #region private methods
+        private async Task OpenRecipeAync(int recipeId)
         {
             Console.Clear();
-            Recipe recipe = await _recipesController.GetRecipeByIdAsync(id);
+            Recipe recipe = await _recipesController.GetRecipeByIdAsync(recipeId);
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
             Console.WriteLine($"    { await ValidationNavigation.WrapTextAsync(10, recipe.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
-            List<string> ingredients = await _recipesController.GetIngredientsWhereRecipeIdAsync(id);
+            List<string> ingredients = await _recipesController.GetIngredientsWhereRecipeIdAsync(recipeId);
             //ingredients recipe
             foreach (string ingredient in ingredients)
             {
@@ -39,7 +43,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             }
             //steps recipe
             Console.WriteLine("\n    Сooking steps:\n");
-            List<CookingStep> cookingSteps = await _recipesController.GetCookingStepsWhereRecipeIdAsync(id);
+            List<CookingStep> cookingSteps = await _recipesController.GetCookingStepsWhereRecipeIdAsync(recipeId);
             foreach (CookingStep s in cookingSteps.OrderBy(x => x.Step))
             {
                 Console.WriteLine($"    {s.Step}. {await ValidationNavigation.WrapTextAsync(10, s.Name, "\n       ")}");
@@ -48,33 +52,33 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             Console.ReadKey();
         }
 
-        private async Task RenameRecipeAsync(int id)
+        private async Task RenameRecipeAsync(int recipeId)
         {
             Console.Write("\n    Enter the name of the recipe: ");
             string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            await _recipesController.RenameAsync(id, newName);
+            await _recipesController.RenameAsync(recipeId, newName);
         }
 
-        private async Task ChangeDescRecipe(int id)
+        private async Task ChangeDescRecipe(int recipeId)
         {
             Console.Write("\n    Enter recipe description: ");
             string desc = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            await _recipesController.ChangeDescription(id, desc);
+            await _recipesController.ChangeDescription(recipeId, desc);
         }
 
-        private async Task ChangeIngredientsRecipeAsync(int id)
+        private async Task ChangeIngredientsRecipeAsync(int recipeId)
         {
-
-            await OpenRecipeAync(id);
+            await _amountRecipeIngredientsNavigation.ShowMenuAsync(recipeId);
+            await ShowMenuAsync(recipeId);
         }
 
-        private async Task ChangeCookingStepsRecipeAsync(int id)
+        private async Task ChangeCookingStepsRecipeAsync(int recipeId)
         {
-            await _cookingStepsNavigation.ShowMenuAsync(id);
-            await OpenRecipeAync(recipeId);
+            await _cookingStepsNavigation.ShowMenuAsync(recipeId);
+            await ShowMenuAsync(recipeId);
         }
 
-        private async Task DeleteRecipeAsync(int id)
+        private async Task DeleteRecipeAsync(int recipeId)
         {
             Console.Clear();
             Console.WriteLine("\n    Are you sure you want to delete the recipe? ");
@@ -82,12 +86,13 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             {
                 return;
             }
-            await _recipesController.DeleteAsync(id);
-        }
+            await _recipesController.DeleteAsync(recipeId);
+        } 
+        #endregion
 
-        public async Task ShowMenuAsync(int id)
+        public async Task ShowMenuAsync(int menuId)
         {
-            recipeId = id;
+            _recipeId = menuId;
             Console.Clear();
             List<EntityMenu> itemsMenu = new List<EntityMenu>
                 {
@@ -102,38 +107,38 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenuAsync(int id)
+        public async Task SelectMethodMenuAsync(int menuId)
         {
-            switch (id)
+            switch (menuId)
             {
                 case 0:
                     {
-                        await OpenRecipeAync(recipeId);
+                        await OpenRecipeAync(_recipeId);
                     }
                     break;
                 case 1:
                     {
-                        await RenameRecipeAsync(recipeId);
+                        await RenameRecipeAsync(_recipeId);
                     }
                     break;
                 case 2:
                     {
-                        await ChangeDescRecipe(recipeId);
+                        await ChangeDescRecipe(_recipeId);
                     }
                     break;
                 case 3:
                     {
-                        await ChangeIngredientsRecipeAsync(recipeId);
+                        await ChangeIngredientsRecipeAsync(_recipeId);
                     }
                     break;
                 case 4:
                     {
-                        await ChangeCookingStepsRecipeAsync(recipeId);
+                        await ChangeCookingStepsRecipeAsync(_recipeId);
                     }
                     break;
                 case 5:
                     {
-                        await DeleteRecipeAsync(recipeId);
+                        await DeleteRecipeAsync(_recipeId);
                     }
                     break;
                 case 6:

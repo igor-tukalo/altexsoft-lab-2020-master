@@ -23,7 +23,6 @@ namespace HomeTask4.Cmd
                 response = Console.ReadKey().Key;
                 Console.WriteLine();
             } while (response != ConsoleKey.Y && response != ConsoleKey.N); // If the user did not respond with a 'Y' or an 'N', repeat the loop.
-
             return Task.FromResult(response);
         }
 
@@ -93,8 +92,10 @@ namespace HomeTask4.Cmd
                 }
                 while (batch < 1 || batch > countBatch);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message); }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             return Task.FromResult(batch);
         }
     }

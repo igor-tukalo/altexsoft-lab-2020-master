@@ -53,9 +53,9 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenuAsync(int id)
+        public async Task SelectMethodMenuAsync(int menuId)
         {
-            switch (id)
+            switch (menuId)
             {
                 case 0:
                     {

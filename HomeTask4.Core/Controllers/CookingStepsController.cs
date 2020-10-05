@@ -44,7 +44,7 @@ namespace HomeTask4.Core.Controllers
             }
             await UnitOfWork.SaveChanges();
             await UnitOfWork.Repository.DeleteAsync(stepRecipe);
-        } 
+        }
         #endregion
     }
 }

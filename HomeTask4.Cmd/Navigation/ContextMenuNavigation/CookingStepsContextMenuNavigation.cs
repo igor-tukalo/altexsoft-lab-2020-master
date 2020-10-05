@@ -11,7 +11,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
     public class CookingStepsContextMenuNavigation : NavigationManager, ICookingStepsContextMenuNavigation
     {
         private readonly ICookingStepsController _cookingStepsController;
-        private int cookingStepId;
+        private int _cookingStepId;
 
         public CookingStepsContextMenuNavigation(IValidationNavigation validationNavigation,
             ICookingStepsController cookingStepsController) : base(validationNavigation)
@@ -19,28 +19,28 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             _cookingStepsController = cookingStepsController;
         }
 
-        private async Task EditAsync(int id)
+        private async Task EditAsync(int cookingStepId)
         {
-            CookingStep cookingStep = await _cookingStepsController.GetCookingStepByIdAsync(id);
+            CookingStep cookingStep = await _cookingStepsController.GetCookingStepByIdAsync(cookingStepId);
             Console.WriteLine($"\n    Describe the cooking step {cookingStep.Step}: ");
             string stepName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
             cookingStep.Name = stepName;
             await _cookingStepsController.EditAsync(cookingStep);
         }
 
-        private async Task DeleteAsync(int id)
+        private async Task DeleteAsync(int cookingStepId)
         {
             Console.WriteLine("\n    Do you really want to remove the cooking step? ");
             if (await ValidationNavigation.YesNoAsync() == ConsoleKey.N)
             {
                 return;
             }
-            await _cookingStepsController.DeleteAsync(id);
+            await _cookingStepsController.DeleteAsync(cookingStepId);
         }
 
-        public async Task ShowMenuAsync(int id)
+        public async Task ShowMenuAsync(int cookingStepId)
         {
-            cookingStepId = id;
+            _cookingStepId = cookingStepId;
             Console.Clear();
             List<EntityMenu> itemsMenu = new List<EntityMenu>
                 {
@@ -51,18 +51,18 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenuAsync(int id)
+        public async Task SelectMethodMenuAsync(int menuId)
         {
-            switch (id)
+            switch (menuId)
             {
                 case 0:
                     {
-                        await EditAsync(cookingStepId);
+                        await EditAsync(_cookingStepId);
                     }
                     break;
                 case 1:
                     {
-                        await DeleteAsync(cookingStepId);
+                        await DeleteAsync(_cookingStepId);
                     }
                     break;
                 case 2:
