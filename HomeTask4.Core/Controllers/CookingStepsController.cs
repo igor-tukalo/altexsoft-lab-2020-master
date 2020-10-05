@@ -14,14 +14,14 @@ namespace HomeTask4.Core.Controllers
         }
 
         #region public methods
-        public async Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int id)
+        public async Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int recipeid)
         {
-            return await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.RecipeId == id);
+            return await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.RecipeId == recipeid);
         }
 
-        public async Task<CookingStep> GetCookingStepByIdAsync(int id)
+        public async Task<CookingStep> GetCookingStepByIdAsync(int cookingStepId)
         {
-            return await UnitOfWork.Repository.GetByIdAsync<CookingStep>(id);
+            return await UnitOfWork.Repository.GetByIdAsync<CookingStep>(cookingStepId);
         }
 
         public async Task AddAsync(int recipeId, int stepNum, string stepName)
@@ -34,9 +34,9 @@ namespace HomeTask4.Core.Controllers
             await UnitOfWork.Repository.UpdateAsync(cookingStep);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int cookingStepId)
         {
-            CookingStep stepRecipe = await GetCookingStepByIdAsync(id);
+            CookingStep stepRecipe = await GetCookingStepByIdAsync(cookingStepId);
             List<CookingStep> cookingStepsRecipe = await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.RecipeId == stepRecipe.RecipeId && x.Step > stepRecipe.Step);
             foreach (CookingStep cookingStep in cookingStepsRecipe)
             {

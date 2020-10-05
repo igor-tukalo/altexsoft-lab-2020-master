@@ -14,29 +14,29 @@ namespace HomeTask4.Core.Controllers
         }
 
         #region public methods
-        public async Task<Recipe> GetRecipeByIdAsync(int id)
+        public async Task<Recipe> GetRecipeByIdAsync(int recipeId)
         {
-            return await UnitOfWork.Repository.GetByPredicateAsync<Recipe>(x => x.Id == id);
+            return await UnitOfWork.Repository.GetByPredicateAsync<Recipe>(x => x.Id == recipeId);
         }
 
-        public async Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<Category> GetCategoryByIdAsync(int categoryId)
         {
-            return await UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == id);
+            return await UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == categoryId);
         }
 
-        public async Task<List<Category>> GetCategoriesWhereParentIdAsync(int id)
+        public async Task<List<Category>> GetCategoriesWhereParentIdAsync(int parentId)
         {
-            return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.ParentId == id);
+            return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.ParentId == parentId);
         }
 
-        public async Task<List<Recipe>> GetRecipessWhereCategoryIdAsync(int id)
+        public async Task<List<Recipe>> GetRecipessWhereCategoryIdAsync(int categoryId)
         {
-            return await UnitOfWork.Repository.GetListWhereAsync<Recipe>(x => x.CategoryId == id);
+            return await UnitOfWork.Repository.GetListWhereAsync<Recipe>(x => x.CategoryId == categoryId);
         }
 
-        public async Task<List<string>> GetIngredientsWhereRecipeIdAsync(int id)
+        public async Task<List<string>> GetIngredientsWhereRecipeIdAsync(int recipeId)
         {
-            List<AmountIngredient> amountIngredients = await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == id);
+            List<AmountIngredient> amountIngredients = await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == recipeId);
             List<string> ingredients = new List<string>();
             foreach (AmountIngredient amountIngredient in amountIngredients)
             {
@@ -46,9 +46,9 @@ namespace HomeTask4.Core.Controllers
             return ingredients;
         }
 
-        public async Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int id)
+        public async Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int recipeId)
         {
-            return await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.RecipeId == id);
+            return await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.RecipeId == recipeId);
         }
 
         public async Task AddAsync(string nameRecipe, string description, int categoryId)
@@ -56,23 +56,23 @@ namespace HomeTask4.Core.Controllers
             await UnitOfWork.Repository.AddAsync(new Recipe() { Name = nameRecipe, Description = description, CategoryId = categoryId });
         }
 
-        public async Task RenameAsync(int id, string newName)
+        public async Task RenameAsync(int recipeId, string newName)
         {
-            Recipe recipe = await GetRecipeByIdAsync(id);
+            Recipe recipe = await GetRecipeByIdAsync(recipeId);
             recipe.Name = newName;
             await UnitOfWork.Repository.UpdateAsync(recipe);
         }
 
-        public async Task ChangeDescription(int id, string newDesc)
+        public async Task ChangeDescription(int recipeId, string newDesc)
         {
-            Recipe recipe = await GetRecipeByIdAsync(id);
+            Recipe recipe = await GetRecipeByIdAsync(recipeId);
             recipe.Description = newDesc;
             await UnitOfWork.Repository.UpdateAsync(recipe);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int recipeId)
         {
-            Recipe recipe = await GetRecipeByIdAsync(id);
+            Recipe recipe = await GetRecipeByIdAsync(recipeId);
             await UnitOfWork.Repository.DeleteAsync(recipe);
         }
         #endregion

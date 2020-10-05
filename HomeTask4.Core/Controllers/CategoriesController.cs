@@ -27,12 +27,12 @@ namespace HomeTask4.Core.Controllers
         }
 
         #region public methods
-        public async Task<Category> GetByIdAsync(int id)
+        public async Task<Category> GetByIdAsync(int categoryId)
         {
             Task<Category> taskCategory = null;
             try
             {
-                taskCategory = UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == id);
+                taskCategory = UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == categoryId);
             }
             catch (Exception ex)
             {
@@ -62,16 +62,16 @@ namespace HomeTask4.Core.Controllers
             }
         }
 
-        public async Task RenameAsync(int id, string newName)
+        public async Task RenameAsync(int categoryId, string newName)
         {
-            Category category = await GetByIdAsync(id);
+            Category category = await GetByIdAsync(categoryId);
             category.Name = newName;
             await UnitOfWork.Repository.UpdateAsync(category);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int categoryId)
         {
-            Category parent = await GetByIdAsync(id);
+            Category parent = await GetByIdAsync(categoryId);
             if (parent.ParentId == 0)
             {
                 return;

@@ -16,9 +16,9 @@ namespace HomeTask4.Core.Controllers
         }
 
         #region public methods
-        public async Task<Ingredient> GetByIdAsync(int id)
+        public async Task<Ingredient> GetByIdAsync(int ingredientId)
         {
-            return await UnitOfWork.Repository.GetByPredicateAsync<Ingredient>(x => x.Id == id);
+            return await UnitOfWork.Repository.GetByPredicateAsync<Ingredient>(x => x.Id == ingredientId);
         }
 
         public async Task<List<IEnumerable<Ingredient>>> GetItemsBatchAsync()
@@ -33,15 +33,15 @@ namespace HomeTask4.Core.Controllers
             await UnitOfWork.Repository.AddAsync(new Ingredient() { Name = name });
         }
 
-        public async Task RenameAsync(int id, string newName)
+        public async Task RenameAsync(int ingredientId, string newName)
         {
-            Ingredient ingredient = await GetByIdAsync(id);
+            Ingredient ingredient = await GetByIdAsync(ingredientId);
             ingredient.Name = newName;
             await UnitOfWork.Repository.UpdateAsync(ingredient);
         }
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int ingredientId)
         {
-            Ingredient ingredient = await GetByIdAsync(id);
+            Ingredient ingredient = await GetByIdAsync(ingredientId);
             await UnitOfWork.Repository.DeleteAsync(ingredient);
         }
         #endregion
