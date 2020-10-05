@@ -1,6 +1,7 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.Core.Interfaces.Navigation;
+using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,16 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     public class CookingStepsNavigation : NavigationManager, ICookingStepsNavigation
     {
         private readonly ICookingStepsController _cookingStepsController;
+        private readonly ICookingStepsContextMenuNavigation _cookingStepsContextMenuNavigation;
         private List<EntityMenu> itemsMenu;
         private int recipeId;
 
-        public CookingStepsNavigation(IValidationNavigation validationNavigation, ICookingStepsController cookingStepsController) : base(validationNavigation)
+        public CookingStepsNavigation(IValidationNavigation validationNavigation,
+            ICookingStepsController cookingStepsController,
+            ICookingStepsContextMenuNavigation cookingStepsContextMenuNavigation) : base(validationNavigation)
         {
             _cookingStepsController = cookingStepsController;
+            _cookingStepsContextMenuNavigation = cookingStepsContextMenuNavigation;
         }
 
         private async Task<List<EntityMenu>> GetItemsAsync(List<EntityMenu> itemsMenu, int idRecipe)
@@ -36,10 +41,10 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         {
             int currentStep = (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId)).Any() ?
             (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId)).Max(x => x.Step) + 1 : 1;
-            Console.Write($"\n    Describe the cooking step {currentStep}: ");
+            Console.WriteLine($"\n    Describe the cooking step {currentStep}: ");
             string stepName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            await _cookingStepsController.Add(recipeId, currentStep, stepName);
-            Console.Write("\n    Add another cooking step? ");
+            await _cookingStepsController.AddAsync(recipeId, currentStep, stepName);
+            Console.WriteLine("\n    Add another cooking step? ");
             if (await ValidationNavigation.YesNoAsync() == ConsoleKey.N)
             {
                 return;
@@ -76,7 +81,8 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 default:
                     {
-
+                        await _cookingStepsContextMenuNavigation.ShowMenuAsync(itemsMenu[id].Id);
+                        await ShowMenuAsync(recipeId);
                     }
                     break;
             }

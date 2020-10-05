@@ -23,6 +23,7 @@ namespace HomeTask4.Cmd
         {
             //// inject a BackgroundService
             services.AddHostedService<StartAppService>();
+            services.AddScoped<IValidationNavigation, ValidationNavigation>();
             services.AddScoped<IMainWindowNavigation, MainWindowNavigation>();
             services.AddScoped<ISettingsNavigation, SettingsNavigation>();
             services.AddScoped<ICategoriesNavigation, CategoriesNavigation>();
@@ -31,7 +32,8 @@ namespace HomeTask4.Cmd
             services.AddScoped<IIngredientsContextMenuNavigation, IngredientsContextMenuNavigation>();
             services.AddScoped<IRecipesNavigation, RecipesNavigation>();
             services.AddScoped<IRecipesContextMenuNavigation, RecipesContextMenuNavigation>();
-            services.AddScoped<IValidationNavigation, ValidationNavigation>();
+            services.AddScoped<ICookingStepsNavigation, CookingStepsNavigation>();
+            services.AddScoped<ICookingStepsContextMenuNavigation, CookingStepsContextMenuNavigation>();
 
 
             services.Configure<CustomSettings>(Configuration.GetSection("CustomSettings"));

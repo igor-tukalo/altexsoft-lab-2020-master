@@ -12,18 +12,21 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
 {
     public class RecipesContextMenuNavigation : NavigationManager, IRecipesContextMenuNavigation
     {
-        private readonly IValidationNavigation _validationNavigation;
         private readonly IRecipesController _recipesController;
+        private readonly ICookingStepsNavigation _cookingStepsNavigation;
         private int recipeId;
 
-        public RecipesContextMenuNavigation(IValidationNavigation validationNavigation, IRecipesController recipesController) : base(validationNavigation)
+        public RecipesContextMenuNavigation(IValidationNavigation validationNavigation,
+            IRecipesController recipesController,
+            ICookingStepsNavigation cookingStepsNavigation) : base(validationNavigation)
         {
-            _validationNavigation = validationNavigation;
             _recipesController = recipesController;
+            _cookingStepsNavigation = cookingStepsNavigation;
         }
 
         private async Task OpenRecipeAync(int id)
         {
+            Console.Clear();
             Recipe recipe = await _recipesController.GetRecipeByIdAsync(id);
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
             Console.WriteLine($"    { await ValidationNavigation.WrapTextAsync(10, recipe.Description, "\n    ")}");
@@ -49,7 +52,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             Console.Write("\n    Enter the name of the recipe: ");
             string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            _recipesController.RenameAsync(id, newName);
+            await _recipesController.RenameAsync(id, newName);
         }
 
         private async Task ChangeDescRecipe(int id)
@@ -62,22 +65,24 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private async Task ChangeIngredientsRecipeAsync(int id)
         {
 
+            await OpenRecipeAync(id);
         }
 
         private async Task ChangeCookingStepsRecipeAsync(int id)
         {
-
+            await _cookingStepsNavigation.ShowMenuAsync(id);
+            await OpenRecipeAync(recipeId);
         }
 
         private async Task DeleteRecipeAsync(int id)
         {
             Console.Clear();
-            Console.Write("    Are you sure you want to delete the recipe? ");
+            Console.WriteLine("\n    Are you sure you want to delete the recipe? ");
             if (await ValidationNavigation.YesNoAsync() == ConsoleKey.N)
             {
                 return;
             }
-            _recipesController.DeleteAsync(id);
+            await _recipesController.DeleteAsync(id);
         }
 
         public async Task ShowMenuAsync(int id)

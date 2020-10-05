@@ -1,6 +1,7 @@
 ﻿using HomeTask4.Core;
 using HomeTask4.SharedKernel.Interfaces;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Infrastructure.Data
 {
@@ -18,9 +19,9 @@ namespace HomeTask4.Infrastructure.Data
             Settings = settings;
         }
 
-        public void SaveChanges()
+        public async Task SaveChanges()
         {
-            _context.SaveChangesAsync();
+           await _context.SaveChangesAsync();
         }
     }
 }

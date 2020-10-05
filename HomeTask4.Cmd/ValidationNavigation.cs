@@ -19,7 +19,7 @@ namespace HomeTask4.Cmd
                 {
                     Console.ReadKey();
                 }
-                Console.WriteLine("    y or n? ");
+                Console.Write("    y or n? ");
                 response = Console.ReadKey().Key;
                 Console.WriteLine();
             } while (response != ConsoleKey.Y && response != ConsoleKey.N); // If the user did not respond with a 'Y' or an 'N', repeat the loop.

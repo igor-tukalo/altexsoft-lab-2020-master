@@ -15,6 +15,7 @@ namespace HomeTask4.Core.Controllers
         {
         }
 
+        #region public methods
         public async Task<Ingredient> GetByIdAsync(int id)
         {
             return await UnitOfWork.Repository.GetByPredicateAsync<Ingredient>(x => x.Id == id);
@@ -42,6 +43,7 @@ namespace HomeTask4.Core.Controllers
         {
             Ingredient ingredient = await GetByIdAsync(id);
             await UnitOfWork.Repository.DeleteAsync(ingredient);
-        }
+        } 
+        #endregion
     }
 }
