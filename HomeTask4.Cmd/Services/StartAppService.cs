@@ -16,7 +16,7 @@ namespace HomeTask4.Cmd.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-           await _mainWindowNavigation.ShowMenuAsync();
+            await _mainWindowNavigation.ShowMenuAsync();
         }
     }
 }

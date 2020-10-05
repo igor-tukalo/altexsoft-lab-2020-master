@@ -31,7 +31,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private async Task DeleteAsync(int cookingStepId)
         {
             Console.WriteLine("\n    Do you really want to remove the cooking step? ");
-            if (await ValidationNavigation.YesNoAsync() == ConsoleKey.N)
+            if (await ValidationNavigation.ShowYesNoAsync() == ConsoleKey.N)
             {
                 return;
             }

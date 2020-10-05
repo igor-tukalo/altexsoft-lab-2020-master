@@ -27,11 +27,11 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private async Task<List<EntityMenu>> GetItemsAsync(List<EntityMenu> itemsMenu, int recipeId)
         {
             List<CookingStep> cookingSteps = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId);
-            foreach (CookingStep s in cookingSteps)
+            foreach (CookingStep cookingStep in cookingSteps)
             {
                 if (itemsMenu != null)
                 {
-                    itemsMenu.Add(new EntityMenu() { Id = s.Id, Name = $"    {s.Step}. {s.Name}", ParentId = s.RecipeId });
+                    itemsMenu.Add(new EntityMenu() { Id = cookingStep.Id, Name = $"    {cookingStep.Step}. {cookingStep.Name}", ParentId = cookingStep.RecipeId });
                 }
             }
             return itemsMenu;
@@ -45,7 +45,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             string stepName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _cookingStepsController.AddAsync(recipeId, currentStep, stepName);
             Console.WriteLine("\n    Add another cooking step? ");
-            if (await ValidationNavigation.YesNoAsync() == ConsoleKey.N)
+            if (await ValidationNavigation.ShowYesNoAsync() == ConsoleKey.N)
             {
                 return;
             }

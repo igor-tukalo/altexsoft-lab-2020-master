@@ -1,5 +1,4 @@
-﻿using HomeTask4.Core.Entities;
-using HomeTask4.Core.Interfaces;
+﻿using HomeTask4.Core.Interfaces;
 using HomeTask4.Core.Interfaces.Navigation;
 using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
@@ -28,7 +27,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private async Task DeleteAsync()
         {
             Console.Write("    Attention! Are you sure you want to delete the category? You will also delete all the recipes that are in them! ");
-            if ((await ValidationNavigation.YesNoAsync()) == ConsoleKey.N)
+            if ((await ValidationNavigation.ShowYesNoAsync()) == ConsoleKey.N)
             {
                 return;
             }

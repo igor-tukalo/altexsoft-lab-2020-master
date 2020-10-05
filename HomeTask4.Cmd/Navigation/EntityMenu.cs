@@ -1,4 +1,4 @@
-﻿namespace HomeTask4.Core.Entities
+﻿namespace HomeTask4.Cmd.Navigation
 {
     public class EntityMenu
     {

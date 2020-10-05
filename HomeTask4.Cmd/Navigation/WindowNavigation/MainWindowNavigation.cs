@@ -1,5 +1,4 @@
-﻿using HomeTask4.Core.Entities;
-using HomeTask4.Core.Interfaces.Navigation;
+﻿using HomeTask4.Core.Interfaces.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

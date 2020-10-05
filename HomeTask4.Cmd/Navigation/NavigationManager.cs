@@ -1,5 +1,4 @@
-﻿using HomeTask4.Core.Entities;
-using HomeTask4.Core.Interfaces.Navigation;
+﻿using HomeTask4.Core.Interfaces.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -85,11 +84,11 @@ namespace HomeTask4.Cmd.Navigation
         /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
         protected async Task CallNavigationAsync(List<EntityMenu> menuItems, MenuMethodsCallback selectedMethod)
         {
-            this._menuItems = menuItems;
+            _menuItems = menuItems;
             int menuResult;
 
             List<MenuMethodsCallback> methodsMenu = new List<MenuMethodsCallback>();
-            for (int i = 0; i < this._menuItems.Count; i++)
+            for (int i = 0; i < _menuItems.Count; i++)
             {
                 methodsMenu.Add(selectedMethod);
             }
@@ -98,7 +97,7 @@ namespace HomeTask4.Cmd.Navigation
                 menuResult = await PrintMenuAsync();
                 await methodsMenu[menuResult](menuResult);
                 break;
-            } while (menuResult != this._menuItems.Count - 1);
+            } while (menuResult != _menuItems.Count - 1);
         }
     }
 }

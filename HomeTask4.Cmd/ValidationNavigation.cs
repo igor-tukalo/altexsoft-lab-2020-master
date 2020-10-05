@@ -10,7 +10,7 @@ namespace HomeTask4.Cmd
         /// Obtain a Y or N response
         /// </summary>
         /// <returns>response</returns>
-        public Task<ConsoleKey> YesNoAsync()
+        public Task<ConsoleKey> ShowYesNoAsync()
         {
             ConsoleKey response;
             do
@@ -47,10 +47,7 @@ namespace HomeTask4.Cmd
                 }
                 return Task.FromResult(string.Join(" ", wrapText).Replace(wrapChar + " ", wrapChar));
             }
-            else
-            {
-                return Task.FromResult(text);
-            }
+            return Task.FromResult(text);
         }
 
         /// <summary>
@@ -82,15 +79,11 @@ namespace HomeTask4.Cmd
         {
             try
             {
-                do
+                while (batch < 1 || batch > countBatch)
                 {
-                    if (batch < 1 || batch > countBatch)
-                    {
-                        Console.Write("    The page number does not exist! Enter page number: ");
-                        batch = int.Parse(Console.ReadLine());
-                    }
+                    Console.Write("    The page number does not exist! Enter page number: ");
+                    batch = int.Parse(Console.ReadLine());
                 }
-                while (batch < 1 || batch > countBatch);
             }
             catch (Exception ex)
             {

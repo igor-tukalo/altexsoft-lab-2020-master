@@ -44,9 +44,9 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             //steps recipe
             Console.WriteLine("\n    Сooking steps:\n");
             List<CookingStep> cookingSteps = await _recipesController.GetCookingStepsWhereRecipeIdAsync(recipeId);
-            foreach (CookingStep s in cookingSteps.OrderBy(x => x.Step))
+            foreach (CookingStep cookingStep in cookingSteps.OrderBy(x => x.Step))
             {
-                Console.WriteLine($"    {s.Step}. {await ValidationNavigation.WrapTextAsync(10, s.Name, "\n       ")}");
+                Console.WriteLine($"    {cookingStep.Step}. {await ValidationNavigation.WrapTextAsync(10, cookingStep.Name, "\n       ")}");
             }
             Console.WriteLine("\n    Press any key to return...");
             Console.ReadKey();
@@ -82,12 +82,12 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             Console.Clear();
             Console.WriteLine("\n    Are you sure you want to delete the recipe? ");
-            if (await ValidationNavigation.YesNoAsync() == ConsoleKey.N)
+            if (await ValidationNavigation.ShowYesNoAsync() == ConsoleKey.N)
             {
                 return;
             }
             await _recipesController.DeleteAsync(recipeId);
-        } 
+        }
         #endregion
 
         public async Task ShowMenuAsync(int menuId)
