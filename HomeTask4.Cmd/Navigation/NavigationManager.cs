@@ -8,20 +8,20 @@ namespace HomeTask4.Cmd.Navigation
 {
     public class NavigationManager : BaseNavigation
     {
-        protected delegate Task MenuMethodsCallback(int id);
         private List<EntityMenu> menuItems;
         private int counter;
+        protected delegate Task MenuMethodsCallback(int id);
 
         public NavigationManager(IValidationNavigation validationNavigation) : base(validationNavigation)
         {
         }
 
-        private Task<int> PrintMenu()
+        private async Task<int> PrintMenuAsync()
         {
             ConsoleKeyInfo key;
             do
             {
-                ClearArea(0, 0, 6, 0);
+                await ClearAreaAsync(0, 0, 6, 0);
                 for (int i = 0; i < menuItems.Count; i++)
                 {
                     if (counter == i)
@@ -56,10 +56,10 @@ namespace HomeTask4.Cmd.Navigation
                 }
             }
             while (key.Key != ConsoleKey.Enter);
-            return Task.FromResult(counter);
+            return counter;
         }
 
-        private static Task ClearArea(int top, int left, int height, int width)
+        private Task ClearAreaAsync(int top, int left, int height, int width)
         {
             ConsoleColor colorBefore = Console.BackgroundColor;
             try
@@ -83,7 +83,7 @@ namespace HomeTask4.Cmd.Navigation
         /// </summary>
         /// <param name="menuItems"></param>
         /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
-        protected async Task CallNavigation(List<EntityMenu> menuItems, MenuMethodsCallback selectedMethod)
+        protected async Task CallNavigationAsync(List<EntityMenu> menuItems, MenuMethodsCallback selectedMethod)
         {
             this.menuItems = menuItems;
             int menuResult;
@@ -95,7 +95,7 @@ namespace HomeTask4.Cmd.Navigation
             }
             do
             {
-                menuResult = await PrintMenu();
+                menuResult = await PrintMenuAsync();
                 await methodsMenu[menuResult](menuResult);
                 break;
             } while (menuResult != this.menuItems.Count - 1);

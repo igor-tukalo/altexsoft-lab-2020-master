@@ -1,13 +1,14 @@
 ﻿using HomeTask4.Core.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Interfaces
 {
     public interface ICookingStepsController
     {
-        void Add(int idRecipe);
-        void Edit(int id);
-        void Delete(int id, int idRecipe);
-        List<EntityMenu> GetItems(List<EntityMenu> itemsMenu, int idRecipe);
+        Task Add(int recipeId, int stepNum, string stepName);
+        Task Edit(int id);
+        Task Delete(int id, int idRecipe);
+        Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int id);
     }
 }

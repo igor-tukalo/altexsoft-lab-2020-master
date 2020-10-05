@@ -24,12 +24,12 @@ namespace HomeTask4.Infrastructure.Data
 
         public async Task<T> GetByPredicateAsync<T>(Expression<Func<T, bool>> predicate) where T : BaseEntity
         {
-            return await _context.Set<T>().SingleOrDefaultAsync(predicate);
+            return await GetAllItems<T>().SingleOrDefaultAsync(predicate);
         }
 
         public Task<T> GetByIdAsync<T>(int id) where T : BaseEntity
         {
-            return _context.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
+            return GetAllItems<T>().SingleOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<List<T>> GetListAsync<T>() where T : BaseEntity

@@ -1,142 +1,80 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel.Interfaces;
-using System;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Controllers
 {
     public class RecipesController : BaseController, IRecipesController
     {
-        private List<AmountIngredient> AmountIngredients => UnitOfWork.Repository.GetList<AmountIngredient>();
-        private List<Ingredient> Ingredients => UnitOfWork.Repository.GetList<Ingredient>();
-        private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetList<CookingStep>();
-        private List<Recipe> Recipes => UnitOfWork.Repository.GetList<Recipe>();
-        private List<Category> Categories => UnitOfWork.Repository.GetList<Category>();
-        public RecipesController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public RecipesController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
         {
-        }
-        public void View(int idRecipe)
-        {
-            Recipe recipe = UnitOfWork.Repository.GetById<Recipe>(idRecipe);
-            Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
-            Console.WriteLine($"    {ValidManager.WrapText(10, recipe.Description, "\n    ")}");
-            Console.WriteLine("\n    Required ingredients:\n");
-            //ingredients recipe
-            foreach (AmountIngredient a in AmountIngredients.Where(x => x.RecipeId == recipe.Id))
-            {
-                foreach (Ingredient i in Ingredients.Where(x => x.Id == a.IngredientId))
-                {
-                    Console.WriteLine($"    {i.Name} - {a.Amount} {a.Unit}");
-                }
-            }
-            //steps recipe
-            Console.WriteLine("\n    Сooking steps:\n");
-            foreach (CookingStep s in CookingSteps.Where(x => x.RecipeId == recipe.Id).OrderBy(x => x.Step))
-            {
-                Console.WriteLine($"    {s.Step}. {ValidManager.WrapText(10, s.Name, "\n       ")}");
-            }
         }
 
-        public void Edit(int id)
+        #region public methods
+        public async Task<Recipe> GetRecipeByIdAsync(int id)
         {
-            Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = IsNameMustNotExist(ValidManager.NullOrEmptyText(Console.ReadLine()));
-            Recipe recipe = UnitOfWork.Repository.GetById<Recipe>(id);
-            recipe.Name = nameRecipe;
-            UnitOfWork.Repository.Update(recipe);
+            return await UnitOfWork.Repository.GetByPredicateAsync<Recipe>(x => x.Id == id);
         }
 
-        public void ChangeDescription(int idRecipe)
+        public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            Console.Write("\n    Enter recipe description: ");
-            string description = ValidManager.NullOrEmptyText(Console.ReadLine());
-            Recipe recipe = UnitOfWork.Repository.GetById<Recipe>(idRecipe);
-            recipe.Description = description;
-            UnitOfWork.Repository.Update(recipe);
+            return await UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == id);
         }
 
-        public void Add(int idCategory)
+        public async Task<List<Category>> GetCategoriesWhereParentIdAsync(int id)
         {
-            Console.WriteLine($"\n    The recipe will be added to the category: {UnitOfWork.Repository.GetById<Category>(idCategory).Name}");
-            Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = IsNameMustNotExist(Console.ReadLine());
-            Console.Write("\n    Enter recipe description: ");
-            string description = ValidManager.NullOrEmptyText(Console.ReadLine());
-            UnitOfWork.Repository.Add(new Recipe() { Name = nameRecipe, Description = description, CategoryId = idCategory });
+            return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.ParentId == id);
         }
 
-        public void Delete(int id)
+        public async Task<List<Recipe>> GetRecipessWhereCategoryIdAsync(int id)
         {
-            Console.Clear();
-            Console.Write("Are you sure you want to delete the recipe? ");
-            if (ValidManager.YesNo() == ConsoleKey.N)
-            {
-                return;
-            }
-            UnitOfWork.Repository.Delete(UnitOfWork.Repository.GetById<Recipe>(id));
+            return await UnitOfWork.Repository.GetListWhereAsync<Recipe>(x => x.CategoryId == id);
         }
 
-        /// <summary>
-        ///  Get recipes categories
-        /// </summary>
-        /// <param name="items">list items which have a parent id</param>
-        /// <param name="thisEntity">parent element</param>
-        /// <param name="level">level hierarchy</param>
-        /// <param name="levelLimitation">level limitation hierarchy</param>
-        public void BuildRecipesCategories(List<EntityMenu> items, Category thisEntity, int level, int levelLimitation)
+        public async Task<List<string>> GetIngredientsWhereRecipeIdAsync(int id)
         {
-            if (level > levelLimitation)
+            List<AmountIngredient> amountIngredients = await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == id);
+            List<string> ingredients = new List<string>();
+            foreach (AmountIngredient amountIngredient in amountIngredients)
             {
-                return;
+                Ingredient ingredient = await UnitOfWork.Repository.GetByIdAsync<Ingredient>(amountIngredient.IngredientId);
+                ingredients.Add($"{ingredient.Name} - {amountIngredient.Amount} {amountIngredient.Unit}");
             }
-            if (items != null && thisEntity != null)
-            {
-                items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
-                foreach (Recipe recipe in Recipes.Where(x => x.CategoryId == thisEntity.Id))
-                {
-                    items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.CategoryId, TypeEntity = "recipe" });
-                }
-            }
-            foreach (Category child in Categories.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Name))
-            {
-                EntityMenu entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
-                if (items != null)
-                {
-                    BuildCurrentOpenRecipesCategories(items, entityMenu, level + 1, levelLimitation);
-                }
-            }
+            return ingredients;
         }
 
-        /// <summary>
-        /// Get recipes for the currently open category only
-        /// </summary>
-        /// <param name="items">list items which have a parent id</param>
-        /// <param name="thisEntity">item which have ParentId 0</param>
-        /// <param name="level">level hierarchy</param>
-        /// <param name="levelLimitation">level limitation hierarchy</param>
-        private void BuildCurrentOpenRecipesCategories(List<EntityMenu> items, EntityMenu thisEntity, int level, int levelLimitation)
+        public async Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int id)
         {
-            if (level <= levelLimitation)
-            {
-                items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
-                foreach (EntityMenu child in items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Id))
-                {
-                    BuildCurrentOpenRecipesCategories(items, child, level + 1, levelLimitation);
-                }
-            }
+            return await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.RecipeId == id);
         }
 
-        private string IsNameMustNotExist(string name)
+        public async Task AddAsync(string nameRecipe, string description, int categoryId)
         {
-            while (Recipes.Exists(x => x.Name.ToLower(CultureInfo.CurrentUICulture) == name.ToLower(CultureInfo.CurrentUICulture)))
-            {
-                Console.Write("    This name is already in use. enter another name: ");
-                name = ValidManager.NullOrEmptyText(Console.ReadLine());
-            }
-            return name;
+            await UnitOfWork.Repository.AddAsync(new Recipe() { Name = nameRecipe, Description = description, CategoryId = categoryId });
         }
+
+        public async Task RenameAsync(int id, string newName)
+        {
+            Recipe recipe = await GetRecipeByIdAsync(id);
+            recipe.Name = newName;
+            await UnitOfWork.Repository.UpdateAsync(recipe);
+        }
+
+        public async Task ChangeDescription(int id, string newDesc)
+        {
+            Recipe recipe = await GetRecipeByIdAsync(id);
+            recipe.Description = newDesc;
+            await UnitOfWork.Repository.UpdateAsync(recipe);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            Recipe recipe = await GetRecipeByIdAsync(id);
+            await UnitOfWork.Repository.DeleteAsync(recipe);
+        } 
+        #endregion
     }
 }

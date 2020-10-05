@@ -4,7 +4,7 @@ namespace HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation
 {
     public interface IBaseContextMenuNavigation
     {
-        Task ShowMenu(int id);
-        Task SelectMethodMenu(int id);
+        Task ShowMenuAsync(int id);
+        Task SelectMethodMenuAsync(int id);
     }
 }

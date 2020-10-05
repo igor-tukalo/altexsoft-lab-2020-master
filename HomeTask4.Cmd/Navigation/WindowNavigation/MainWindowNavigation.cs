@@ -9,31 +9,28 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     public class MainWindowNavigation : NavigationManager, IMainWindowNavigation
     {
         private readonly ISettingsNavigation _settingsNavigation;
+        private readonly IRecipesNavigation _recipesNavigation;
 
         public MainWindowNavigation(IValidationNavigation validationNavigation,
-            ISettingsNavigation settingsNavigation) : base(validationNavigation)
+            ISettingsNavigation settingsNavigation, IRecipesNavigation recipesNavigation) : base(validationNavigation)
         {
             _settingsNavigation = settingsNavigation;
+            _recipesNavigation = recipesNavigation;
         }
 
-        private Task GotoRecipes()
+        private async Task GotoRecipesAsync()
         {
-            return Task.CompletedTask;
+            await _recipesNavigation.ShowMenuAsync();
+            await ShowMenuAsync();
         }
 
-        private async Task GoToSettings()
+        private async Task GoToSettingsAsync()
         {
-            Task task;
-            do
-            {
-                task = _settingsNavigation.ShowMenu();
-                await task;
-            }
-            while (!task.IsCompleted);
-            await ShowMenu();
+            await _settingsNavigation.ShowMenuAsync();
+            await ShowMenuAsync();
         }
 
-        public async Task ShowMenu()
+        public async Task ShowMenuAsync()
         {
             Console.Clear();
             Console.WriteLine(@"
@@ -53,21 +50,21 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 new EntityMenu() { Name = "    Recipes" },
                 new EntityMenu() { Name = "    Settings" }
             };
-            await CallNavigation(itemsMenu, SelectMethodMenu);
+            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenu(int id)
+        public async Task SelectMethodMenuAsync(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        await GotoRecipes();
+                        await GotoRecipesAsync();
                     }
                     break;
                 case 1:
                     {
-                        await GoToSettings();
+                        await GoToSettingsAsync();
                     }
                     break;
             }

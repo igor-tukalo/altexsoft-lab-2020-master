@@ -7,10 +7,7 @@
 
   <ItemGroup>
     <Compile Remove="Navigation\ContextMenuNavigation\CookingStepsContextMenuNavigation.cs" />
-    <Compile Remove="Navigation\ContextMenuNavigation\RecipesContextMenuNavigation.cs" />
-    <Compile Remove="Navigation\WindowNavigation\CookingStepsNavigation.cs" />
     <Compile Remove="Navigation\WindowNavigation\RecipesIngredientsNavigation.cs" />
-    <Compile Remove="Navigation\WindowNavigation\RecipesNavigation.cs" />
   </ItemGroup>
 
   <ItemGroup>

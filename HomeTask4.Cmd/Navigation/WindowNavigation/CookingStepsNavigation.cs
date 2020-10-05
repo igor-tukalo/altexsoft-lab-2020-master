@@ -1,57 +1,82 @@
-﻿using HomeTask4.Cmd.Navigation.ContextMenuNavigation;
-using HomeTask4.Core.Controllers;
-using HomeTask4.Core.Entities;
+﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.SharedKernel.Interfaces;
+using HomeTask4.Core.Interfaces.Navigation;
 using System;
 using System.Collections.Generic;
-using task2.ViewNavigation.ContextMenuNavigation;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
-    internal class CookingStepsNavigation : BaseNavigation, INavigation
+    public class CookingStepsNavigation : NavigationManager, ICookingStepsNavigation
     {
-        private readonly ICookingStepsController CookingSteps;
-        private readonly int IdRecipe;
+        private readonly ICookingStepsController _cookingStepsController;
+        private List<EntityMenu> itemsMenu;
+        private int recipeId;
 
-        public CookingStepsNavigation(IUnitOfWork unitOfWork, int idRecipe, ICookingStepsController cookingSteps) : base(unitOfWork)
+        public CookingStepsNavigation(IValidationNavigation validationNavigation, ICookingStepsController cookingStepsController) : base(validationNavigation)
         {
-            IdRecipe = idRecipe;
-            CookingSteps = cookingSteps;
+            _cookingStepsController = cookingStepsController;
         }
 
-        public override void CallNavigation()
+        private async Task<List<EntityMenu>> GetItemsAsync(List<EntityMenu> itemsMenu, int idRecipe)
         {
+            List<CookingStep> cookingSteps = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(idRecipe);
+            foreach (CookingStep s in cookingSteps)
+            {
+                if (itemsMenu != null)
+                {
+                    itemsMenu.Add(new EntityMenu() { Id = s.Id, Name = $"    {s.Step}. {s.Name}", ParentId = s.RecipeId });
+                }
+            }
+            return itemsMenu;
+        }
+
+        private async Task AddAsync(int recipeId)
+        {
+            int currentStep = (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId)).Any() ?
+            (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId)).Max(x => x.Step) + 1 : 1;
+            Console.Write($"\n    Describe the cooking step {currentStep}: ");
+            string stepName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            await _cookingStepsController.Add(recipeId, currentStep, stepName);
+            Console.Write("\n    Add another cooking step? ");
+            if (await ValidationNavigation.YesNoAsync() == ConsoleKey.N)
+            {
+                return;
+            }
+            await AddAsync(recipeId);
+        }
+
+        public async Task ShowMenuAsync(int id)
+        {
+            recipeId = id;
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name= "    Add step cooking" },
                     new EntityMenu(){ Name= "    Cancel" }
                 };
-            CookingSteps.GetItems(ItemsMenu, IdRecipe);
-            base.CallNavigation();
+            await GetItemsAsync(itemsMenu, id);
+            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public override void SelectMethodMenu(int id)
+        public async Task SelectMethodMenuAsync(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        CookingSteps.Add(IdRecipe);
-                        CallNavigation();
+                        await AddAsync(recipeId);
                     }
                     break;
                 case 1:
                     {
-                        RecipesContextMenuNavigation recipeNav = new RecipesContextMenuNavigation(UnitOfWork, IdRecipe, new RecipesController(UnitOfWork));
-                        new ProgramMenu(recipeNav).CallMenu();
+
                     }
                     break;
                 default:
                     {
-                        CookingStepsContextMenuNavigation cookStepsContextNav = new CookingStepsContextMenuNavigation(UnitOfWork, ItemsMenu[id].Id, IdRecipe, CookingSteps);
-                        new ProgramMenu(cookStepsContextNav).CallMenu();
+
                     }
                     break;
             }

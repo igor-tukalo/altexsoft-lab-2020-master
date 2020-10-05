@@ -25,6 +25,8 @@ namespace HomeTask4.Core.Controllers
                 await RemoveHierarchicalCategoryAsync(child, level + 1);
             }
         }
+
+        #region public methods
         public async Task<Category> GetByIdAsync(int id)
         {
             Task<Category> taskCategory = null;
@@ -75,6 +77,7 @@ namespace HomeTask4.Core.Controllers
                 return;
             }
             await RemoveHierarchicalCategoryAsync(parent, 1);
-        }
+        } 
+        #endregion
     }
 }

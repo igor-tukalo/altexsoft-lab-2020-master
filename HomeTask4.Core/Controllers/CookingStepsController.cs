@@ -1,48 +1,33 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Controllers
 {
     public class CookingStepsController : BaseController, ICookingStepsController
     {
-        private List<CookingStep> CookingSteps => UnitOfWork.Repository.GetList<CookingStep>();
-
-        public CookingStepsController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public CookingStepsController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
         {
         }
 
-        public List<EntityMenu> GetItems(List<EntityMenu> itemsMenu, int idRecipe)
+        public async Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int id)
         {
-            if (CookingSteps != null)
-            {
-                foreach (CookingStep s in CookingSteps.Where(x => x.RecipeId == idRecipe))
-                {
-                    if (itemsMenu != null)
-                    {
-                        itemsMenu.Add(new EntityMenu() { Id = s.Id, Name = $"    {s.Step}. {s.Name}", ParentId = s.RecipeId });
-                    }
-                }
-            }
-            return itemsMenu;
+            return await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.RecipeId == id);
         }
 
-        public void Add(int idRecipe)
+        public async Task<List<CookingStep>> GetCookingStepByIdAsync(int id)
         {
-            int CurrentStep = CookingSteps.Where(x => x.RecipeId == idRecipe).Any() ?
-                CookingSteps.Where(x => x.RecipeId == idRecipe).Max(x => x.Step) + 1 : 1;
-            Console.Write($"\n    Describe the cooking step {CurrentStep}: ");
-            string stepName = ValidManager.NullOrEmptyText(Console.ReadLine());
-            UnitOfWork.Repository.Add(new CookingStep() { Step = CurrentStep, Name = stepName, RecipeId = idRecipe });
-            Console.Write("\n    Add another cooking step? ");
-            if (ValidManager.YesNo() == ConsoleKey.N)
-            {
-                return;
-            }
-            Add(idRecipe);
+            return await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.Id == id);
+        }
+
+        public async Task Add(int recipeId, int stepNum, string stepName)
+        {
+            await UnitOfWork.Repository.AddAsync(new CookingStep() { Step = stepNum, Name = stepName, RecipeId = recipeId });
         }
 
         public void Edit(int id)

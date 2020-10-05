@@ -12,32 +12,32 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
     {
         private readonly ICategoriesController _categoriesController;
 
-        private int CategoryId { get; set; }
+        private int categoryId;
 
         public CategoriesContextMenuNavigation(IValidationNavigation validationNavigation, ICategoriesController categoriesController) : base(validationNavigation)
         {
             _categoriesController = categoriesController;
         }
 
-        private async Task Rename()
+        private async Task RenameAsync()
         {
             Console.Write("    Enter new name: ");
-            string newName = await ValidationNavigation.NullOrEmptyText(Console.ReadLine());
-            await _categoriesController.RenameAsync(CategoryId, newName);
+            string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            await _categoriesController.RenameAsync(categoryId, newName);
         }
 
-        private async Task Delete()
+        private async Task DeleteAsync()
         {
             Console.Write("    Attention! Are you sure you want to delete the category? You will also delete all the recipes that are in them! ");
             if ((await ValidationNavigation.YesNoAsync()) == ConsoleKey.N)
             {
                 return;
             }
-            await _categoriesController.DeleteAsync(CategoryId);
+            await _categoriesController.DeleteAsync(categoryId);
         }
-        public async Task ShowMenu(int categoryId)
+        public async Task ShowMenuAsync(int categoryId)
         {
-            CategoryId = categoryId;
+            this.categoryId = categoryId;
             Console.Clear();
             List<EntityMenu> itemsMenu = new List<EntityMenu>
                 {
@@ -45,21 +45,21 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-            await CallNavigation(itemsMenu, SelectMethodMenu);
+            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenu(int id)
+        public async Task SelectMethodMenuAsync(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        await Rename();
+                        await RenameAsync();
                     }
                     break;
                 case 1:
                     {
-                        await Delete();
+                        await DeleteAsync();
                     }
                     break;
                 case 2:

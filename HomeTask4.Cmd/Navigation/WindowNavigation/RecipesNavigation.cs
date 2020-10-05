@@ -1,83 +1,152 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.SharedKernel.Interfaces;
+using HomeTask4.Core.Interfaces.Navigation;
+using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
 using System.Collections.Generic;
-using task2.ViewNavigation.ContextMenuNavigation;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
-    internal class RecipesNavigation : BaseNavigation, INavigation
+    public class RecipesNavigation : NavigationManager, IRecipesNavigation
     {
-        private readonly IRecipesController Recipes;
-        private int IdNextCategory = 1;
-        private int IdPrevCategory;
+        private int currentCategoryId = 1;
+        private int prevCategoryId;
+        private List<EntityMenu> itemsMenu;
+        private readonly IRecipesController _recipesController;
+        private readonly IRecipesContextMenuNavigation _recipesContextMenuNavigation;
 
-        public RecipesNavigation(IUnitOfWork unitOfWork, IRecipesController recipes) : base(unitOfWork)
+        public RecipesNavigation(IValidationNavigation validationNavigation,
+            IRecipesController recipesController,
+            IRecipesContextMenuNavigation recipesContextMenuNavigation) : base(validationNavigation)
         {
-            Recipes = recipes;
+            _recipesController = recipesController;
+            _recipesContextMenuNavigation = recipesContextMenuNavigation;
         }
 
-        public override void CallNavigation()
+        #region private methods
+        /// <summary>
+        ///  Get recipes categories
+        /// </summary>
+        /// <param name="items">list items which have a parent id</param>
+        /// <param name="category">parent element</param>
+        /// <param name="level">level hierarchy</param>
+        /// <param name="levelLimitation">level limitation hierarchy</param>
+        private async Task BuildRecipesCategoriesAsync(List<EntityMenu> items, Category category, int level, int levelLimitation)
+        {
+            if (level > levelLimitation)
+            {
+                return;
+            }
+            if (items != null && category != null)
+            {
+                items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = category.ParentId });
+                List<Recipe> recipes = await _recipesController.GetRecipessWhereCategoryIdAsync(category.Id);
+                foreach (Recipe recipe in recipes)
+                {
+                    items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.CategoryId, TypeEntity = "recipe" });
+                }
+            }
+            List<Category> categories = await _recipesController.GetCategoriesWhereParentIdAsync(category.Id);
+            foreach (Category child in categories.OrderBy(x => x.Name))
+            {
+                EntityMenu entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
+                if (items != null)
+                {
+                    await BuildCurrentOpenRecipesCategoryAsync(items, entityMenu, level + 1, levelLimitation);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get recipes for the currently open category only
+        /// </summary>
+        /// <param name="items">list items which have a parent id</param>
+        /// <param name="thisEntity">item which have ParentId 0</param>
+        /// <param name="level">level hierarchy</param>
+        /// <param name="levelLimitation">level limitation hierarchy</param>
+        private async Task BuildCurrentOpenRecipesCategoryAsync(List<EntityMenu> items, EntityMenu thisEntity, int level, int levelLimitation)
+        {
+            if (level <= levelLimitation)
+            {
+                items.Add(new EntityMenu() { Id = thisEntity.Id, Name = $"{new string('-', level)}{thisEntity.Name}", ParentId = thisEntity.ParentId });
+                foreach (EntityMenu child in items.FindAll((x) => x.ParentId == thisEntity.Id).OrderBy(x => x.Id))
+                {
+                    await BuildCurrentOpenRecipesCategoryAsync(items, child, level + 1, levelLimitation);
+                }
+            }
+        }
+
+        private async Task MovementCategoriesRecipesAsync(int nextCategoryid)
+        {
+            // forward movement. one levels below
+            if (currentCategoryId != nextCategoryid)
+            {
+                currentCategoryId = nextCategoryid;
+            }
+            // backward movement. one level up
+            else
+            {
+                currentCategoryId = prevCategoryId == 0 ? 1 : prevCategoryId;
+            }
+            await ShowMenuAsync();
+        }
+
+        private async Task AddRecipeAsync()
+        {
+            Console.WriteLine($"\n    The recipe will be added to the category: {(await _recipesController.GetCategoryByIdAsync(currentCategoryId)).Name}");
+            Console.Write("\n    Enter the name of the recipe: ");
+            string nameRecipe = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            Console.Write("\n    Enter recipe description: ");
+            string description = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            await _recipesController.AddAsync(nameRecipe, description, currentCategoryId);
+            await ShowMenuAsync();
+        } 
+        #endregion
+
+        public async Task ShowMenuAsync()
         {
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Add recipe" },
                     new EntityMenu(){ Name = "    Return to main menu" }
                 };
-            Category parent = UnitOfWork.Repository.GetById<Category>(IdNextCategory);
-            IdPrevCategory = parent.ParentId;
-            Recipes.BuildRecipesCategories(ItemsMenu, parent, 1, 2);
-            base.CallNavigation();
+            Category parent = await _recipesController.GetCategoryByIdAsync(currentCategoryId);
+            prevCategoryId = parent.ParentId;
+            await BuildRecipesCategoriesAsync(itemsMenu, parent, 1, 2);
+            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public override void SelectMethodMenu(int id)
+        public async Task SelectMethodMenuAsync(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        Recipes.Add(IdNextCategory);
-                        CallNavigation();
+                        await AddRecipeAsync();
                     }
                     break;
                 case 1:
                     {
-                        MainWindowNavigation mainWinNav = new MainWindowNavigation(UnitOfWork);
-                        new ProgramMenu(mainWinNav).CallMenu();
 
                     }
                     break;
                 default:
                     {
-                        if (ItemsMenu[id].TypeEntity == "recipe")
+                        if (itemsMenu[id].TypeEntity == "recipe")
                         {
-                            RecipesContextMenuNavigation recipeContextManuNav = new RecipesContextMenuNavigation(UnitOfWork, ItemsMenu[id].Id, Recipes);
-                            new ProgramMenu(recipeContextManuNav).CallMenu();
+                            await _recipesContextMenuNavigation.ShowMenuAsync(itemsMenu[id].Id);
+                            await ShowMenuAsync();
                         }
                         else
                         {
-                            MovementCategoriesRecipes(ItemsMenu[id].Id);
+                            await MovementCategoriesRecipesAsync(itemsMenu[id].Id);
                         }
                     }
                     break;
             }
-        }
-
-        public void MovementCategoriesRecipes(int idnextCategory)
-        {
-            // forward movement. one levels below
-            if (IdNextCategory != idnextCategory)
-            {
-                IdNextCategory = idnextCategory;
-            }
-            // backward movement. one level up
-            else
-            {
-                IdNextCategory = IdPrevCategory == 0 ? 1 : IdPrevCategory;
-            }
-            CallNavigation();
         }
     }
 }

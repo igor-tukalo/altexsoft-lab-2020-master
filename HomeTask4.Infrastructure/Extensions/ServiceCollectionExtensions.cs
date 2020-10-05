@@ -16,6 +16,7 @@ namespace HomeTask4.Infrastructure.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IIngredientsController, IngredientsController>();
             services.AddScoped<ICategoriesController, CategoriesController>();
+            services.AddScoped<IRecipesController, RecipesController>();
 
             return services;
         }

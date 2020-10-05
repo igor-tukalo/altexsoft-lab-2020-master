@@ -33,7 +33,7 @@ namespace HomeTask4.Cmd
         /// <param name="numChar">number of characters in one line</param>
         /// <param name="text">number of characters</param>
         /// <param name="wrapChar">indent mark</param>
-        public Task<string> WrapText(int numChar, string text, string wrapChar = "\n")
+        public Task<string> WrapTextAsync(int numChar, string text, string wrapChar = "\n")
         {
             if (!string.IsNullOrWhiteSpace(text))
             {
@@ -59,7 +59,7 @@ namespace HomeTask4.Cmd
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public Task<string> NullOrEmptyText(string text)
+        public Task<string> CheckNullOrEmptyTextAsync(string text)
         {
             do
             {
@@ -79,7 +79,7 @@ namespace HomeTask4.Cmd
         /// <param name="batch"></param>
         /// <param name="countBatch"></param>
         /// <returns></returns>
-        public Task<int> BatchExist(int batch, int countBatch)
+        public Task<int> BatchExistAsync(int batch, int countBatch)
         {
             try
             {

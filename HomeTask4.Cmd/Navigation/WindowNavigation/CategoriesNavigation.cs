@@ -13,7 +13,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     {
         private readonly ICategoriesController _categoriesController;
         private readonly ICategoriesContextMenuNavigation _categoriesContextMenuNavigation;
-        private List<EntityMenu> ItemsMenu { get; set; }
+        private List<EntityMenu> itemsMenu;
 
         public CategoriesNavigation(IValidationNavigation validationNavigation,
             ICategoriesController categoriesController,
@@ -22,17 +22,17 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             _categoriesController = categoriesController;
             _categoriesContextMenuNavigation = categoriesContextMenuNavigation;
         }
-        private async Task AddCategory()
+        private async Task AddCategoryAsync()
         {
             Console.Write("\n    Enter name category: ");
-            string name = await ValidationNavigation.NullOrEmptyText(Console.ReadLine());
+            string name = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
             Console.Write("    Enter name main category: ");
-            string parentСategoryName = await ValidationNavigation.NullOrEmptyText(Console.ReadLine());
+            string parentСategoryName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _categoriesController.AddAsync(name, parentСategoryName);
-            await ShowMenu();
+            await ShowMenuAsync();
         }
 
-        private async Task BuildHierarchicalCategories(List<EntityMenu> items, Category category, int level)
+        private async Task BuildHierarchicalCategoriesAsync(List<EntityMenu> items, Category category, int level)
         {
             if (items != null && category != null)
             {
@@ -41,40 +41,34 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             List<Category> categoriesWhereParentId = await _categoriesController.GetItemsWhereParentIdAsync(category.Id);
             foreach (Category child in categoriesWhereParentId.OrderBy(x => x.Name))
             {
-                await BuildHierarchicalCategories(items, child, level + 1);
+                await BuildHierarchicalCategoriesAsync(items, child, level + 1);
             }
         }
-        private async Task ShowContextMenu(int id)
+        private async Task ShowContextMenuAsync(int id)
         {
-            Task task;
-            do
-            {
-                task = _categoriesContextMenuNavigation.ShowMenu(ItemsMenu[id].Id);
-                await task;
-            }
-            while (!task.IsCompleted);
-            await ShowMenu();
+            await _categoriesContextMenuNavigation.ShowMenuAsync(itemsMenu[id].Id);
+            await ShowMenuAsync();
         }
 
-        public async Task ShowMenu()
+        public async Task ShowMenuAsync()
         {
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Add category" },
                     new EntityMenu(){ Name = "    Return to settings"},
                 };
             Category category = await _categoriesController.GetByIdAsync(1);
-            await BuildHierarchicalCategories(ItemsMenu, category, 1);
-            await CallNavigation(ItemsMenu, SelectMethodMenu);
+            await BuildHierarchicalCategoriesAsync(itemsMenu, category, 1);
+            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
-        public async Task SelectMethodMenu(int id)
+        public async Task SelectMethodMenuAsync(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        await AddCategory();
+                        await AddCategoryAsync();
                     }
                     break;
                 case 1:
@@ -83,13 +77,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 default:
                     {
-                        if (ItemsMenu[id].ParentId != 0)
+                        if (itemsMenu[id].ParentId != 0)
                         {
-                            await ShowContextMenu(id);
+                            await ShowContextMenuAsync(id);
                         }
                         else
                         {
-                            await ShowMenu();
+                            await ShowMenuAsync();
                         }
                     }
                     break;

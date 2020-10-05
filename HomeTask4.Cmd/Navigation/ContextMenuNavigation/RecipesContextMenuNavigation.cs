@@ -1,32 +1,90 @@
-﻿using HomeTask4.Cmd;
-using HomeTask4.Cmd.Navigation;
-using HomeTask4.Cmd.Navigation.WindowNavigation;
-using HomeTask4.Core.Controllers;
-using HomeTask4.Core.Entities;
+﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.SharedKernel.Interfaces;
+using HomeTask4.Core.Interfaces.Navigation;
+using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace task2.ViewNavigation.ContextMenuNavigation
+namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
 {
-    internal class RecipesContextMenuNavigation : BaseNavigation, IContextMenuNavigation
+    public class RecipesContextMenuNavigation : NavigationManager, IRecipesContextMenuNavigation
     {
-        private readonly int IdRecipe;
-        private int IdCategory { get; set; }
+        private readonly IValidationNavigation _validationNavigation;
+        private readonly IRecipesController _recipesController;
+        private int recipeId;
 
-        private readonly IRecipesController Recipes;
-
-        public RecipesContextMenuNavigation(IUnitOfWork unitOfWork, int idRecipe, IRecipesController recipes) : base(unitOfWork)
+        public RecipesContextMenuNavigation(IValidationNavigation validationNavigation, IRecipesController recipesController) : base(validationNavigation)
         {
-            IdRecipe = idRecipe;
-            Recipes = recipes;
+            _validationNavigation = validationNavigation;
+            _recipesController = recipesController;
         }
 
-        public override void CallNavigation()
+        private async Task OpenRecipeAync(int id)
+        {
+            Recipe recipe = await _recipesController.GetRecipeByIdAsync(id);
+            Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
+            Console.WriteLine($"    { await ValidationNavigation.WrapTextAsync(10, recipe.Description, "\n    ")}");
+            Console.WriteLine("\n    Required ingredients:\n");
+            List<string> ingredients = await _recipesController.GetIngredientsWhereRecipeIdAsync(id);
+            //ingredients recipe
+            foreach (string ingredient in ingredients)
+            {
+                Console.WriteLine($"    {ingredient}");
+            }
+            //steps recipe
+            Console.WriteLine("\n    Сooking steps:\n");
+            List<CookingStep> cookingSteps = await _recipesController.GetCookingStepsWhereRecipeIdAsync(id);
+            foreach (CookingStep s in cookingSteps.OrderBy(x => x.Step))
+            {
+                Console.WriteLine($"    {s.Step}. {await ValidationNavigation.WrapTextAsync(10, s.Name, "\n       ")}");
+            }
+            Console.WriteLine("\n    Press any key to return...");
+            Console.ReadKey();
+        }
+
+        private async Task RenameRecipeAsync(int id)
+        {
+            Console.Write("\n    Enter the name of the recipe: ");
+            string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            _recipesController.RenameAsync(id, newName);
+        }
+
+        private async Task ChangeDescRecipe(int id)
+        {
+            Console.Write("\n    Enter recipe description: ");
+            string desc = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            await _recipesController.ChangeDescription(id, desc);
+        }
+
+        private async Task ChangeIngredientsRecipeAsync(int id)
+        {
+
+        }
+
+        private async Task ChangeCookingStepsRecipeAsync(int id)
+        {
+
+        }
+
+        private async Task DeleteRecipeAsync(int id)
         {
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            Console.Write("    Are you sure you want to delete the recipe? ");
+            if (await ValidationNavigation.YesNoAsync() == ConsoleKey.N)
+            {
+                return;
+            }
+            _recipesController.DeleteAsync(id);
+        }
+
+        public async Task ShowMenuAsync(int id)
+        {
+            recipeId = id;
+            Console.Clear();
+            List<EntityMenu> itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Open" },
                     new EntityMenu(){ Name = "    Rename" },
@@ -36,62 +94,49 @@ namespace task2.ViewNavigation.ContextMenuNavigation
                     new EntityMenu(){ Name = "    Delete"},
                     new EntityMenu(){ Name = "    Cancel"}
                 };
-            base.CallNavigation();
+            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public override void SelectMethodMenu(int id)
+        public async Task SelectMethodMenuAsync(int id)
         {
-            IdCategory = UnitOfWork.Repository.GetById<Recipe>(IdRecipe).CategoryId;
             switch (id)
             {
                 case 0:
                     {
-                        Recipes.View(IdRecipe);
+                        await OpenRecipeAync(recipeId);
                     }
                     break;
                 case 1:
                     {
-                        Recipes.Edit(IdRecipe);
-                        BackPrevMenu();
+                        await RenameRecipeAsync(recipeId);
                     }
                     break;
                 case 2:
                     {
-                        Recipes.ChangeDescription(IdRecipe);
-                        BackPrevMenu();
+                        await ChangeDescRecipe(recipeId);
                     }
                     break;
                 case 3:
                     {
-                        RecipesIngredientsNavigation recipesIngredientsNavigation = new RecipesIngredientsNavigation(UnitOfWork,
-                            IdRecipe, new IngredientsController(UnitOfWork), new RecipeIngredientsController(UnitOfWork));
-                        new ProgramMenu(recipesIngredientsNavigation).CallMenu();
+                        await ChangeIngredientsRecipeAsync(recipeId);
                     }
                     break;
                 case 4:
                     {
-                        CookingStepsNavigation cookingStepsNav = new CookingStepsNavigation(UnitOfWork, IdRecipe, new CookingStepsController(UnitOfWork));
-                        new ProgramMenu(cookingStepsNav).CallMenu();
+                        await ChangeCookingStepsRecipeAsync(recipeId);
                     }
                     break;
                 case 5:
                     {
-                        Recipes.Delete(IdRecipe);
-                        BackPrevMenu();
+                        await DeleteRecipeAsync(recipeId);
                     }
                     break;
                 case 6:
                     {
-                        BackPrevMenu();
                     }
                     break;
             }
         }
 
-        public void BackPrevMenu()
-        {
-            RecipesNavigation recipeNav = new RecipesNavigation(UnitOfWork, Recipes);
-            recipeNav.MovementCategoriesRecipes(IdCategory);
-        }
     }
 }

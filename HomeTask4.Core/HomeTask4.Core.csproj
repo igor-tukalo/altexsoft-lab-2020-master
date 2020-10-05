@@ -12,9 +12,6 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\BaseCategoriesRecipesControl.cs" />
-    <Compile Remove="Controllers\CookingStepsController.cs" />
-    <Compile Remove="Controllers\RecipeIngredientsController.cs" />
-    <Compile Remove="Controllers\RecipesController.cs" />
   </ItemGroup>
 
   <ItemGroup>

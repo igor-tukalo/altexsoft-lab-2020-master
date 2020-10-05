@@ -14,7 +14,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private int pageIngredients = 1;
         private readonly IIngredientsController _ingredientsController;
         private readonly IIngredientsContextMenuNavigation _ingredientsContextMenuNavigation;
-        private List<EntityMenu> ItemsMenu { get; set; }
+        private List<EntityMenu> itemsMenu;
 
         public IngredientsNavigation(IValidationNavigation validationNavigation,
             IIngredientsController ingredientsController,
@@ -30,13 +30,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         /// </summary>
         /// <param name="itemsMenu"></param>
         /// <param name="idBatch"></param>
-        private async Task<List<EntityMenu>> GetIngredientsBatch(List<EntityMenu> itemsMenu, int idBatch = 1)
+        private async Task<List<EntityMenu>> GetIngredientsBatchAsync(List<EntityMenu> itemsMenu, int idBatch = 1)
         {
             List<IEnumerable<Ingredient>> ingredientsBatch = await _ingredientsController.GetItemsBatchAsync();
             int countBatch = ingredientsBatch.Count;
             if (idBatch > ingredientsBatch.Count || idBatch < 0)
             {
-                idBatch = await ValidationNavigation.BatchExist(idBatch, countBatch);
+                idBatch = await ValidationNavigation.BatchExistAsync(idBatch, countBatch);
             }
             idBatch--;
             IEnumerable<Ingredient> ingredients = ingredientsBatch.ElementAt(idBatch);
@@ -55,21 +55,21 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             return itemsMenu;
         }
 
-        private async Task AddIngredient()
+        private async Task AddIngredientAsync()
         {
             Console.Write("\n    Enter name ingredient: ");
-            string name = await ValidationNavigation.NullOrEmptyText(Console.ReadLine());
+            string name = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _ingredientsController.AddAsync(name);
-            await ShowMenu();
+            await ShowMenuAsync();
         }
 
-        private async Task GoToPage()
+        private async Task GoToPageAsync()
         {
             Console.Write("\n    Enter page number: ");
             try
             {
                 pageIngredients = int.Parse(Console.ReadLine());
-                await ShowMenu();
+                await ShowMenuAsync();
             }
             catch (Exception ex)
             {
@@ -78,41 +78,35 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             }
         }
 
-        private async Task ShowContextMenu(int id)
+        private async Task ShowContextMenuAsync(int id)
         {
-            Task task;
-            do
-            {
-                task = _ingredientsContextMenuNavigation.ShowMenu(ItemsMenu[id].Id);
-                await task;
-            }
-            while (!task.IsCompleted);
-            await ShowMenu();
+            await _ingredientsContextMenuNavigation.ShowMenuAsync(itemsMenu[id].Id);
+            await ShowMenuAsync();
         }
         #endregion
 
         #region public methods
-        public async Task ShowMenu()
+        public async Task ShowMenuAsync()
         {
             Console.Clear();
-            ItemsMenu = new List<EntityMenu>
+            itemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Add ingredient" },
                     new EntityMenu(){ Name = "    Return to settings"},
                     new EntityMenu(){ Name = "    Go to page", TypeEntity="pages"},
                     new EntityMenu(){ Name = "\n    Ingredients:\n" }
                 };
-            ItemsMenu = await GetIngredientsBatch(ItemsMenu, pageIngredients);
-            await CallNavigation(ItemsMenu, SelectMethodMenu);
+            itemsMenu = await GetIngredientsBatchAsync(itemsMenu, pageIngredients);
+            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenu(int id)
+        public async Task SelectMethodMenuAsync(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        await AddIngredient();
+                        await AddIngredientAsync();
                     }
                     break;
                 case 1:
@@ -122,18 +116,18 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 case 2:
                     {
-                        await GoToPage();
+                        await GoToPageAsync();
                     }
                     break;
                 default:
                     {
-                        if (ItemsMenu[id].Id != 0)
+                        if (itemsMenu[id].Id != 0)
                         {
-                            await ShowContextMenu(id);
+                            await ShowContextMenuAsync(id);
                         }
                         else
                         {
-                            await ShowMenu();
+                            await ShowMenuAsync();
                         }
                     }
                     break;

@@ -19,31 +19,19 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             _categoriesNavigation = categoriesNavigation;
         }
 
-        private async Task CustomizeCategories()
+        private async Task CustomizeCategoriesAsync()
         {
-            Task task;
-            do
-            {
-                task = _categoriesNavigation.ShowMenu();
-                await task;
-            }
-            while (!task.IsCompleted);
-            await ShowMenu();
+            await _categoriesNavigation.ShowMenuAsync();
+            await ShowMenuAsync();
         }
 
-        private async Task CustomizeIngredients()
+        private async Task CustomizeIngredientsAsync()
         {
-            Task task;
-            do
-            {
-                task = _ingredientsNavigation.ShowMenu();
-                await task;
-            }
-            while (!task.IsCompleted);
-            await ShowMenu();
+            await _ingredientsNavigation.ShowMenuAsync();
+            await ShowMenuAsync();
         }
 
-        public async Task ShowMenu()
+        public async Task ShowMenuAsync()
         {
             Console.Clear();
             List<EntityMenu> itemsMenu = new List<EntityMenu>
@@ -52,25 +40,26 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                  new EntityMenu() { Name = "    Customize ingredients" },
                  new EntityMenu() { Name = "    Return to main menu" }
             };
-            await CallNavigation(itemsMenu, SelectMethodMenu);
+            await CallNavigationAsync(itemsMenu, SelectMethodMenuAsync);
         }
 
-        public async Task SelectMethodMenu(int id)
+        public async Task SelectMethodMenuAsync(int id)
         {
             switch (id)
             {
                 case 0:
                     {
-                        await CustomizeCategories();
+                        await CustomizeCategoriesAsync();
                     }
                     break;
                 case 1:
                     {
-                        await CustomizeIngredients();
+                        await CustomizeIngredientsAsync();
                     }
                     break;
                 case 2:
                     {
+
                     }
                     break;
             }
