@@ -18,21 +18,21 @@ namespace HomeTask4.Core.Controllers
         {
             if (category != null)
             {
-                await UnitOfWork.Repository.DeleteAsync(await GetByIdAsync(category.Id));
+                await UnitOfWork.Repository.DeleteAsync(await GetCategoryByIdAsync(category.Id));
             }
-            foreach (Category child in (await GetItemsWhereParentIdAsync(category.Id)).OrderBy(x => x.Name))
+            foreach (Category child in (await GetCategoriesWhereParentIdAsync(category.Id)).OrderBy(x => x.Name))
             {
                 await RemoveHierarchicalCategoryAsync(child, level + 1);
             }
         }
 
         #region public methods
-        public async Task<Category> GetByIdAsync(int categoryId)
+        public async Task<Category> GetCategoryByIdAsync(int categoryId)
         {
             Task<Category> taskCategory = null;
             try
             {
-                taskCategory = UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == categoryId);
+                taskCategory = UnitOfWork.Repository.GetByIdAsync<Category>(categoryId);
             }
             catch (Exception ex)
             {
@@ -42,7 +42,7 @@ namespace HomeTask4.Core.Controllers
             return await taskCategory;
         }
 
-        public async Task<List<Category>> GetItemsWhereParentIdAsync(int categoryId)
+        public async Task<List<Category>> GetCategoriesWhereParentIdAsync(int categoryId)
         {
             return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.ParentId == categoryId);
         }
@@ -64,14 +64,14 @@ namespace HomeTask4.Core.Controllers
 
         public async Task RenameAsync(int categoryId, string newName)
         {
-            Category category = await GetByIdAsync(categoryId);
+            Category category = await GetCategoryByIdAsync(categoryId);
             category.Name = newName;
             await UnitOfWork.Repository.UpdateAsync(category);
         }
 
         public async Task DeleteAsync(int categoryId)
         {
-            Category parent = await GetByIdAsync(categoryId);
+            Category parent = await GetCategoryByIdAsync(categoryId);
             if (parent.ParentId == 0)
             {
                 return;

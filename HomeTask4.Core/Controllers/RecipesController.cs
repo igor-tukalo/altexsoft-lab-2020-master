@@ -16,7 +16,7 @@ namespace HomeTask4.Core.Controllers
         #region public methods
         public async Task<Recipe> GetRecipeByIdAsync(int recipeId)
         {
-            return await UnitOfWork.Repository.GetByPredicateAsync<Recipe>(x => x.Id == recipeId);
+            return await UnitOfWork.Repository.GetByIdAsync<Recipe>(recipeId);
         }
 
         public async Task<Category> GetCategoryByIdAsync(int categoryId)
@@ -29,7 +29,7 @@ namespace HomeTask4.Core.Controllers
             return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.ParentId == parentId);
         }
 
-        public async Task<List<Recipe>> GetRecipessWhereCategoryIdAsync(int categoryId)
+        public async Task<List<Recipe>> GetRecipesWhereCategoryIdAsync(int categoryId)
         {
             return await UnitOfWork.Repository.GetListWhereAsync<Recipe>(x => x.CategoryId == categoryId);
         }

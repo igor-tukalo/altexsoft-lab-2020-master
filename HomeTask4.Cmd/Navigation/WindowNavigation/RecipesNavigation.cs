@@ -42,7 +42,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             if (items != null && category != null)
             {
                 items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = category.ParentId });
-                List<Recipe> recipes = await _recipesController.GetRecipessWhereCategoryIdAsync(category.Id);
+                List<Recipe> recipes = await _recipesController.GetRecipesWhereCategoryIdAsync(category.Id);
                 foreach (Recipe recipe in recipes)
                 {
                     items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.CategoryId, TypeEntity = "recipe" });
