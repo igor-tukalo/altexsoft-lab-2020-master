@@ -18,9 +18,11 @@ namespace HomeTask4.Core.Controllers
         {
             if (category != null)
             {
-                await UnitOfWork.Repository.DeleteAsync(await GetCategoryByIdAsync(category.Id));
+                await UnitOfWork.Repository.DeleteAsync(category);
             }
-            foreach (Category child in (await GetCategoriesWhereParentIdAsync(category.Id)).OrderBy(x => x.Name))
+            var childCategories = await GetCategoriesWhereParentIdAsync(category.Id);
+            if (childCategories!=null)
+            foreach (Category child in (childCategories).OrderBy(x => x.Name))
             {
                 await RemoveHierarchicalCategoryAsync(child, level + 1);
             }

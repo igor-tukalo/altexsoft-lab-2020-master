@@ -18,10 +18,11 @@ namespace HomeTask5.Core.Tests
         private readonly Mock<IOptions<CustomSettings>> optionsMock;
         private readonly Mock<IRepository> repositoryMock;
         private Mock<IUnitOfWork> unitOfWorkMock;
+        private AmountRecipeIngredientsController controller;
         public AmountRecipeIngredientsControllerTests()
         {
             repositoryMock = new Mock<IRepository>();
-            CustomSettings app = new CustomSettings() { NumberConsoleLines = 20 };                                                                       // Make sure you include using Moq;
+            CustomSettings app = new CustomSettings() { NumberConsoleLines = 20 };
             optionsMock = new Mock<IOptions<CustomSettings>>();
             optionsMock.Setup(ap => ap.Value).Returns(app);
         }
@@ -36,7 +37,7 @@ namespace HomeTask5.Core.Tests
             unitOfWorkMock.Setup(o => o.Repository)
                 .Returns(repositoryMock.Object);
 
-            AmountRecipeIngredientsController controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object, optionsMock.Object);
+            controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
             await controller.AddAsync(It.IsAny<double>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>());
             // Assert
@@ -54,7 +55,7 @@ namespace HomeTask5.Core.Tests
             unitOfWorkMock.Setup(o => o.Repository)
                 .Returns(repositoryMock.Object);
 
-            AmountRecipeIngredientsController controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object, optionsMock.Object);
+            controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
             await controller.DeleteAsync(It.IsAny<int>());
             // Assert
@@ -100,7 +101,7 @@ namespace HomeTask5.Core.Tests
             unitOfWorkMock.Setup(o => o.Repository)
                 .Returns(repositoryMock.Object);
 
-            AmountRecipeIngredientsController controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object, optionsMock.Object);
+            controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
             int amountIngredientsCount = (await controller.GetAmountIngredietsAsync(2)).Count;
             // Assert
@@ -119,7 +120,7 @@ namespace HomeTask5.Core.Tests
             unitOfWorkMock.Setup(o => o.Repository)
                 .Returns(repositoryMock.Object);
             // Act
-            AmountRecipeIngredientsController controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object, optionsMock.Object);
+            controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             string ingredientName = (await controller.GetAmountIngredientNameAsync(It.IsAny<int>()));
             // Assert
             Assert.Equal("Banana", ingredientName);
