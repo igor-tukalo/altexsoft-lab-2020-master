@@ -7,6 +7,6 @@ namespace HomeTask4.Core.Interfaces
     public interface IIngredientsController : IBaseController<Ingredient>
     {
         Task AddAsync(string name);
-        Task<List<IEnumerable<Ingredient>>> GetItemsBatchAsync();
+        Task<List<IEnumerable<Ingredient>>> GetIngredientsBatchAsync();
     }
 }

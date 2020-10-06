@@ -38,7 +38,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             {
                 items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = category.ParentId });
             }
-            List<Category> categoriesWhereParentId = await _categoriesController.GetItemsWhereParentIdAsync(category.Id);
+            List<Category> categoriesWhereParentId = await _categoriesController.GetCategoriesWhereParentIdAsync(category.Id);
             foreach (Category child in categoriesWhereParentId.OrderBy(x => x.Name))
             {
                 await BuildHierarchicalCategoriesAsync(items, child, level + 1);
@@ -58,7 +58,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     new EntityMenu(){ Name = "    Add category" },
                     new EntityMenu(){ Name = "    Return to settings"},
                 };
-            Category category = await _categoriesController.GetByIdAsync(1);
+            Category category = await _categoriesController.GetCategoryByIdAsync(1);
             await BuildHierarchicalCategoriesAsync(_itemsMenu, category, 1);
             await CallNavigationAsync(_itemsMenu, SelectMethodMenuAsync);
         }

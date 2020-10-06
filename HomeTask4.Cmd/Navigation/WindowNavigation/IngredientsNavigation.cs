@@ -34,7 +34,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         {
             try
             {
-                List<IEnumerable<Ingredient>> ingredientsBatch = await _ingredientsController.GetItemsBatchAsync();
+                List<IEnumerable<Ingredient>> ingredientsBatch = await _ingredientsController.GetIngredientsBatchAsync();
                 int countBatch = ingredientsBatch.Count;
                 if (idBatch > ingredientsBatch.Count || idBatch < 0)
                 {

@@ -9,7 +9,7 @@ namespace HomeTask4.Core.Interfaces
         Task<Recipe> GetRecipeByIdAsync(int id);
         Task<Category> GetCategoryByIdAsync(int id);
         Task<List<Category>> GetCategoriesWhereParentIdAsync(int id);
-        Task<List<Recipe>> GetRecipessWhereCategoryIdAsync(int id);
+        Task<List<Recipe>> GetRecipesWhereCategoryIdAsync(int id);
         Task<List<string>> GetIngredientsWhereRecipeIdAsync(int id);
         Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int id);
         Task AddAsync(string nameRecipe, string description, int categoryId);
