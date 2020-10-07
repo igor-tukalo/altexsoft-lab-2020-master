@@ -63,7 +63,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             Console.Write("\n    Enter recipe description: ");
             string desc = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            await _recipesController.ChangeDescription(recipeId, desc);
+            await _recipesController.ChangeDescriptionAsync(recipeId, desc);
         }
 
         private async Task ChangeIngredientsRecipeAsync(int recipeId)
