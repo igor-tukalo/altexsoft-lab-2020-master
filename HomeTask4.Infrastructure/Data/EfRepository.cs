@@ -22,9 +22,9 @@ namespace HomeTask4.Infrastructure.Data
             return _context.Set<T>().AsQueryable();
         }
 
-        public async Task<T> GetByPredicateAsync<T>(Expression<Func<T, bool>> predicate) where T : BaseEntity
+        public Task<T> GetByPredicateAsync<T>(Expression<Func<T, bool>> predicate) where T : BaseEntity
         {
-            return await GetAllItems<T>().SingleOrDefaultAsync(predicate);
+            return GetAllItems<T>().SingleOrDefaultAsync(predicate);
         }
 
         public Task<T> GetByIdAsync<T>(int id) where T : BaseEntity
@@ -32,14 +32,14 @@ namespace HomeTask4.Infrastructure.Data
             return GetAllItems<T>().SingleOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<List<T>> GetListAsync<T>() where T : BaseEntity
+        public Task<List<T>> GetListAsync<T>() where T : BaseEntity
         {
-            return await _context.Set<T>().ToListAsync();
+            return _context.Set<T>().ToListAsync();
         }
 
-        public async Task<List<T>> GetListWhereAsync<T>(Expression<Func<T, bool>> predicate) where T : BaseEntity
+        public Task<List<T>> GetListWhereAsync<T>(Expression<Func<T, bool>> predicate) where T : BaseEntity
         {
-            return await GetAllItems<T>().Where(predicate).ToListAsync();
+            return GetAllItems<T>().Where(predicate).ToListAsync();
         }
 
         public async Task AddAsync<T>(T entity) where T : BaseEntity
@@ -56,16 +56,16 @@ namespace HomeTask4.Infrastructure.Data
             }
         }
 
-        public async Task UpdateAsync<T>(T entity) where T : BaseEntity
+        public Task UpdateAsync<T>(T entity) where T : BaseEntity
         {
             _context.Set<T>().Update(entity);
-            await _context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync<T>(T entity) where T : BaseEntity
+        public Task DeleteAsync<T>(T entity) where T : BaseEntity
         {
             _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
 
     }
