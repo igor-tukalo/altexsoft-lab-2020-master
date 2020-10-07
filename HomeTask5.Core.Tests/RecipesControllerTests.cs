@@ -330,7 +330,7 @@ namespace HomeTask5.Core.Tests
 
             controller = new RecipesController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
-            await controller.ChangeDescription(1, "Vary this popular brunch");
+            await controller.ChangeDescriptionAsync(1, "Vary this popular brunch");
             string updatedDesc = (await controller.GetRecipeByIdAsync(1)).Description;
             // Assert
             Assert.Equal("Vary this popular brunch", updatedDesc);
