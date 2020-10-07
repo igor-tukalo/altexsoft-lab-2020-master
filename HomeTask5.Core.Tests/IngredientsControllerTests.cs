@@ -4,16 +4,13 @@ using HomeTask4.Core.Entities;
 using HomeTask4.SharedKernel.Interfaces;
 using Microsoft.Extensions.Options;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace HomeTask5.Core.Tests
 {
-   public class IngredientsControllerTests
+    public class IngredientsControllerTests
     {
         private readonly Mock<IOptions<CustomSettings>> optionsMock;
         private readonly Mock<IRepository> repositoryMock;
