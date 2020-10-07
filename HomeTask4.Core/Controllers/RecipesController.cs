@@ -63,7 +63,7 @@ namespace HomeTask4.Core.Controllers
             await UnitOfWork.Repository.UpdateAsync(recipe);
         }
 
-        public async Task ChangeDescription(int recipeId, string newDesc)
+        public async Task ChangeDescriptionAsync(int recipeId, string newDesc)
         {
             Recipe recipe = await GetRecipeByIdAsync(recipeId);
             recipe.Description = newDesc;
