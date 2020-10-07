@@ -19,8 +19,8 @@ namespace HomeTask5.Core.Tests
         private readonly Mock<IRepository> repositoryMock;
         private Mock<IUnitOfWork> unitOfWorkMock;
         private RecipesController controller;
-        private List<Category> categories;
-        private List<Recipe> recipes;
+        private readonly List<Category> categories;
+        private readonly List<Recipe> recipes;
         public RecipesControllerTests()
         {
             repositoryMock = new Mock<IRepository>();
@@ -227,7 +227,7 @@ namespace HomeTask5.Core.Tests
         public async Task GetCookingStepsWhereRecipeId_Should_Count()
         {
             // Arrange
-           var cookingSteps = new List<CookingStep>
+            List<CookingStep> cookingSteps = new List<CookingStep>
             {
                 new CookingStep()
                 {
@@ -296,7 +296,7 @@ namespace HomeTask5.Core.Tests
         {
             // Arrange
             bool isUpdate = false;
-            Recipe recipe = new Recipe() { Id = 1, Name = "Omlette", Description=It.IsAny<string>() };
+            Recipe recipe = new Recipe() { Id = 1, Name = "Omlette", Description = It.IsAny<string>() };
             repositoryMock.Setup(o => o.UpdateAsync(It.IsAny<Recipe>())).Callback(() => isUpdate = true);
             repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(1))
                 .ReturnsAsync(recipe);

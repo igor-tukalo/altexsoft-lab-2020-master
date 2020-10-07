@@ -19,7 +19,7 @@ namespace HomeTask5.Core.Tests
         private readonly Mock<IRepository> repositoryMock;
         private Mock<IUnitOfWork> unitOfWorkMock;
         private CookingStepsController controller;
-        private List<CookingStep> cookingSteps;
+        private readonly List<CookingStep> cookingSteps;
         public CookingStepsControllerTests()
         {
             repositoryMock = new Mock<IRepository>();
