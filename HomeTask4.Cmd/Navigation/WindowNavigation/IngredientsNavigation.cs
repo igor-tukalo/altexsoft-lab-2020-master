@@ -11,10 +11,11 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 {
     public class IngredientsNavigation : NavigationManager, IIngredientsNavigation
     {
-        protected int _pageIngredients = 1;
         private readonly IIngredientsController _ingredientsController;
         private readonly IIngredientsContextMenuNavigation _ingredientsContextMenuNavigation;
-        protected List<EntityMenu> _itemsMenu;
+        protected int PageIngredients { get; set; } = 1;
+        protected List<EntityMenu> ItemsMenu { get; set; }
+
 
         public IngredientsNavigation(IValidationNavigation validationNavigation,
             IIngredientsController ingredientsController,
@@ -24,7 +25,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             _ingredientsContextMenuNavigation = ingredientsContextMenuNavigation;
         }
 
-        #region private methods
+        #region protected methods
         /// <summary>
         /// Get the ingredients of the specified batch
         /// </summary>
@@ -38,8 +39,8 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 int countBatch = ingredientsBatch.Count;
                 if (idBatch > ingredientsBatch.Count || idBatch < 0)
                 {
-                    _pageIngredients = await ValidationNavigation.BatchExistAsync(idBatch, countBatch);
-                    idBatch = _pageIngredients;
+                    PageIngredients = await ValidationNavigation.BatchExistAsync(idBatch, countBatch);
+                    idBatch = PageIngredients;
                 }
                 idBatch--;
                 IEnumerable<Ingredient> ingredients = ingredientsBatch.ElementAt(idBatch);
@@ -77,7 +78,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             Console.Write("\n    Enter page number: ");
             try
             {
-                _pageIngredients = int.Parse(Console.ReadLine());
+                PageIngredients = int.Parse(Console.ReadLine());
             }
             catch (Exception ex)
             {
@@ -88,7 +89,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 
         protected virtual async Task ShowContextMenuAsync(int id)
         {
-            await _ingredientsContextMenuNavigation.ShowMenuAsync(_itemsMenu[id].Id);
+            await _ingredientsContextMenuNavigation.ShowMenuAsync(ItemsMenu[id].Id);
             await ShowMenuAsync();
         }
         #endregion
@@ -97,15 +98,15 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         public virtual async Task ShowMenuAsync()
         {
             Console.Clear();
-            _itemsMenu = new List<EntityMenu>
+            ItemsMenu = new List<EntityMenu>
                 {
                     new EntityMenu(){ Name = "    Add ingredient" },
                     new EntityMenu(){ Name = "    Return to the previous menu"},
                     new EntityMenu(){ Name = "    Go to page", TypeEntity="pages"},
                     new EntityMenu(){ Name = "\n    Ingredients:\n" }
                 };
-            _itemsMenu = await GetIngredientsBatchAsync(_itemsMenu, _pageIngredients);
-            await CallNavigationAsync(_itemsMenu, SelectMethodMenuAsync);
+            ItemsMenu = await GetIngredientsBatchAsync(ItemsMenu, PageIngredients);
+            await CallNavigationAsync(ItemsMenu, SelectMethodMenuAsync);
         }
 
         public virtual async Task SelectMethodMenuAsync(int id)
@@ -131,7 +132,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     break;
                 default:
                     {
-                        if (_itemsMenu[id].Id != 0)
+                        if (ItemsMenu[id].Id != 0)
                         {
                             await ShowContextMenuAsync(id);
                         }

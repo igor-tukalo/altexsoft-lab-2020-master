@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd.Services
 {
-    internal class StartAppService : BackgroundService
+    public class StartAppService : BackgroundService
     {
         private readonly IMainWindowNavigation _mainWindowNavigation;
 
