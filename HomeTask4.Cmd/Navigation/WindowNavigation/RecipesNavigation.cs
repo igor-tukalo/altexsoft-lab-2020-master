@@ -15,13 +15,16 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private int _prevCategoryId;
         private List<EntityMenu> _itemsMenu;
         private readonly IRecipesController _recipesController;
+        private readonly ICategoriesController _categoriesController;
         private readonly IRecipesContextMenuNavigation _recipesContextMenuNavigation;
 
         public RecipesNavigation(IValidationNavigation validationNavigation,
             IRecipesController recipesController,
+            ICategoriesController categoriesController,
             IRecipesContextMenuNavigation recipesContextMenuNavigation) : base(validationNavigation)
         {
             _recipesController = recipesController;
+            _categoriesController = categoriesController;
             _recipesContextMenuNavigation = recipesContextMenuNavigation;
         }
 
@@ -48,7 +51,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     items.Add(new EntityMenu() { Id = recipe.Id, Name = $"  {recipe.Name}", ParentId = recipe.CategoryId, TypeEntity = "recipe" });
                 }
             }
-            List<Category> categories = await _recipesController.GetCategoriesWhereParentIdAsync(category.Id);
+            List<Category> categories = await _categoriesController.GetCategoriesWhereParentIdAsync(category.Id);
             foreach (Category child in categories.OrderBy(x => x.Name))
             {
                 EntityMenu entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
@@ -95,7 +98,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 
         private async Task AddRecipeAsync()
         {
-            Console.WriteLine($"\n    The recipe will be added to the category: {(await _recipesController.GetCategoryByIdAsync(_currentCategoryId)).Name}");
+            Console.WriteLine($"\n    The recipe will be added to the category: {(await _categoriesController.GetCategoryByIdAsync(_currentCategoryId)).Name}");
             Console.Write("\n    Enter the name of the recipe: ");
             string nameRecipe = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
             Console.Write("\n    Enter recipe description: ");
@@ -113,7 +116,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     new EntityMenu(){ Name = "    Add recipe" },
                     new EntityMenu(){ Name = "    Return to main menu" }
                 };
-            Category parent = await _recipesController.GetCategoryByIdAsync(_currentCategoryId);
+            Category parent = await _categoriesController.GetCategoryByIdAsync(_currentCategoryId);
             _prevCategoryId = parent.ParentId;
             await BuildRecipesCategoriesAsync(_itemsMenu, parent, 1, 2);
             await CallNavigationAsync(_itemsMenu, SelectMethodMenuAsync);

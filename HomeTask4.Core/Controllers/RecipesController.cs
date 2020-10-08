@@ -19,36 +19,9 @@ namespace HomeTask4.Core.Controllers
             return await UnitOfWork.Repository.GetByIdAsync<Recipe>(recipeId);
         }
 
-        public async Task<Category> GetCategoryByIdAsync(int categoryId)
-        {
-            return await UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Id == categoryId);
-        }
-
-        public async Task<List<Category>> GetCategoriesWhereParentIdAsync(int parentId)
-        {
-            return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.ParentId == parentId);
-        }
-
         public async Task<List<Recipe>> GetRecipesWhereCategoryIdAsync(int categoryId)
         {
             return await UnitOfWork.Repository.GetListWhereAsync<Recipe>(x => x.CategoryId == categoryId);
-        }
-
-        public async Task<List<string>> GetIngredientsWhereRecipeIdAsync(int recipeId)
-        {
-            List<AmountIngredient> amountIngredients = await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == recipeId);
-            List<string> ingredients = new List<string>();
-            foreach (AmountIngredient amountIngredient in amountIngredients)
-            {
-                Ingredient ingredient = await UnitOfWork.Repository.GetByIdAsync<Ingredient>(amountIngredient.IngredientId);
-                ingredients.Add($"{ingredient.Name} - {amountIngredient.Amount} {amountIngredient.Unit}");
-            }
-            return ingredients;
-        }
-
-        public async Task<List<CookingStep>> GetCookingStepsWhereRecipeIdAsync(int recipeId)
-        {
-            return await UnitOfWork.Repository.GetListWhereAsync<CookingStep>(x => x.RecipeId == recipeId);
         }
 
         public async Task AddAsync(string nameRecipe, string description, int categoryId)

@@ -13,16 +13,22 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
     public class RecipesContextMenuNavigation : NavigationManager, IRecipesContextMenuNavigation
     {
         private readonly IRecipesController _recipesController;
+        private readonly ICookingStepsController _cookingStepsController;
+        private readonly IIngredientsController _ingredientsController;
         private readonly IAmountRecipeIngredientsNavigation _amountRecipeIngredientsNavigation;
         private readonly ICookingStepsNavigation _cookingStepsNavigation;
         private int _recipeId;
 
         public RecipesContextMenuNavigation(IValidationNavigation validationNavigation,
             IRecipesController recipesController,
+            ICookingStepsController cookingStepsController,
+            IIngredientsController ingredientsController,
             IAmountRecipeIngredientsNavigation amountRecipeIngredientsNavigation,
             ICookingStepsNavigation cookingStepsNavigation) : base(validationNavigation)
         {
             _recipesController = recipesController;
+            _cookingStepsController = cookingStepsController;
+            _ingredientsController = ingredientsController;
             _amountRecipeIngredientsNavigation = amountRecipeIngredientsNavigation;
             _cookingStepsNavigation = cookingStepsNavigation;
         }
@@ -35,7 +41,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
             Console.WriteLine($"    { await ValidationNavigation.WrapTextAsync(10, recipe.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
-            List<string> ingredients = await _recipesController.GetIngredientsWhereRecipeIdAsync(recipeId);
+            List<string> ingredients = await _ingredientsController.GetIngredientsWhereRecipeIdAsync(recipeId);
             //ingredients recipe
             foreach (string ingredient in ingredients)
             {
@@ -43,7 +49,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             }
             //steps recipe
             Console.WriteLine("\n    Сooking steps:\n");
-            List<CookingStep> cookingSteps = await _recipesController.GetCookingStepsWhereRecipeIdAsync(recipeId);
+            List<CookingStep> cookingSteps = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId);
             foreach (CookingStep cookingStep in cookingSteps.OrderBy(x => x.Step))
             {
                 Console.WriteLine($"    {cookingStep.Step}. {await ValidationNavigation.WrapTextAsync(10, cookingStep.Name, "\n       ")}");
