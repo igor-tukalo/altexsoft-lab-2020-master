@@ -8,5 +8,6 @@ namespace HomeTask4.Core.Interfaces
     {
         Task AddAsync(string name);
         Task<List<IEnumerable<Ingredient>>> GetIngredientsBatchAsync();
+        Task<List<string>> GetIngredientsWhereRecipeIdAsync(int recipeId);
     }
 }

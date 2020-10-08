@@ -20,6 +20,17 @@ namespace HomeTask4.Core.Controllers
         {
             return await UnitOfWork.Repository.GetByIdAsync<Ingredient>(ingredientId);
         }
+        public async Task<List<string>> GetIngredientsWhereRecipeIdAsync(int recipeId)
+        {
+            List<AmountIngredient> amountIngredients = await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == recipeId);
+            List<string> ingredients = new List<string>();
+            foreach (AmountIngredient amountIngredient in amountIngredients)
+            {
+                Ingredient ingredient = await UnitOfWork.Repository.GetByIdAsync<Ingredient>(amountIngredient.IngredientId);
+                ingredients.Add($"{ingredient.Name} - {amountIngredient.Amount} {amountIngredient.Unit}");
+            }
+            return ingredients;
+        }
 
         public async Task<List<IEnumerable<Ingredient>>> GetIngredientsBatchAsync()
         {
