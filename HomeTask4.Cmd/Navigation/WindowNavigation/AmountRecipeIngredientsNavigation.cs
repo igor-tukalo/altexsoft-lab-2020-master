@@ -56,13 +56,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
 
         protected override async Task ShowContextMenuAsync(int menuId)
         {
-            if (_itemsMenu[menuId].TypeEntity == "addedIngr")
+            if (ItemsMenu[menuId].TypeEntity == "addedIngr")
             {
-                await DeleteAsync(_itemsMenu[menuId].Id);
+                await DeleteAsync(ItemsMenu[menuId].Id);
             }
-            else if (_itemsMenu[menuId].TypeEntity == "ingr")
+            else if (ItemsMenu[menuId].TypeEntity == "ingr")
             {
-                await AddAsync(_recipeId, _itemsMenu[menuId].Id);
+                await AddAsync(_recipeId, ItemsMenu[menuId].Id);
             }
         }
 
@@ -100,22 +100,22 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         {
             _recipeId = recipeId;
             Console.Clear();
-            _itemsMenu = new List<EntityMenu>
+            ItemsMenu = new List<EntityMenu>
             {
                 new EntityMenu() { Name = "    Add ingredient" },
                 new EntityMenu() { Name = "    Return to the previous menu" },
                 new EntityMenu() { Name = "    Go to page", TypeEntity = "pages" },
                 new EntityMenu() { Name = "\n    Recipe ingredients:\n" }
             };
-            _itemsMenu = await GetAmountRecipeIngredientsAsync(recipeId, _itemsMenu);
+            ItemsMenu = await GetAmountRecipeIngredientsAsync(recipeId, ItemsMenu);
             await ShowMenuAsync();
         }
 
         public override async Task ShowMenuAsync()
         {
-            _itemsMenu.Add(new EntityMenu() { Name = "\n    Ingredients to add:\n" });
-            _itemsMenu = await GetIngredientsBatchAsync(_itemsMenu, _pageIngredients);
-            await CallNavigationAsync(_itemsMenu, SelectMethodMenuAsync);
+            ItemsMenu.Add(new EntityMenu() { Name = "\n    Ingredients to add:\n" });
+            ItemsMenu = await GetIngredientsBatchAsync(ItemsMenu, PageIngredients);
+            await CallNavigationAsync(ItemsMenu, SelectMethodMenuAsync);
         }
     }
 }

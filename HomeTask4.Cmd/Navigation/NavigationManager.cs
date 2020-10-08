@@ -78,9 +78,9 @@ namespace HomeTask4.Cmd.Navigation
             return Task.CompletedTask;
         }
         /// <summary>
-        /// Navigation menu
+        /// Сall navigation menu with method binding for each menu.
         /// </summary>
-        /// <param name="menuItems"></param>
+        /// <param name="menuItems">list of menu items</param>
         /// <param name="selectedMethod">the method that is executed when the menu is selected</param>
         protected async Task CallNavigationAsync(List<EntityMenu> menuItems, MenuMethodsCallback selectedMethod)
         {
