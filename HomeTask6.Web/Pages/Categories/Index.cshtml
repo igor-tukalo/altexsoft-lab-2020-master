@@ -1,0 +1,28 @@
+﻿@page
+@using HomeTask6.Web.Entities
+@model HomeTask6.Web.Pages.CategoriesModel
+@{
+    ViewData["Title"] = "Categories";
+}
+<h1>@ViewData["Title"]</h1>
+<table class="table">
+    @foreach (EntityMenu category in Model.DisplayedCategories)
+    {
+    <tr>
+        <td>
+            <form method="POST">
+                @category.Name
+                <button type="submit" asp-page-handler="RedirectCreate" asp-route-categoryId=@category.Id>
+                    <img src="~/images/create.png" />
+                </button>
+                <button type="submit" asp-page-handler="RedirectEdit" asp-route-categoryId=@category.Id>
+                    <img src="~/images/edit.png" />
+                </button>
+                <button type="submit" asp-page-handler="RedirectDelete" asp-route-categoryId=@category.Id>
+                    <img src="~/images/remove.png" />
+                </button>
+            </form>
+        </td>
+    </tr>
+    }
+</table>

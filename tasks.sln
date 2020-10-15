@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeTask5.Core.Tests", "Hom
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "task6", "task6", "{5FF9F317-65D2-4BC4-96EB-54D37CCA816E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask6.Web", "HomeTask6.Web\HomeTask6.Web.csproj", "{B183326D-D610-4605-8E7F-80688A0055BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeTask6.Web", "HomeTask6.Web\HomeTask6.Web.csproj", "{B183326D-D610-4605-8E7F-80688A0055BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
