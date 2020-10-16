@@ -55,10 +55,11 @@ namespace HomeTask4.Core.Controllers
             await UnitOfWork.Repository.AddAsync(new Category() { Name = nameCategory, ParentId = idMainCategory });
         }
 
-        public async Task RenameAsync(int categoryId, string newName)
+        public async Task EditCategoryAsync(int categoryId, string newName, int newParentId)
         {
             Category category = await GetCategoryByIdAsync(categoryId);
             category.Name = newName;
+            category.ParentId = newParentId;
             await UnitOfWork.Repository.UpdateAsync(category);
         }
 
@@ -67,7 +68,7 @@ namespace HomeTask4.Core.Controllers
             return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.Name.ToLower().Contains(name.ToLower()));
         }
 
-        public async Task DeleteAsync(int categoryId)
+        public async Task DeleteCategoryAsync(int categoryId)
         {
             Category parent = await GetCategoryByIdAsync(categoryId);
             if (parent.ParentId == 0)
