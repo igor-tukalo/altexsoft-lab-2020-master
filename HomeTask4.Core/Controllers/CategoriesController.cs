@@ -50,16 +50,9 @@ namespace HomeTask4.Core.Controllers
 
         public async Task AddAsync(string nameCategory, string parentСategoryName)
         {
-            try
-            {
-                Category category = (await UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Name == parentСategoryName)) ?? throw new ArgumentNullException(nameof(parentСategoryName));
-                int idMainCategory = category.Id;
-                await UnitOfWork.Repository.AddAsync(new Category() { Name = nameCategory, ParentId = idMainCategory });
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            Category category = (await UnitOfWork.Repository.GetByPredicateAsync<Category>(x => x.Name == parentСategoryName)) ?? throw new ArgumentNullException(nameof(parentСategoryName));
+            int idMainCategory = category.Id;
+            await UnitOfWork.Repository.AddAsync(new Category() { Name = nameCategory, ParentId = idMainCategory });
         }
 
         public async Task RenameAsync(int categoryId, string newName)
