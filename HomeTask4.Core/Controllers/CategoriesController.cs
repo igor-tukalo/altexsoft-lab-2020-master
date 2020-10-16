@@ -60,6 +60,11 @@ namespace HomeTask4.Core.Controllers
             await UnitOfWork.Repository.UpdateAsync(category);
         }
 
+        public async Task<List<Category>> FindCategoriesAsync(string name)
+        {
+            return await UnitOfWork.Repository.GetListWhereAsync<Category>(x => x.Name.ToLower().Contains(name.ToLower()));
+        }
+
         public async Task DeleteAsync(int categoryId)
         {
             Category parent = await GetCategoryByIdAsync(categoryId);

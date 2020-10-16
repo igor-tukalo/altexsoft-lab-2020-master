@@ -9,5 +9,6 @@ namespace HomeTask4.Core.Interfaces
         Task AddAsync(string nameCategory, string parentСategoryName);
         Task<List<Category>> GetCategoriesWhereParentIdAsync(int categoryId);
         Task<Category> GetCategoryByIdAsync(int id);
+        Task<List<Category>> FindCategoriesAsync(string name);
     }
 }
