@@ -11,9 +11,9 @@ namespace HomeTask6.Web.Pages.Categories
     public class CategoriesAddModel : PageModel
     {
         private readonly ICategoriesController _categoriesController;
+        private int _categoryId;
         public string Message { get; set; }
         public string Parent—ategoryName { get; set; }
-        private int _categoryId;
 
         public CategoriesAddModel(ICategoriesController categoriesController)
         {

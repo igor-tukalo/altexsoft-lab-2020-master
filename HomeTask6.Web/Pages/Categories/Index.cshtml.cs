@@ -48,8 +48,9 @@ namespace HomeTask6.Web.Pages
             string url = Url.Page("Edit", new { Id = categoryId });
             return Redirect(url);
         }
-        public IActionResult OnPostRedirectDelete(int categoryId)
+        public async Task<IActionResult> OnPostDeleteCategory(int categoryId)
         {
+            await _categoriesController.DeleteAsync(categoryId);
             string url = Url.Page("Index");
             return Redirect(url);
         }
