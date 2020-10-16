@@ -21,7 +21,8 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             Console.Write("    Enter new name: ");
             string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            await _categoriesController.RenameAsync(_categoryId, newName);
+            int parentId =(await _categoriesController.GetCategoryByIdAsync(_categoryId)).ParentId;
+            await _categoriesController.EditCategoryAsync(_categoryId, newName, parentId);
         }
 
         private async Task DeleteAsync()
@@ -31,7 +32,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             {
                 return;
             }
-            await _categoriesController.DeleteAsync(_categoryId);
+            await _categoriesController.DeleteCategoryAsync(_categoryId);
         }
         public async Task ShowMenuAsync(int categoryId)
         {
