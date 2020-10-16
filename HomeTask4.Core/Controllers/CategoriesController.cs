@@ -38,8 +38,7 @@ namespace HomeTask4.Core.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
+                throw new Exception(ex.Message);
             }
             return await taskCategory;
         }
@@ -59,8 +58,7 @@ namespace HomeTask4.Core.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
+                throw new Exception(ex.Message);
             }
         }
 
