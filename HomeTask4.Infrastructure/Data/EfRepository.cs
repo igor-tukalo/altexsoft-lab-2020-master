@@ -1,5 +1,6 @@
 ﻿using HomeTask4.SharedKernel;
 using HomeTask4.SharedKernel.Interfaces;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -49,24 +50,36 @@ namespace HomeTask4.Infrastructure.Data
                 await _context.Set<T>().AddAsync(entity);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
+                throw new Exception(ex.Message);
             }
         }
 
         public Task UpdateAsync<T>(T entity) where T : BaseEntity
         {
-            _context.Set<T>().Update(entity);
-            return _context.SaveChangesAsync();
+            try
+            {
+                _context.Set<T>().Update(entity);
+                return _context.SaveChangesAsync();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Task DeleteAsync<T>(T entity) where T : BaseEntity
         {
-            _context.Set<T>().Remove(entity);
-            return _context.SaveChangesAsync();
+            try
+            {
+                _context.Set<T>().Remove(entity);
+                return _context.SaveChangesAsync();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
-
     }
 }
