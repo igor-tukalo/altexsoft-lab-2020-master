@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HomeTask4.Core.Entities;
+using HomeTask4.Core.Interfaces;
 using HomeTask6.Web.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,26 +12,30 @@ namespace HomeTask6.Web.Pages
 {
     public class CategoriesModel : PageModel
     {
-        List<Category> categories;
-        List<EntityMenu> items;
+        private readonly ICategoriesController _categoriesController;
         public List<EntityMenu> DisplayedCategories { get; set; }
-        public CategoriesModel()
+        public CategoriesModel(ICategoriesController categoriesController)
         {
-            items = new List<EntityMenu>();
-            categories = new List<Category>()
-            {
-                new Category{ Id=1, Name="Categories",  ParentId=0},
-                new Category{ Id=2, Name="Bakery products",  ParentId=1},
-                new Category{ Id=3, Name="Kefir baked goods",  ParentId=2},
-                new Category{ Id=4, Name="Bread on kefir",  ParentId=2},
-                new Category{ Id=5, Name="Fish, seafood",  ParentId=1},
-            };
+            _categoriesController = categoriesController;
 
-            BuildHierarchicalCategoriesAsync(items, categories.First(x=>x.Id==1), 1);
         }
-        public void OnGet()
+        private async Task BuildHierarchicalCategoriesAsync(List<EntityMenu> items, Category category, int level)
         {
-            DisplayedCategories = items;
+            if (items != null && category != null)
+            {
+                items.Add(new EntityMenu() { Id = category.Id, Separator= $"{new string('_', level*2)}", Name = category.Name, ParentId = category.ParentId });
+            }
+            List<Category> categoriesWhereParentId = await _categoriesController.GetCategoriesWhereParentIdAsync(category.Id);
+            foreach (Category child in categoriesWhereParentId.OrderBy(x => x.Name))
+            {
+                await BuildHierarchicalCategoriesAsync(items, child, level + 1);
+            }
+        }
+        public async Task OnGet()
+        {
+            DisplayedCategories = new List<EntityMenu>();
+            Category category = await _categoriesController.GetCategoryByIdAsync(1);
+            await BuildHierarchicalCategoriesAsync(DisplayedCategories, category, 1);
         }
 
         public IActionResult OnPostRedirectCreate(int categoryId)
@@ -48,17 +54,5 @@ namespace HomeTask6.Web.Pages
             return Redirect(url);
         }
 
-        private void BuildHierarchicalCategoriesAsync(List<EntityMenu> items, Category category, int level)
-        {
-            if (category != null)
-            {
-                items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = category.ParentId });
-            }
-            List<Category> categoriesWhereParentId = categories.Where(x => x.ParentId == category.Id).ToList();
-            foreach (Category child in categoriesWhereParentId.OrderBy(x => x.Name))
-            {
-                BuildHierarchicalCategoriesAsync(items, child, level + 1);
-            }
-        }
     }
 }

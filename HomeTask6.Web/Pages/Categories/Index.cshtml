@@ -6,19 +6,21 @@
 }
 <h1>@ViewData["Title"]</h1>
 <table class="table">
-    @foreach (EntityMenu category in Model.DisplayedCategories)
+    @foreach (EntityMenu entity in Model.DisplayedCategories)
     {
     <tr>
         <td>
             <form method="POST">
-                @category.Name
-                <button type="submit" asp-page-handler="RedirectCreate" asp-route-categoryId=@category.Id>
+                @entity.Separator
+                <img src="~/images/circle.png" />
+                @entity.Name
+                <button type="submit" asp-page-handler="RedirectCreate" asp-route-categoryId=@entity.Id>
                     <img src="~/images/create.png" />
                 </button>
-                <button type="submit" asp-page-handler="RedirectEdit" asp-route-categoryId=@category.Id>
+                <button type="submit" asp-page-handler="RedirectEdit" asp-route-categoryId=@entity.Id>
                     <img src="~/images/edit.png" />
                 </button>
-                <button type="submit" asp-page-handler="RedirectDelete" asp-route-categoryId=@category.Id>
+                <button type="submit" asp-page-handler="RedirectDelete" asp-route-categoryId=@entity.Id>
                     <img src="~/images/remove.png" />
                 </button>
             </form>

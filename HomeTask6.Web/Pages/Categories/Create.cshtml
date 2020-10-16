@@ -3,9 +3,9 @@
 @{
     ViewData["Title"] = "Add category";
 }
-<h2>@Model.Message @Model.Id</h2>
+<h2>@Model.Message</h2>
 <form method="post">
     <label for="nameCategory">Name category:</label><br />
     <input type="text" name="nameCategory" id="nameCategory" /><br /><br />
-    <input type="submit" value="Send" />
+    <input type="submit" value="Send" asp-page-handler="CreateCategory" asp-route-parentСategoryName=@Model.ParentСategoryName />
 </form>

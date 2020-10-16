@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HomeTask4.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -9,17 +10,28 @@ namespace HomeTask6.Web.Pages.Categories
 {
     public class CategoriesAddModel : PageModel
     {
+        private readonly ICategoriesController _categoriesController;
         public string Message { get; set; }
-        public int Id { get; set; }
+        public string Parent—ategoryName { get; set; }
+        private int _categoryId;
 
-        public void OnGet(int id)
+        public CategoriesAddModel(ICategoriesController categoriesController)
         {
-            Id = id;
-            Message = "Create category to category root";
+            _categoriesController = categoriesController;
         }
-        public IActionResult OnPost(string nameCategory)
+
+        public async Task OnGet(int id)
         {
-            return Content($"Category {nameCategory} added!");
+            _categoryId = id;
+            Parent—ategoryName = (await _categoriesController.GetCategoryByIdAsync(_categoryId)).Name;
+            Message = $"Create category to category ´{Parent—ategoryName}ª";
+        }
+
+        public async Task<IActionResult> OnPostCreateCategory(string nameCategory, string parent—ategoryName)
+        {
+            await _categoriesController.AddAsync(nameCategory, parent—ategoryName);
+            string url = Url.Page("Index");
+            return Redirect(url);
         }
     }
 }
