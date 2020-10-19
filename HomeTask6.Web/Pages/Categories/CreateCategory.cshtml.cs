@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace HomeTask6.Web.Pages.Categories
 {
-    public class CategoriesAddModel : PageModel
+    public class CreateCategoryModel : PageModel
     {
         private readonly ICategoriesController _categoriesController;
         public string Message { get; set; }
         public string Parent—ategoryName { get; set; }
 
-        public CategoriesAddModel(ICategoriesController categoriesController)
+        public CreateCategoryModel(ICategoriesController categoriesController)
         {
             _categoriesController = categoriesController;
         }

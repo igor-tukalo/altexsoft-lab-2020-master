@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace HomeTask6.Web.Pages
 {
-    public class CategoriesModel : PageModel
+    public class CategoriesIndexModel : PageModel
     {
         private readonly ICategoriesController _categoriesController;
         public List<EntityMenu> DisplayedCategories { get; set; }
-        public CategoriesModel(ICategoriesController categoriesController)
+        public CategoriesIndexModel(ICategoriesController categoriesController)
         {
             _categoriesController = categoriesController;
 

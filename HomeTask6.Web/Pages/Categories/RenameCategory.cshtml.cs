@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace HomeTask6.Web.Pages.Categories
 {
-    public class RenameModel : PageModel
+    public class RenameCategoryModel : PageModel
     {
         private readonly ICategoriesController _categoriesController;
         public Category SelectedCategory { get; set; }
         public string NameCategory { get; set; }
-        public RenameModel(ICategoriesController categoriesController)
+        public RenameCategoryModel(ICategoriesController categoriesController)
         {
             _categoriesController = categoriesController;
         }

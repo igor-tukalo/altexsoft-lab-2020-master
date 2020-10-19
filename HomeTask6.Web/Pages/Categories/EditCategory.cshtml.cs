@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace HomeTask6.Web.Pages.Categories
 {
-    public class CategoriesEditModel : PageModel
+    public class EditCategoryModel : PageModel
     {
         private readonly ICategoriesController _categoriesController;
         public int CategoryId { get; set; }
         public string CurrentCategoryName { get; set; }
 
-        public CategoriesEditModel(ICategoriesController categoriesController)
+        public EditCategoryModel(ICategoriesController categoriesController)
         {
             _categoriesController = categoriesController;
         }
