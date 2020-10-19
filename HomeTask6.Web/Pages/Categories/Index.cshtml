@@ -4,27 +4,35 @@
 @{
     ViewData["Title"] = "Categories";
 }
-<h1>@ViewData["Title"]</h1>
-<table class="table">
-    @foreach (EntityMenu entity in Model.DisplayedCategories)
-    {
-    <tr>
-        <td>
-            <form method="POST">
-                @entity.Separator
-                <img src="~/images/circle.png" />
-                @entity.Name
-                <button type="submit" asp-page-handler="RedirectCreate" asp-route-categoryId=@entity.Id>
-                    <img src="~/images/create.png" />
-                </button>
-                <button type="submit" asp-page-handler="RedirectEdit" asp-route-categoryId=@entity.Id>
-                    <img src="~/images/edit.png" />
-                </button>
-                <button type="submit" asp-page-handler="DeleteCategory" asp-route-categoryId=@entity.Id>
-                    <img src="~/images/remove.png" />
-                </button>
-            </form>
-        </td>
-    </tr>
-    }
-</table>
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"]</h3>
+        <table>
+            @foreach (EntityMenu entity in Model.DisplayedCategories)
+            {
+                <tr>
+                    <td>
+                        @entity.Separator
+                        <img src="~/images/circle.png" />
+                        @entity.Name
+
+                    </td>
+                    <td>
+                        <button type="submit" asp-page-handler="RedirectCreate" asp-route-categoryId=@entity.Id>
+                            <img src="~/images/create.png" />
+                        </button>
+                        <button type="submit" asp-page-handler="RedirectEdit" asp-route-categoryId=@entity.Id>
+                            <img src="~/images/edit.png" />
+                        </button>
+                        <button type="submit" asp-page-handler="DeleteCategory" asp-route-categoryId=@entity.Id>
+                            <img src="~/images/remove.png" />
+                        </button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</form>

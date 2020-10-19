@@ -1,0 +1,40 @@
+﻿@page "{categoryId}/{namecategory}"
+@model HomeTask6.Web.Pages.Categories.ChangeParentCategoryModel
+@{
+    ViewData["Title"] = "Change parent category";
+    var categoryId = RouteData.Values["categoryId"];
+    var nameCategory = RouteData.Values["nameCategory"];
+}
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"]</h3>
+        <label for="nameRootCategory">New root category:</label><br />
+        <input type="text" name="nameRootCategory" id="nameRootCategory" />
+        <input type="submit" value="Find" asp-page-handler="FindCategories"
+               asp-route-categoryId=@categoryId
+               asp-route-nameRootCategory=@nameCategory />
+        <table>
+            @if (Model.FoundCategories != null)
+            {
+                @foreach (var foundCategory in Model.FoundCategories)
+                {
+                    <tr>
+                        <td>
+                            @foundCategory.Name
+                        </td>
+                        <td>
+                            <input type="submit" value="Save"
+                                   asp-page-handler="SaveCategoryChanges"
+                                   asp-route-categoryId=@categoryId
+                                   asp-route-nameCategory=@nameCategory
+                                   asp-route-parentCategoryId=@foundCategory.Id />
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</form>

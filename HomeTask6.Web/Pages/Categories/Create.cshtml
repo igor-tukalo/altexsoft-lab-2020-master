@@ -1,11 +1,14 @@
-﻿@page "{id}"
+﻿@page
 @model HomeTask6.Web.Pages.Categories.CategoriesAddModel
 @{
-    ViewData["Title"] = "Add category";
 }
-<h2>@Model.Message</h2>
-<form method="post">
-    <label for="nameCategory">Name category:</label><br />
-    <input type="text" name="nameCategory" id="nameCategory" /><br /><br />
-    <input type="submit" value="Create" asp-page-handler="CreateCategory" asp-route-parentСategoryName=@Model.ParentСategoryName />
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@Model.Message</h3>
+        <input type="text" placeholder="Enter category name" name="nameCategory" id="nameCategory" />
+        <input type="submit" value="Create" asp-page-handler="CreateCategory" asp-route-parentСategoryName=@Model.ParentСategoryName />
+    </div>
 </form>

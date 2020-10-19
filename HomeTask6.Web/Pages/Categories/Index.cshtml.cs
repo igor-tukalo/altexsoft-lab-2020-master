@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask6.Web.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeTask6.Web.Pages
 {
@@ -23,7 +22,8 @@ namespace HomeTask6.Web.Pages
         {
             if (items != null && category != null)
             {
-                items.Add(new EntityMenu() { Id = category.Id, Separator= $"{new string('_', level*2)}", Name = category.Name, ParentId = category.ParentId });
+                string separator = category.Id != 1 ? $"{new string('_', level * 2)}" : "";
+                items.Add(new EntityMenu() { Id = category.Id, Separator = separator, Name = category.Name, ParentId = category.ParentId });
             }
             List<Category> categoriesWhereParentId = await _categoriesController.GetCategoriesWhereParentIdAsync(category.Id);
             foreach (Category child in categoriesWhereParentId.OrderBy(x => x.Name))
@@ -31,26 +31,27 @@ namespace HomeTask6.Web.Pages
                 await BuildHierarchicalCategoriesAsync(items, child, level + 1);
             }
         }
-        public async Task OnGet()
+
+        public async Task OnGetAsync()
         {
             DisplayedCategories = new List<EntityMenu>();
             Category category = await _categoriesController.GetCategoryByIdAsync(1);
             await BuildHierarchicalCategoriesAsync(DisplayedCategories, category, 1);
         }
 
-        public IActionResult OnPostRedirectCreate(int categoryId)
+        public IActionResult OnPostRedirectCreateAsync(int categoryId)
         {
-            string url = Url.Page("Create", new { Id = categoryId});
+            string url = Url.Page("Create", new { categoryId });
             return Redirect(url);
         }
         public IActionResult OnPostRedirectEdit(int categoryId)
         {
-            string url = Url.Page("Edit", new { Id = categoryId });
+            string url = Url.Page("Edit", new { categoryId });
             return Redirect(url);
         }
-        public async Task<IActionResult> OnPostDeleteCategory(int categoryId)
+        public async Task<IActionResult> OnPostDeleteCategoryAsync(int categoryId)
         {
-            await _categoriesController.DeleteAsync(categoryId);
+            await _categoriesController.DeleteCategoryAsync(categoryId);
             string url = Url.Page("Index");
             return Redirect(url);
         }

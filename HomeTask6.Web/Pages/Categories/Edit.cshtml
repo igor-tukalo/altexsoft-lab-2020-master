@@ -1,21 +1,20 @@
-﻿@page "{id}"
+﻿@page
 @model HomeTask6.Web.Pages.Categories.CategoriesEditModel
 @{
-    int categoryId = int.Parse(RouteData.Values["id"].ToString());
+    ViewData["Title"] = "Edit category";
 }
-<h2>@ViewData["Title"]</h2>
-<form method="post">
-    <label for="nameCategory">Name category:</label><br />
-    <input type="text" value="@Model.CurrentCategoryName" name="nameCategory" id="nameCategory" /><br /><br />
-    @if (categoryId != 1)
-    {
-        <label for="nameRootCategory">Change root category:</label><br />
-        <input type="text" value="@Model.ParentСategoryName" name="nameRootCategory" id="nameRootCategory" />
-        <input type="submit" value="Find" asp-page-handler="FindCategories" asp-route-parentСategoryName=nameRootCategory />
-        <select asp-for="SelectedFoundCategory" asp-items="@Model.FoundCategories">
-            <option>Select parent category</option>
-        </select>
-        <br /><br />
-    }
-    <input type="submit" value="Save" />
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"] «@Model.CurrentCategoryName»</h3>
+        <b><a asp-page="Rename" asp-route-categoryId=@Model.CategoryId>Rename category</a></b>
+        @if (Model.CategoryId != 1)
+        {
+            <b><a asp-page="ChangeParentCategory"
+                  asp-route-categoryId=@Model.CategoryId
+                  asp-route-nameCategory=@Model.CurrentCategoryName>Change parent category</a></b>
+        }
+        </div>
 </form>

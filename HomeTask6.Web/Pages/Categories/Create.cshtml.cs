@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HomeTask4.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Threading.Tasks;
 
 namespace HomeTask6.Web.Pages.Categories
 {
     public class CategoriesAddModel : PageModel
     {
         private readonly ICategoriesController _categoriesController;
-        private int _categoryId;
         public string Message { get; set; }
         public string Parent—ategoryName { get; set; }
 
@@ -20,14 +16,13 @@ namespace HomeTask6.Web.Pages.Categories
             _categoriesController = categoriesController;
         }
 
-        public async Task OnGet(int id)
+        public async Task OnGet(int categoryId)
         {
-            _categoryId = id;
-            Parent—ategoryName = (await _categoriesController.GetCategoryByIdAsync(_categoryId)).Name;
-            Message = $"Create category to category ´{Parent—ategoryName}ª";
+            Parent—ategoryName = (await _categoriesController.GetCategoryByIdAsync(categoryId)).Name;
+            Message = $"Create a category in the parent category ´{Parent—ategoryName}ª";
         }
 
-        public async Task<IActionResult> OnPostCreateCategory(string nameCategory, string parent—ategoryName)
+        public async Task<IActionResult> OnPostCreateCategoryAsync(string nameCategory, string parent—ategoryName)
         {
             await _categoriesController.AddAsync(nameCategory, parent—ategoryName);
             string url = Url.Page("Index");
