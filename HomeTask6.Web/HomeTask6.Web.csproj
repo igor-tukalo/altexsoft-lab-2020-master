@@ -14,4 +14,12 @@
     <ProjectReference Include="..\HomeTask4.Infrastructure\HomeTask4.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TagHelpers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LazZiya.TagHelpers" Version="4.0.1" />
+  </ItemGroup>
+
 </Project>

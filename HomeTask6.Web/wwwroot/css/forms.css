@@ -14,6 +14,11 @@ body {
     border-radius: 30px;
 }
 
+.decor-pager {
+    width: max-content;
+    margin: 30px auto 0;
+}
+
 .form-left-decoration,
 .form-right-decoration {
     content: "";
