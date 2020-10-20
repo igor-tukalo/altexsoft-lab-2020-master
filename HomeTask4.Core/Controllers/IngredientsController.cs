@@ -32,6 +32,11 @@ namespace HomeTask4.Core.Controllers
             return ingredients;
         }
 
+        public IQueryable<Ingredient> GetAllIngredientsAsync()
+        {
+            return UnitOfWork.Repository.GetAllItems<Ingredient>();
+        }
+
         public async Task<List<IEnumerable<Ingredient>>> GetIngredientsBatchAsync()
         {
             int batchSize = CustomSettingsApp.Value.NumberConsoleLines;
