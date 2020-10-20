@@ -32,7 +32,7 @@ namespace HomeTask4.Core.Controllers
             return ingredients;
         }
 
-        public IQueryable<Ingredient> GetAllIngredients()
+        public IQueryable<Ingredient> GetAllIngredientsAsync()
         {
             return UnitOfWork.Repository.GetAllItems<Ingredient>();
         }
