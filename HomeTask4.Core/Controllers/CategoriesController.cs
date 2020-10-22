@@ -11,7 +11,7 @@ namespace HomeTask4.Core.Controllers
 {
     public class CategoriesController : BaseController, ICategoriesController
     {
-        public CategoriesController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
+        public CategoriesController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
         private async Task RemoveHierarchicalCategoryAsync(Category category, int level)

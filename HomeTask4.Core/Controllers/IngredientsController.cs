@@ -11,8 +11,11 @@ namespace HomeTask4.Core.Controllers
 {
     public class IngredientsController : BaseController, IIngredientsController
     {
-        public IngredientsController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
+        private readonly IOptions<CustomSettings> _settings;
+
+        public IngredientsController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork)
         {
+            _settings = settings;
         }
 
         #region public methods
@@ -32,15 +35,15 @@ namespace HomeTask4.Core.Controllers
             return ingredients;
         }
 
-        public IQueryable<Ingredient> GetAllIngredients()
+        public async Task<List<Ingredient>> GetAllIngredients()
         {
-            return UnitOfWork.Repository.GetAllItems<Ingredient>();
+            return await UnitOfWork.Repository.GetListAsync<Ingredient>();
         }
 
         public async Task<List<IEnumerable<Ingredient>>> GetIngredientsBatchAsync()
         {
-            int batchSize = CustomSettingsApp.Value.NumberConsoleLines;
-            List<IEnumerable<Ingredient>> batchList = (await UnitOfWork.Repository.GetListAsync<Ingredient>()).OrderBy(x => x.Name).Batch(batchSize).ToList();
+            int batchSize = _settings.Value.NumberConsoleLines;
+            List<IEnumerable<Ingredient>> batchList = (await GetAllIngredients()).OrderBy(x => x.Name).Batch(batchSize).ToList();
             return batchList;
         }
 

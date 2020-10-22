@@ -9,7 +9,7 @@ namespace HomeTask4.Core.Controllers
 {
     public class AmountRecipeIngredientsController : BaseController, IAmountRecipeIngredientsController
     {
-        public AmountRecipeIngredientsController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
+        public AmountRecipeIngredientsController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
         public async Task AddAsync(double amount, string unit, int recipeId, int ingredientId)

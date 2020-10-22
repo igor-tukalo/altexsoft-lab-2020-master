@@ -18,7 +18,7 @@ namespace HomeTask4.Infrastructure.Data
             _context = context;
         }
 
-        public IQueryable<T> GetAllItems<T>() where T : BaseEntity
+        private IQueryable<T> GetAllItems<T>() where T : BaseEntity
         {
             return _context.Set<T>().AsQueryable();
         }

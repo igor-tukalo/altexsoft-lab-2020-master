@@ -9,7 +9,7 @@ namespace HomeTask4.Core.Controllers
 {
     public class CookingStepsController : BaseController, ICookingStepsController
     {
-        public CookingStepsController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
+        public CookingStepsController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 

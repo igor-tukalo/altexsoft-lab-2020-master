@@ -9,7 +9,7 @@ namespace HomeTask4.Core.Controllers
 {
     public class RecipesController : BaseController, IRecipesController
     {
-        public RecipesController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings) : base(unitOfWork, settings)
+        public RecipesController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 

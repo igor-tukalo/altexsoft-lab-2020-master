@@ -7,12 +7,10 @@ namespace HomeTask4.Core.Controllers
     public abstract class BaseController
     {
         protected IUnitOfWork UnitOfWork { get; }
-        protected IOptions<CustomSettings> CustomSettingsApp { get; }
 
-        protected BaseController(IUnitOfWork unitOfWork, IOptions<CustomSettings> settings)
+        protected BaseController(IUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            CustomSettingsApp = settings;
         }
     }
 }
