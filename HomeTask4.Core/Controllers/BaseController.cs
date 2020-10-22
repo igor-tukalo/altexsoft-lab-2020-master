@@ -1,5 +1,4 @@
 ﻿using HomeTask4.SharedKernel.Interfaces;
-using Microsoft.Extensions.Options;
 using System;
 
 namespace HomeTask4.Core.Controllers

@@ -1,7 +1,6 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel.Interfaces;
-using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

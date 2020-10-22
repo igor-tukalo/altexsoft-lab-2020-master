@@ -12,5 +12,6 @@ namespace HomeTask4.Core.Interfaces
         Task<List<Category>> FindCategoriesAsync(string name);
         Task EditCategoryAsync(int categoryId, string newName, int newParentId);
         Task DeleteCategoryAsync(int categoryId);
+        Task<List<Category>> GetAllGategoriesAsync();
     }
 }

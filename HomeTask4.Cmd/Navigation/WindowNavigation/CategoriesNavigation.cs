@@ -15,7 +15,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private readonly ICategoriesContextMenuNavigation _categoriesContextMenuNavigation;
         private List<EntityMenu> _itemsMenu;
 
-        public CategoriesNavigation(IValidationNavigation validationNavigation,
+        public CategoriesNavigation(IConsoleHelper validationNavigation,
             ICategoriesController categoriesController,
             ICategoriesContextMenuNavigation categoriesContextMenuNavigation) : base(validationNavigation)
         {
@@ -36,7 +36,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         {
             if (items != null && category != null)
             {
-                items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = category.ParentId });
+                items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = (int)category.ParentId });
             }
             List<Category> categoriesWhereParentId = await _categoriesController.GetCategoriesWhereParentIdAsync(category.Id);
             foreach (Category child in categoriesWhereParentId.OrderBy(x => x.Name))

@@ -10,7 +10,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private readonly ISettingsNavigation _settingsNavigation;
         private readonly IRecipesNavigation _recipesNavigation;
 
-        public MainWindowNavigation(IValidationNavigation validationNavigation,
+        public MainWindowNavigation(IConsoleHelper validationNavigation,
             ISettingsNavigation settingsNavigation, IRecipesNavigation recipesNavigation) : base(validationNavigation)
         {
             _settingsNavigation = settingsNavigation;

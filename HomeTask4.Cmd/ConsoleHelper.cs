@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace HomeTask4.Cmd
 {
-    public class ValidationNavigation : IValidationNavigation
+    public class ConsoleHelper : IConsoleHelper
     {
         /// <summary>
         /// Obtain a Y or N response.

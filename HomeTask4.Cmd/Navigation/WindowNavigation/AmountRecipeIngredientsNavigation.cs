@@ -12,7 +12,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     {
         private readonly IAmountRecipeIngredientsController _amountRecipeIngredientsController;
         private int _recipeId;
-        public AmountRecipeIngredientsNavigation(IValidationNavigation validationNavigation,
+        public AmountRecipeIngredientsNavigation(IConsoleHelper validationNavigation,
             IIngredientsController ingredientsController,
             IIngredientsContextMenuNavigation ingredientsContextMenuNavigation,
             IAmountRecipeIngredientsController amountRecipeIngredientsController) : base(validationNavigation, ingredientsController, ingredientsContextMenuNavigation)

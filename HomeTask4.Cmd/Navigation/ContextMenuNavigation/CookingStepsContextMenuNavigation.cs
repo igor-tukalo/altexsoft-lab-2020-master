@@ -13,7 +13,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private readonly ICookingStepsController _cookingStepsController;
         private int _cookingStepId;
 
-        public CookingStepsContextMenuNavigation(IValidationNavigation validationNavigation,
+        public CookingStepsContextMenuNavigation(IConsoleHelper validationNavigation,
             ICookingStepsController cookingStepsController) : base(validationNavigation)
         {
             _cookingStepsController = cookingStepsController;

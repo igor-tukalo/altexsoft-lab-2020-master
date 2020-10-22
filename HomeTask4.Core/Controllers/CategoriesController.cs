@@ -1,7 +1,6 @@
 ﻿using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel.Interfaces;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +19,13 @@ namespace HomeTask4.Core.Controllers
             {
                 await UnitOfWork.Repository.DeleteAsync(category);
             }
-            var childCategories = await GetCategoriesWhereParentIdAsync(category.Id);
-            if (childCategories!=null)
-            foreach (Category child in (childCategories).OrderBy(x => x.Name))
+            List<Category> childCategories = await GetCategoriesWhereParentIdAsync(category.Id);
+            if (childCategories != null)
             {
-                await RemoveHierarchicalCategoryAsync(child, level + 1);
+                foreach (Category child in (childCategories).OrderBy(x => x.Name))
+                {
+                    await RemoveHierarchicalCategoryAsync(child, level + 1);
+                }
             }
         }
 
@@ -41,6 +42,11 @@ namespace HomeTask4.Core.Controllers
                 throw new Exception(ex.Message);
             }
             return await taskCategory;
+        }
+
+        public async Task<List<Category>> GetAllGategoriesAsync()
+        {
+            return await UnitOfWork.Repository.GetListAsync<Category>();
         }
 
         public async Task<List<Category>> GetCategoriesWhereParentIdAsync(int categoryId)

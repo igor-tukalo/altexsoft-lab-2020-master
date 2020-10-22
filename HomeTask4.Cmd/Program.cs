@@ -29,7 +29,7 @@ namespace HomeTask4.Cmd
                 services.AddInfrastructure(context.Configuration.GetConnectionString("Default"));
                 services.Configure<CustomSettings>(context.Configuration.GetSection("CustomSettings"));
                 services.AddHostedService<StartAppService>();
-                services.AddScoped<IValidationNavigation, ValidationNavigation>();
+                services.AddScoped<IConsoleHelper, ConsoleHelper>();
                 services.AddScoped<IMainWindowNavigation, MainWindowNavigation>();
                 services.AddScoped<ISettingsNavigation, SettingsNavigation>();
                 services.AddScoped<ICategoriesNavigation, CategoriesNavigation>();

@@ -12,7 +12,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private readonly ICategoriesController _categoriesController;
         private int _categoryId;
 
-        public CategoriesContextMenuNavigation(IValidationNavigation validationNavigation, ICategoriesController categoriesController) : base(validationNavigation)
+        public CategoriesContextMenuNavigation(IConsoleHelper validationNavigation, ICategoriesController categoriesController) : base(validationNavigation)
         {
             _categoriesController = categoriesController;
         }
@@ -21,7 +21,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             Console.Write("    Enter new name: ");
             string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
-            int parentId =(await _categoriesController.GetCategoryByIdAsync(_categoryId)).ParentId;
+            int parentId = (int)(await _categoriesController.GetCategoryByIdAsync(_categoryId)).ParentId;
             await _categoriesController.EditCategoryAsync(_categoryId, newName, parentId);
         }
 

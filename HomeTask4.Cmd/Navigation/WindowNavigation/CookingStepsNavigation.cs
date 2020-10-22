@@ -16,7 +16,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private List<EntityMenu> _itemsMenu;
         private int _recipeId;
 
-        public CookingStepsNavigation(IValidationNavigation validationNavigation,
+        public CookingStepsNavigation(IConsoleHelper validationNavigation,
             ICookingStepsController cookingStepsController,
             ICookingStepsContextMenuNavigation cookingStepsContextMenuNavigation) : base(validationNavigation)
         {

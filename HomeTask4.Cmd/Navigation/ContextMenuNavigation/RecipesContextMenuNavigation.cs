@@ -19,7 +19,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private readonly ICookingStepsNavigation _cookingStepsNavigation;
         private int _recipeId;
 
-        public RecipesContextMenuNavigation(IValidationNavigation validationNavigation,
+        public RecipesContextMenuNavigation(IConsoleHelper validationNavigation,
             IRecipesController recipesController,
             ICookingStepsController cookingStepsController,
             IIngredientsController ingredientsController,

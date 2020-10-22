@@ -17,7 +17,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         protected List<EntityMenu> ItemsMenu { get; set; }
 
 
-        public IngredientsNavigation(IValidationNavigation validationNavigation,
+        public IngredientsNavigation(IConsoleHelper validationNavigation,
             IIngredientsController ingredientsController,
             IIngredientsContextMenuNavigation ingredientsContextMenuNavigation) : base(validationNavigation)
         {

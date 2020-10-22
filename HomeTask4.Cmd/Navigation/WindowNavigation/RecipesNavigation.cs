@@ -18,7 +18,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private readonly ICategoriesController _categoriesController;
         private readonly IRecipesContextMenuNavigation _recipesContextMenuNavigation;
 
-        public RecipesNavigation(IValidationNavigation validationNavigation,
+        public RecipesNavigation(IConsoleHelper validationNavigation,
             IRecipesController recipesController,
             ICategoriesController categoriesController,
             IRecipesContextMenuNavigation recipesContextMenuNavigation) : base(validationNavigation)
@@ -44,7 +44,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             }
             if (items != null && category != null)
             {
-                items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = category.ParentId });
+                items.Add(new EntityMenu() { Id = category.Id, Name = $"{new string('-', level)}{category.Name}", ParentId = (int)category.ParentId });
                 List<Recipe> recipes = await _recipesController.GetRecipesWhereCategoryIdAsync(category.Id);
                 foreach (Recipe recipe in recipes)
                 {
@@ -54,7 +54,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             List<Category> categories = await _categoriesController.GetCategoriesWhereParentIdAsync(category.Id);
             foreach (Category child in categories.OrderBy(x => x.Name))
             {
-                EntityMenu entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = child.ParentId };
+                EntityMenu entityMenu = new EntityMenu() { Id = child.Id, Name = child.Name, ParentId = (int)child.ParentId };
                 if (items != null)
                 {
                     await BuildCurrentOpenRecipesCategoryAsync(items, entityMenu, level + 1, levelLimitation);
@@ -117,7 +117,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                     new EntityMenu(){ Name = "    Return to main menu" }
                 };
             Category parent = await _categoriesController.GetCategoryByIdAsync(_currentCategoryId);
-            _prevCategoryId = parent.ParentId;
+            _prevCategoryId = (int)parent.ParentId;
             await BuildRecipesCategoriesAsync(_itemsMenu, parent, 1, 2);
             await CallNavigationAsync(_itemsMenu, SelectMethodMenuAsync);
         }

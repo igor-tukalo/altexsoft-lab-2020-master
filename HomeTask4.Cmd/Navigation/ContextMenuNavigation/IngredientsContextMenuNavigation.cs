@@ -12,7 +12,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private readonly IIngredientsController _ingredientsController;
         private int _ingredientId;
 
-        public IngredientsContextMenuNavigation(IValidationNavigation validationNavigation,
+        public IngredientsContextMenuNavigation(IConsoleHelper validationNavigation,
             IIngredientsController ingredientsController) : base(validationNavigation)
         {
             _ingredientsController = ingredientsController;

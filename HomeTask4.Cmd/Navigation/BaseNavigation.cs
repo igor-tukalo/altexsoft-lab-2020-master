@@ -4,8 +4,8 @@ namespace HomeTask4.Cmd.Navigation
 {
     public abstract class BaseNavigation
     {
-        protected IValidationNavigation ValidationNavigation { get; }
-        protected BaseNavigation(IValidationNavigation validationNavigation)
+        protected IConsoleHelper ValidationNavigation { get; }
+        protected BaseNavigation(IConsoleHelper validationNavigation)
         {
             ValidationNavigation = validationNavigation;
         }

@@ -11,7 +11,7 @@ namespace HomeTask4.Cmd.Navigation
         private int _counter;
         protected delegate Task MenuMethodsCallback(int id);
 
-        public NavigationManager(IValidationNavigation validationNavigation) : base(validationNavigation)
+        public NavigationManager(IConsoleHelper validationNavigation) : base(validationNavigation)
         {
         }
 
