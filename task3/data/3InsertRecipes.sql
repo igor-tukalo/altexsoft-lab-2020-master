@@ -1,6 +1,3 @@
-USE [cookBook]
-GO
-
 INSERT INTO [dbo].[Recipes]
            ([Name]
            ,[Description]

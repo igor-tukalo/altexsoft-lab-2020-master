@@ -1,6 +1,3 @@
-USE [cookBook]
-GO
-
 /****** Object:  Table [dbo].[CookingSteps]    Script Date: 10.09.2020 9:09:18 ******/
 SET ANSI_NULLS ON
 GO
@@ -10,9 +7,9 @@ GO
 
 CREATE TABLE [dbo].[CookingSteps](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](max) NULL,
-	[Step] [int] NULL,
-	[IdRecipe] [int] NULL,
+	[Name] [nvarchar](max) NOT NULL,
+	[Step] [int] NOT NULL,
+	[IdRecipe] [int] NOT NULL,
  CONSTRAINT [PK_CookingStep] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
