@@ -41,11 +41,11 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
             Console.WriteLine($"    { await ValidationNavigation.WrapTextAsync(10, recipe.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
-            List<string> ingredients = await _ingredientsController.GetIngredientsWhereRecipeIdAsync(recipeId);
+            Dictionary<string, string> ingredients = await _ingredientsController.GetIngredientsWhereRecipeIdAsync(recipeId);
             //ingredients recipe
-            foreach (string ingredient in ingredients)
+            foreach (KeyValuePair<string, string> ingredient in ingredients)
             {
-                Console.WriteLine($"    {ingredient}");
+                Console.WriteLine($"    {ingredient.Key} {ingredient.Value}");
             }
             //steps recipe
             Console.WriteLine("\n    Сooking steps:\n");
