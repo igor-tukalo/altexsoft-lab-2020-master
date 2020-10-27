@@ -47,6 +47,11 @@ namespace HomeTask4.Core.Controllers
             return batchList;
         }
 
+        public async Task<List<Ingredient>> FindIngredientsAsync(string name)
+        {
+            return await UnitOfWork.Repository.GetListWhereAsync<Ingredient>(x => x.Name.ToLower().Contains(name.ToLower()));
+        }
+
         public async Task AddAsync(string name)
         {
             await UnitOfWork.Repository.AddAsync(new Ingredient() { Name = name });
