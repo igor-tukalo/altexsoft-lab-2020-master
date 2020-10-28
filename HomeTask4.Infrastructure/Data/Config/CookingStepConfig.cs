@@ -13,6 +13,9 @@ namespace HomeTask4.Infrastructure.Data.Config
                 builder.Property(p => p.Name).IsRequired();
                 builder.Property(p => p.Step).IsRequired();
                 builder.Property(p => p.RecipeId).IsRequired();
+                builder.HasOne(p => p.Recipe)
+                .WithMany(t => t.CookingSteps)
+                .HasForeignKey(p => p.RecipeId);
             }
         }
     }

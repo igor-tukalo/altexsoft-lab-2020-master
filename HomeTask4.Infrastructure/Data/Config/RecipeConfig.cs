@@ -14,6 +14,9 @@ namespace HomeTask4.Infrastructure.Data.Config
                 builder.Property(p => p.Name).IsRequired().HasMaxLength(50);
                 builder.HasIndex(u => u.Name).IsUnique();
                 builder.Property(p => p.CategoryId).IsRequired();
+                builder.HasOne(p => p.Category)
+                .WithMany(t => t.Recipes)
+                .HasForeignKey(p => p.CategoryId);
             }
         }
     }

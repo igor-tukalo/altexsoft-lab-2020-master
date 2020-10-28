@@ -1,4 +1,5 @@
 ﻿using HomeTask4.SharedKernel;
+using System.Collections.Generic;
 
 namespace HomeTask4.Core.Entities
 {
@@ -6,5 +7,6 @@ namespace HomeTask4.Core.Entities
     {
         public string Name { get; set; }
         public int? ParentId { get; set; }
+        public List<Recipe> Recipes { get; set; }
     }
 }
