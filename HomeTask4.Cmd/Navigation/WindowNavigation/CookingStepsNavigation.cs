@@ -1,7 +1,7 @@
-﻿using HomeTask4.Core.Entities;
+﻿using HomeTask4.Cmd.Interfaces;
+using HomeTask4.Cmd.Interfaces.ContextMenuNavigation;
+using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Interfaces.Navigation;
-using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +16,9 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private List<EntityMenu> _itemsMenu;
         private int _recipeId;
 
-        public CookingStepsNavigation(IConsoleHelper validationNavigation,
+        public CookingStepsNavigation(IConsoleHelper consoleHelper,
             ICookingStepsController cookingStepsController,
-            ICookingStepsContextMenuNavigation cookingStepsContextMenuNavigation) : base(validationNavigation)
+            ICookingStepsContextMenuNavigation cookingStepsContextMenuNavigation) : base(consoleHelper)
         {
             _cookingStepsController = cookingStepsController;
             _cookingStepsContextMenuNavigation = cookingStepsContextMenuNavigation;

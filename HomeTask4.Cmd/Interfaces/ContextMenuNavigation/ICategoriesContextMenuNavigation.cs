@@ -1,4 +1,4 @@
-﻿namespace HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation
+﻿namespace HomeTask4.Cmd.Interfaces.ContextMenuNavigation
 {
     public interface ICategoriesContextMenuNavigation : IBaseContextMenuNavigation
     {

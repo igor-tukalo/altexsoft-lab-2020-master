@@ -1,4 +1,4 @@
-﻿using HomeTask4.Core.Interfaces.Navigation;
+﻿using HomeTask4.Cmd.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,8 +10,8 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private readonly ISettingsNavigation _settingsNavigation;
         private readonly IRecipesNavigation _recipesNavigation;
 
-        public MainWindowNavigation(IConsoleHelper validationNavigation,
-            ISettingsNavigation settingsNavigation, IRecipesNavigation recipesNavigation) : base(validationNavigation)
+        public MainWindowNavigation(IConsoleHelper consoleHelper,
+            ISettingsNavigation settingsNavigation, IRecipesNavigation recipesNavigation) : base(consoleHelper)
         {
             _settingsNavigation = settingsNavigation;
             _recipesNavigation = recipesNavigation;

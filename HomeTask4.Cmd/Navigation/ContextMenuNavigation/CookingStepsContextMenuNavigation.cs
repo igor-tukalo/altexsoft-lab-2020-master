@@ -1,7 +1,7 @@
-﻿using HomeTask4.Core.Entities;
+﻿using HomeTask4.Cmd.Interfaces;
+using HomeTask4.Cmd.Interfaces.ContextMenuNavigation;
+using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Interfaces.Navigation;
-using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,8 +13,8 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private readonly ICookingStepsController _cookingStepsController;
         private int _cookingStepId;
 
-        public CookingStepsContextMenuNavigation(IConsoleHelper validationNavigation,
-            ICookingStepsController cookingStepsController) : base(validationNavigation)
+        public CookingStepsContextMenuNavigation(IConsoleHelper consoleHelper,
+            ICookingStepsController cookingStepsController) : base(consoleHelper)
         {
             _cookingStepsController = cookingStepsController;
         }

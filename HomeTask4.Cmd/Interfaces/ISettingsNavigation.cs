@@ -1,4 +1,4 @@
-﻿namespace HomeTask4.Core.Interfaces.Navigation
+﻿namespace HomeTask4.Cmd.Interfaces
 {
     public interface ISettingsNavigation : INavigation
     {

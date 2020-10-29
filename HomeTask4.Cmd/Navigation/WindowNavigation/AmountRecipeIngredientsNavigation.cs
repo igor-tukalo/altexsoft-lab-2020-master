@@ -1,7 +1,7 @@
-﻿using HomeTask4.Core.Entities;
+﻿using HomeTask4.Cmd.Interfaces;
+using HomeTask4.Cmd.Interfaces.ContextMenuNavigation;
+using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Interfaces.Navigation;
-using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,10 +12,10 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
     {
         private readonly IAmountRecipeIngredientsController _amountRecipeIngredientsController;
         private int _recipeId;
-        public AmountRecipeIngredientsNavigation(IConsoleHelper validationNavigation,
+        public AmountRecipeIngredientsNavigation(IConsoleHelper consoleHelper,
             IIngredientsController ingredientsController,
             IIngredientsContextMenuNavigation ingredientsContextMenuNavigation,
-            IAmountRecipeIngredientsController amountRecipeIngredientsController) : base(validationNavigation, ingredientsController, ingredientsContextMenuNavigation)
+            IAmountRecipeIngredientsController amountRecipeIngredientsController) : base(consoleHelper, ingredientsController, ingredientsContextMenuNavigation)
         {
             _amountRecipeIngredientsController = amountRecipeIngredientsController;
         }

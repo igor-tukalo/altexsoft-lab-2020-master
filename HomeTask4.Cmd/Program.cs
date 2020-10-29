@@ -1,9 +1,9 @@
-﻿using HomeTask4.Cmd.Navigation.ContextMenuNavigation;
+﻿using HomeTask4.Cmd.Interfaces;
+using HomeTask4.Cmd.Interfaces.ContextMenuNavigation;
+using HomeTask4.Cmd.Navigation.ContextMenuNavigation;
 using HomeTask4.Cmd.Navigation.WindowNavigation;
 using HomeTask4.Cmd.Services;
 using HomeTask4.Core;
-using HomeTask4.Core.Interfaces.Navigation;
-using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using HomeTask4.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

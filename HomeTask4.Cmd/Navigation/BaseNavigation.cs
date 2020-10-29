@@ -1,4 +1,4 @@
-﻿using HomeTask4.Core.Interfaces.Navigation;
+﻿using HomeTask4.Cmd.Interfaces;
 
 namespace HomeTask4.Cmd.Navigation
 {

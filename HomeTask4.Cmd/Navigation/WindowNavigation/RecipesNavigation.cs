@@ -1,7 +1,7 @@
-﻿using HomeTask4.Core.Entities;
+﻿using HomeTask4.Cmd.Interfaces;
+using HomeTask4.Cmd.Interfaces.ContextMenuNavigation;
+using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Interfaces.Navigation;
-using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +18,10 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private readonly ICategoriesController _categoriesController;
         private readonly IRecipesContextMenuNavigation _recipesContextMenuNavigation;
 
-        public RecipesNavigation(IConsoleHelper validationNavigation,
+        public RecipesNavigation(IConsoleHelper consoleHelper,
             IRecipesController recipesController,
             ICategoriesController categoriesController,
-            IRecipesContextMenuNavigation recipesContextMenuNavigation) : base(validationNavigation)
+            IRecipesContextMenuNavigation recipesContextMenuNavigation) : base(consoleHelper)
         {
             _recipesController = recipesController;
             _categoriesController = categoriesController;

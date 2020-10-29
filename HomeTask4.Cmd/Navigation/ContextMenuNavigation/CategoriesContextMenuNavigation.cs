@@ -1,6 +1,6 @@
-﻿using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Interfaces.Navigation;
-using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
+﻿using HomeTask4.Cmd.Interfaces;
+using HomeTask4.Cmd.Interfaces.ContextMenuNavigation;
+using HomeTask4.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,7 +12,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private readonly ICategoriesController _categoriesController;
         private int _categoryId;
 
-        public CategoriesContextMenuNavigation(IConsoleHelper validationNavigation, ICategoriesController categoriesController) : base(validationNavigation)
+        public CategoriesContextMenuNavigation(IConsoleHelper consoleHelper, ICategoriesController categoriesController) : base(consoleHelper)
         {
             _categoriesController = categoriesController;
         }

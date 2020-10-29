@@ -1,6 +1,5 @@
 ﻿using HomeTask4.SharedKernel;
 using HomeTask4.SharedKernel.Interfaces;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

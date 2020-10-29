@@ -1,6 +1,6 @@
-﻿using HomeTask4.Core.Interfaces;
-using HomeTask4.Core.Interfaces.Navigation;
-using HomeTask4.Core.Interfaces.Navigation.ContextMenuNavigation;
+﻿using HomeTask4.Cmd.Interfaces;
+using HomeTask4.Cmd.Interfaces.ContextMenuNavigation;
+using HomeTask4.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,8 +12,8 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private readonly IIngredientsController _ingredientsController;
         private int _ingredientId;
 
-        public IngredientsContextMenuNavigation(IConsoleHelper validationNavigation,
-            IIngredientsController ingredientsController) : base(validationNavigation)
+        public IngredientsContextMenuNavigation(IConsoleHelper consoleHelper,
+            IIngredientsController ingredientsController) : base(consoleHelper)
         {
             _ingredientsController = ingredientsController;
         }

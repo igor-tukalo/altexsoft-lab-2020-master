@@ -1,4 +1,4 @@
-﻿using HomeTask4.Core.Interfaces.Navigation;
+﻿using HomeTask4.Cmd.Interfaces;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;

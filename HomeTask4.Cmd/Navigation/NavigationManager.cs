@@ -1,4 +1,4 @@
-﻿using HomeTask4.Core.Interfaces.Navigation;
+﻿using HomeTask4.Cmd.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,16 +11,16 @@ namespace HomeTask4.Cmd.Navigation
         private int _counter;
         protected delegate Task MenuMethodsCallback(int id);
 
-        public NavigationManager(IConsoleHelper validationNavigation) : base(validationNavigation)
+        public NavigationManager(IConsoleHelper consoleHelper) : base(consoleHelper)
         {
         }
 
-        private async Task<int> PrintMenuAsync()
+        private int PrintMenuAsync()
         {
             ConsoleKeyInfo key;
             do
             {
-                await ClearAreaAsync(0, 0, 6, 0);
+                ClearAreaAsync(0, 0, 6, 0);
                 for (int i = 0; i < _menuItems.Count; i++)
                 {
                     if (_counter == i)
@@ -58,7 +58,7 @@ namespace HomeTask4.Cmd.Navigation
             return _counter;
         }
 
-        private Task ClearAreaAsync(int top, int left, int height, int width)
+        private void ClearAreaAsync(int top, int left, int height, int width)
         {
             ConsoleColor colorBefore = Console.BackgroundColor;
             try
@@ -75,7 +75,6 @@ namespace HomeTask4.Cmd.Navigation
             {
                 Console.BackgroundColor = colorBefore;
             }
-            return Task.CompletedTask;
         }
         /// <summary>
         /// Сall navigation menu with method binding for each menu.
@@ -94,7 +93,7 @@ namespace HomeTask4.Cmd.Navigation
             }
             do
             {
-                menuResult = await PrintMenuAsync();
+                menuResult = PrintMenuAsync();
                 await methodsMenu[menuResult](menuResult);
                 break;
             } while (menuResult != _menuItems.Count - 1);
