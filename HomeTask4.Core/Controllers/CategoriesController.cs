@@ -32,16 +32,7 @@ namespace HomeTask4.Core.Controllers
         #region public methods
         public async Task<Category> GetCategoryByIdAsync(int categoryId)
         {
-            Task<Category> taskCategory;
-            try
-            {
-                taskCategory = UnitOfWork.Repository.GetByIdAsync<Category>(categoryId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return await taskCategory;
+            return await UnitOfWork.Repository.GetByIdAsync<Category>(categoryId);
         }
 
         public async Task<List<Category>> GetAllGategoriesAsync()

@@ -42,7 +42,6 @@ namespace HomeTask4.Core.Controllers
             {
                 cookingStep.Step--;
             }
-            await UnitOfWork.SaveChanges();
             await UnitOfWork.Repository.DeleteAsync(stepRecipe);
         }
         #endregion

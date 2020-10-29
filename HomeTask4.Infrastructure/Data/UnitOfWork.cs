@@ -10,13 +10,11 @@ namespace HomeTask4.Infrastructure.Data
         private readonly AppDbContext _context;
 
         public IRepository Repository { get; }
-        public IOptions<CustomSettings> Settings { get; }
 
-        public UnitOfWork(AppDbContext context, IRepository repository, IOptions<CustomSettings> settings)
+        public UnitOfWork(AppDbContext context, IRepository repository)
         {
             _context = context;
             Repository = repository;
-            Settings = settings;
         }
 
         public async Task SaveChanges()

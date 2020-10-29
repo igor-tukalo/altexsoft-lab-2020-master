@@ -45,41 +45,20 @@ namespace HomeTask4.Infrastructure.Data
 
         public async Task AddAsync<T>(T entity) where T : BaseEntity
         {
-            try
-            {
-                await _context.Set<T>().AddAsync(entity);
-                await _context.SaveChangesAsync();
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
         public Task UpdateAsync<T>(T entity) where T : BaseEntity
         {
-            try
-            {
-                _context.Set<T>().Update(entity);
-                return _context.SaveChangesAsync();
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            _context.Set<T>().Update(entity);
+            return _context.SaveChangesAsync();
         }
 
         public Task DeleteAsync<T>(T entity) where T : BaseEntity
         {
-            try
-            {
-                _context.Set<T>().Remove(entity);
-                return _context.SaveChangesAsync();
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            _context.Set<T>().Remove(entity);
+            return _context.SaveChangesAsync();
         }
     }
 }
