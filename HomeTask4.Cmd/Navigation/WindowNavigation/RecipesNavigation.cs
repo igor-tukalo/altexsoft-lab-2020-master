@@ -100,9 +100,9 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         {
             Console.WriteLine($"\n    The recipe will be added to the category: {(await _categoriesController.GetCategoryByIdAsync(_currentCategoryId)).Name}");
             Console.Write("\n    Enter the name of the recipe: ");
-            string nameRecipe = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string nameRecipe = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             Console.Write("\n    Enter recipe description: ");
-            string description = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string description = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _recipesController.AddAsync(nameRecipe, description, _currentCategoryId);
             await ShowMenuAsync();
         }

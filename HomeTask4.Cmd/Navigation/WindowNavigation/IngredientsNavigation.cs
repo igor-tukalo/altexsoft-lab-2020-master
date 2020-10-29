@@ -39,7 +39,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 int countBatch = ingredientsBatch.Count;
                 if (idBatch > ingredientsBatch.Count || idBatch < 0)
                 {
-                    PageIngredients = await ValidationNavigation.BatchExistAsync(idBatch, countBatch);
+                    PageIngredients = await ConsoleHelper.BatchExistAsync(idBatch, countBatch);
                     idBatch = PageIngredients;
                 }
                 idBatch--;
@@ -69,7 +69,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         protected async Task AddIngredientAsync()
         {
             Console.Write("\n    Enter name ingredient: ");
-            string name = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string name = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _ingredientsController.AddAsync(name);
         }
 

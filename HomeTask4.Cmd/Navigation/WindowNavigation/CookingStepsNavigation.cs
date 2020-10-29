@@ -42,10 +42,10 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             int currentStep = (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId)).Any() ?
             (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId)).Max(x => x.Step) + 1 : 1;
             Console.WriteLine($"\n    Describe the cooking step {currentStep}: ");
-            string stepName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string stepName = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _cookingStepsController.AddAsync(recipeId, currentStep, stepName);
             Console.WriteLine("\n    Add another cooking step? ");
-            if (await ValidationNavigation.ShowYesNoAsync() == ConsoleKey.N)
+            if (await ConsoleHelper.ShowYesNoAsync() == ConsoleKey.N)
             {
                 return;
             }

@@ -39,7 +39,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             Console.Clear();
             Recipe recipe = await _recipesController.GetRecipeByIdAsync(recipeId);
             Console.WriteLine($"{new string('\n', 5)}    ________{recipe.Name}________\n\n");
-            Console.WriteLine($"    { await ValidationNavigation.WrapTextAsync(10, recipe.Description, "\n    ")}");
+            Console.WriteLine($"    { await ConsoleHelper.WrapTextAsync(10, recipe.Description, "\n    ")}");
             Console.WriteLine("\n    Required ingredients:\n");
             Dictionary<string, string> ingredients = await _ingredientsController.GetIngredientsWhereRecipeIdAsync(recipeId);
             //ingredients recipe
@@ -52,7 +52,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
             List<CookingStep> cookingSteps = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId);
             foreach (CookingStep cookingStep in cookingSteps.OrderBy(x => x.Step))
             {
-                Console.WriteLine($"    {cookingStep.Step}. {await ValidationNavigation.WrapTextAsync(10, cookingStep.Name, "\n       ")}");
+                Console.WriteLine($"    {cookingStep.Step}. {await ConsoleHelper.WrapTextAsync(10, cookingStep.Name, "\n       ")}");
             }
             Console.WriteLine("\n    Press any key to return...");
             Console.ReadKey();
@@ -61,14 +61,14 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private async Task RenameRecipeAsync(int recipeId)
         {
             Console.Write("\n    Enter the name of the recipe: ");
-            string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string newName = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _recipesController.RenameAsync(recipeId, newName);
         }
 
         private async Task ChangeDescRecipe(int recipeId)
         {
             Console.Write("\n    Enter recipe description: ");
-            string desc = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string desc = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _recipesController.ChangeDescriptionAsync(recipeId, desc);
         }
 
@@ -88,7 +88,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             Console.Clear();
             Console.WriteLine("\n    Are you sure you want to delete the recipe? ");
-            if (await ValidationNavigation.ShowYesNoAsync() == ConsoleKey.N)
+            if (await ConsoleHelper.ShowYesNoAsync() == ConsoleKey.N)
             {
                 return;
             }

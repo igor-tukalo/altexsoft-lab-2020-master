@@ -20,7 +20,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private async Task RenameAsync()
         {
             Console.Write("    Enter new name: ");
-            string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string newName = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             int parentId = (int)(await _categoriesController.GetCategoryByIdAsync(_categoryId)).ParentId;
             await _categoriesController.EditCategoryAsync(_categoryId, newName, parentId);
         }
@@ -28,7 +28,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private async Task DeleteAsync()
         {
             Console.Write("    Attention! Are you sure you want to delete the category? You will also delete all the recipes that are in them! ");
-            if ((await ValidationNavigation.ShowYesNoAsync()) == ConsoleKey.N)
+            if ((await ConsoleHelper.ShowYesNoAsync()) == ConsoleKey.N)
             {
                 return;
             }

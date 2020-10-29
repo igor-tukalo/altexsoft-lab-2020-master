@@ -25,9 +25,9 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
         private async Task AddCategoryAsync()
         {
             Console.Write("\n    Enter name category: ");
-            string name = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string name = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             Console.Write("    Enter name main category: ");
-            string parentСategoryName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string parentСategoryName = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _categoriesController.AddAsync(name, parentСategoryName);
             await ShowMenuAsync();
         }

@@ -23,7 +23,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         {
             CookingStep cookingStep = await _cookingStepsController.GetCookingStepByIdAsync(cookingStepId);
             Console.WriteLine($"\n    Describe the cooking step {cookingStep.Step}: ");
-            string stepName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string stepName = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             cookingStep.Name = stepName;
             await _cookingStepsController.EditAsync(cookingStep);
         }
@@ -31,7 +31,7 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private async Task DeleteAsync(int cookingStepId)
         {
             Console.WriteLine("\n    Do you really want to remove the cooking step? ");
-            if (await ValidationNavigation.ShowYesNoAsync() == ConsoleKey.N)
+            if (await ConsoleHelper.ShowYesNoAsync() == ConsoleKey.N)
             {
                 return;
             }

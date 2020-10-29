@@ -20,14 +20,14 @@ namespace HomeTask4.Cmd.Navigation.ContextMenuNavigation
         private async Task RenameAsync()
         {
             Console.Write("    Enter new name: ");
-            string newName = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+            string newName = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
             await _ingredientsController.RenameAsync(_ingredientId, newName);
         }
 
         private async Task DeleteAsync()
         {
             Console.WriteLine("    Do you really want to remove the ingredient? ");
-            if ((await ValidationNavigation.ShowYesNoAsync()) == ConsoleKey.N)
+            if ((await ConsoleHelper.ShowYesNoAsync()) == ConsoleKey.N)
             {
                 return;
             }

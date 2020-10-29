@@ -38,7 +38,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 Console.Write("\n    Enter the amount of ingredient: ");
                 double amount = double.Parse(Console.ReadLine().Replace(".", ","));
                 Console.Write("    Enter the unit of ingredient: ");
-                string unit = await ValidationNavigation.CheckNullOrEmptyTextAsync(Console.ReadLine());
+                string unit = await ConsoleHelper.CheckNullOrEmptyTextAsync(Console.ReadLine());
                 await _amountRecipeIngredientsController.AddAsync(amount, unit, recipeId, ingredientId);
             }
             catch (Exception ex)
