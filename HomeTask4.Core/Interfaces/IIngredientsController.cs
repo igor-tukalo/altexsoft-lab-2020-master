@@ -10,6 +10,5 @@ namespace HomeTask4.Core.Interfaces
         Task<List<IEnumerable<Ingredient>>> GetIngredientsBatchAsync();
         Task<List<Ingredient>> GetAllIngredients();
         Task<List<Ingredient>> FindIngredientsAsync(string name);
-        Task<List<AmountIngredient>> GetAmountIngredietsRecipeAsync(int recipeId);
     }
 }
