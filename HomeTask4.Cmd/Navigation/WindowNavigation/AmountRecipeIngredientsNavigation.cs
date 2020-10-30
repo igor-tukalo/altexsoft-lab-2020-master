@@ -20,13 +20,13 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
             _amountRecipeIngredientsController = amountRecipeIngredientsController;
         }
 
-        private async Task<List<EntityMenu>> GetAmountRecipeIngredientsAsync(int recipeId, List<EntityMenu> entityMenu)
+        public async Task<List<EntityMenu>> GetAmountIngredientsRecipeAsync(int recipeId)
         {
-            List<AmountIngredient> amountIngredients = await _amountRecipeIngredientsController.GetAmountIngredietsAsync(recipeId);
+            List<AmountIngredient> amountIngredients = await _amountRecipeIngredientsController.GetAmountIngredietsRecipeAsync(recipeId);
+            List<EntityMenu> entityMenu = new List<EntityMenu>();
             foreach (AmountIngredient amountIngredient in amountIngredients)
             {
-                string ingredientName = await _amountRecipeIngredientsController.GetAmountIngredientNameAsync(amountIngredient.IngredientId);
-                entityMenu.Add(new EntityMenu() { Id = amountIngredient.Id, Name = $"    {ingredientName} - {amountIngredient.Amount} {amountIngredient.Unit}", TypeEntity = "addedIngr" });
+                entityMenu.Add(new EntityMenu() { Id = amountIngredient.Id, Name = $"    {amountIngredient.Ingredient.Name} - {amountIngredient.Amount} {amountIngredient.Unit}", TypeEntity = "addedIngr" });
             }
             return entityMenu;
         }
@@ -107,7 +107,7 @@ namespace HomeTask4.Cmd.Navigation.WindowNavigation
                 new EntityMenu() { Name = "    Go to page", TypeEntity = "pages" },
                 new EntityMenu() { Name = "\n    Recipe ingredients:\n" }
             };
-            ItemsMenu = await GetAmountRecipeIngredientsAsync(recipeId, ItemsMenu);
+            ItemsMenu.AddRange(await GetAmountIngredientsRecipeAsync(recipeId));
             await ShowMenuAsync();
         }
 

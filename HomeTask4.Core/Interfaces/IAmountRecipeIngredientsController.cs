@@ -8,7 +8,7 @@ namespace HomeTask4.Core.Interfaces
     {
         Task AddAsync(double amount, string unit, int recipeId, int ingredientId);
         Task DeleteAsync(int amountIngredientId);
-        Task<List<AmountIngredient>> GetAmountIngredietsAsync(int recipeId);
+        Task<List<AmountIngredient>> GetAmountIngredietsRecipeAsync(int recipeId);
         Task<string> GetAmountIngredientNameAsync(int ingredientId);
     }
 }

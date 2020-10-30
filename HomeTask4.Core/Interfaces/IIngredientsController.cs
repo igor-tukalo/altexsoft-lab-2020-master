@@ -8,8 +8,8 @@ namespace HomeTask4.Core.Interfaces
     {
         Task AddAsync(string name);
         Task<List<IEnumerable<Ingredient>>> GetIngredientsBatchAsync();
-        Task<Dictionary<string, string>> GetIngredientsWhereRecipeIdAsync(int recipeId);
         Task<List<Ingredient>> GetAllIngredients();
         Task<List<Ingredient>> FindIngredientsAsync(string name);
+        Task<List<AmountIngredient>> GetAmountIngredietsRecipeAsync(int recipeId);
     }
 }
