@@ -110,61 +110,6 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetIngredientsWhereRecipeId_Should_Count()
-        {
-            // Arrange
-            List<AmountIngredient> amountIngredients = new List<AmountIngredient>
-            {
-                new AmountIngredient()
-                {
-                    Id = It.IsAny<int>(),
-                    Amount = It.IsAny<double>(),
-                    Unit = It.IsAny<string>(),
-                    IngredientId = It.IsAny<int>(),
-                    RecipeId = It.IsAny<int>()
-                },
-                new AmountIngredient()
-                {
-                    Id = It.IsAny<int>(),
-                    Amount = It.IsAny<double>(),
-                    Unit = It.IsAny<string>(),
-                    IngredientId = It.IsAny<int>(),
-                    RecipeId = It.IsAny<int>()
-                },
-                new AmountIngredient()
-                {
-                    Id = It.IsAny<int>(),
-                    Amount = It.IsAny<double>(),
-                    Unit = It.IsAny<string>(),
-                    IngredientId = 1,
-                    RecipeId = 2
-                },
-            };
-
-            Ingredient ingredient = new Ingredient()
-            {
-                Id = 1,
-                Name = "Banana"
-            };
-
-            repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(1))
-                .ReturnsAsync(ingredient);
-
-            repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<AmountIngredient, bool>>>()))
-                .ReturnsAsync(amountIngredients.Where(x => x.RecipeId == 2).ToList());
-
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new IngredientsController(unitOfWorkMock.Object, optionsMock.Object);
-            // Act
-            int amountIngredientsCount = (await controller.GetIngredientsWhereRecipeIdAsync(2)).Count;
-            // Assert
-            Assert.Equal(1, amountIngredientsCount);
-        }
-
-        [Fact]
         public async Task GetAllIngredients_Should_Count()
         {
             // Arrange

@@ -100,7 +100,7 @@ namespace HomeTask5.Core.Tests
 
             controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object);
             // Act
-            int amountIngredientsCount = (await controller.GetAmountIngredietsAsync(2)).Count;
+            int amountIngredientsCount = (await controller.GetAmountIngredietsRecipeAsync(2)).Count;
             // Assert
             Assert.Equal(2, amountIngredientsCount);
         }
