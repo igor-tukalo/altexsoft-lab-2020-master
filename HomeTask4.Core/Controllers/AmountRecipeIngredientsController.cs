@@ -2,6 +2,7 @@
 using HomeTask4.Core.Interfaces;
 using HomeTask4.SharedKernel.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeTask4.Core.Controllers
@@ -23,9 +24,14 @@ namespace HomeTask4.Core.Controllers
             await UnitOfWork.Repository.DeleteAsync(amountIngredient);
         }
 
-        public async Task<List<AmountIngredient>> GetAmountIngredietsAsync(int recipeId)
+        public async Task<List<AmountIngredient>> GetAmountIngredietsRecipeAsync(int recipeId)
         {
-            return await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == recipeId);
+            List<AmountIngredient> amountIngredients = await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == recipeId);
+            foreach (var amountIngredient in amountIngredients)
+            {
+                amountIngredient.Ingredient = await UnitOfWork.Repository.GetByIdAsync<Ingredient>(amountIngredient.IngredientId);
+            }
+            return amountIngredients;
         }
 
         public async Task<string> GetAmountIngredientNameAsync(int ingredientId)

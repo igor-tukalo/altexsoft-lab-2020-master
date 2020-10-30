@@ -23,17 +23,6 @@ namespace HomeTask4.Core.Controllers
         {
             return await UnitOfWork.Repository.GetByIdAsync<Ingredient>(ingredientId);
         }
-        public async Task<Dictionary<string, string>> GetIngredientsWhereRecipeIdAsync(int recipeId)
-        {
-            List<AmountIngredient> amountIngredients = await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == recipeId);
-            Dictionary<string, string> ingredients = new Dictionary<string, string>();
-            foreach (AmountIngredient amountIngredient in amountIngredients)
-            {
-                Ingredient ingredient = await UnitOfWork.Repository.GetByIdAsync<Ingredient>(amountIngredient.IngredientId);
-                ingredients.Add($"{ingredient.Name}", $"{amountIngredient.Amount} {amountIngredient.Unit}");
-            }
-            return ingredients;
-        }
 
         public async Task<List<Ingredient>> GetAllIngredients()
         {
@@ -45,6 +34,16 @@ namespace HomeTask4.Core.Controllers
             int batchSize = _settings.Value.NumberConsoleLines;
             List<IEnumerable<Ingredient>> batchList = (await GetAllIngredients()).OrderBy(x => x.Name).Batch(batchSize).ToList();
             return batchList;
+        }
+
+        public async Task<List<AmountIngredient>> GetAmountIngredietsRecipeAsync(int recipeId)
+        {
+            List<AmountIngredient> amountIngredients = await UnitOfWork.Repository.GetListWhereAsync<AmountIngredient>(x => x.RecipeId == recipeId);
+            foreach (var amountIngredient in amountIngredients)
+            {
+                amountIngredient.Ingredient = await UnitOfWork.Repository.GetByIdAsync<Ingredient>(amountIngredient.IngredientId);
+            }
+            return amountIngredients;
         }
 
         public async Task<List<Ingredient>> FindIngredientsAsync(string name)
@@ -68,6 +67,8 @@ namespace HomeTask4.Core.Controllers
             Ingredient ingredient = await GetIngredientByIdAsync(ingredientId);
             await UnitOfWork.Repository.DeleteAsync(ingredient);
         }
+
+
         #endregion
     }
 }
