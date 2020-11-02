@@ -1,7 +1,6 @@
 ﻿using HomeTask4.Core;
 using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
-using HomeTask4.SharedKernel.Interfaces;
 using Microsoft.Extensions.Options;
 using Moq;
 using System;
@@ -13,21 +12,28 @@ using Xunit;
 
 namespace HomeTask5.Core.Tests
 {
-    public class IngredientsControllerTests
+    public class IngredientsControllerTests : BaseTests
     {
-        private readonly Mock<IOptions<CustomSettings>> optionsMock;
-        private readonly Mock<IRepository> repositoryMock;
-        private Mock<IUnitOfWork> unitOfWorkMock;
-        private IngredientsController controller;
-        private List<Ingredient> ingredients;
+        private readonly Mock<IOptions<CustomSettings>> _optionsMock;
+        private readonly IngredientsController _ingredientsController;
+        private readonly List<Ingredient> _ingredients;
+        private readonly Ingredient _ingredient;
 
         public IngredientsControllerTests()
         {
-            repositoryMock = new Mock<IRepository>();
             CustomSettings app = new CustomSettings() { NumberConsoleLines = 2 };
-            optionsMock = new Mock<IOptions<CustomSettings>>();
-            optionsMock.Setup(ap => ap.Value).Returns(app);
-            ingredients = new List<Ingredient>()
+            _optionsMock = new Mock<IOptions<CustomSettings>>();
+            _optionsMock.Setup(ap => ap.Value).Returns(app);
+
+            _ingredientsController = new IngredientsController(_unitOfWorkMock.Object, _optionsMock.Object);
+
+            _ingredient = new Ingredient()
+            {
+                Id = 1,
+                Name = "Banana"
+            };
+
+            _ingredients = new List<Ingredient>()
             {
                 new Ingredient()
                 {
@@ -51,22 +57,11 @@ namespace HomeTask5.Core.Tests
         public async Task GetIngredientById_Should_IngredientName()
         {
             // Arrange
-            Ingredient ingredient = new Ingredient()
-            {
-                Id = 1,
-                Name = "Banana"
-            };
+            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(1))
+                .ReturnsAsync(_ingredient);
 
-            repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(1))
-                .ReturnsAsync(ingredient);
-
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new IngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
-            string ingredientName = (await controller.GetIngredientByIdAsync(1)).Name;
+            string ingredientName = (await _ingredientsController.GetIngredientByIdAsync(1)).Name;
 
             //Assert
             Assert.Equal("Banana", ingredientName);
@@ -76,16 +71,11 @@ namespace HomeTask5.Core.Tests
         public async Task GetIngredientsBatch_Should_Count()
         {
             // Arrange
-            repositoryMock.Setup(o => o.GetListAsync<Ingredient>())
-                .ReturnsAsync(ingredients);
+            _repositoryMock.Setup(o => o.GetListAsync<Ingredient>())
+                .ReturnsAsync(_ingredients);
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new IngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
-            int ingredientsCount = (await controller.GetIngredientsBatchAsync()).Count;
+            int ingredientsCount = (await _ingredientsController.GetIngredientsBatchAsync()).Count;
 
             //Assert
             Assert.Equal(2, ingredientsCount);
@@ -95,34 +85,25 @@ namespace HomeTask5.Core.Tests
         public async Task AddIngredient_Should_True()
         {
             // Arrange
-            bool isAdded = false;
-            repositoryMock.Setup(o => o.AddAsync(It.IsAny<Ingredient>())).Callback(() => isAdded = true);
+            _repositoryMock.Setup(o => o.AddAsync(_ingredient));
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new IngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
-            await controller.AddAsync(It.IsAny<string>());
+            await _ingredientsController.AddAsync("Tomato");
+
             // Assert
-            Assert.True(isAdded);
+            _repositoryMock.Verify();
         }
 
         [Fact]
         public async Task GetAllIngredients_Should_Count()
         {
             // Arrange
-            repositoryMock.Setup(o => o.GetListAsync<Ingredient>())
-                .ReturnsAsync(ingredients);
+            _repositoryMock.Setup(o => o.GetListAsync<Ingredient>())
+                .ReturnsAsync(_ingredients);
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new IngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
-            int categoriesCount = (await controller.GetAllIngredients()).Count;
+            int categoriesCount = (await _ingredientsController.GetAllIngredients()).Count;
+
             // Assert
             Assert.Equal(3, categoriesCount);
         }
@@ -131,16 +112,12 @@ namespace HomeTask5.Core.Tests
         public async Task FindIngredients_Should_Count()
         {
             // Arrange
-            repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Ingredient, bool>>>()))
-                .ReturnsAsync(ingredients.Where(x => x.Name.ToLower().Contains("a")).ToList());
+            _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Ingredient, bool>>>()))
+                .ReturnsAsync(_ingredients.Where(x => x.Name.ToLower().Contains("a")).ToList());
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new IngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
-            int ingredientsCount = (await controller.FindIngredientsAsync("a")).Count;
+            int ingredientsCount = (await _ingredientsController.FindIngredientsAsync("a")).Count;
+
             // Assert
             Assert.Equal(1, ingredientsCount);
         }
@@ -149,41 +126,30 @@ namespace HomeTask5.Core.Tests
         public async Task RenameIngredient_Should_NewName()
         {
             // Arrange
-            bool isUpdate = false;
-            Ingredient ingredient = new Ingredient() { Id = 1, Name = "Banana" };
-            repositoryMock.Setup(o => o.UpdateAsync(It.IsAny<Ingredient>())).Callback(() => isUpdate = true);
-            repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(1))
-                .ReturnsAsync(ingredient);
+            _repositoryMock.Setup(o => o.UpdateAsync(_ingredient));
+            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(1))
+                .ReturnsAsync(_ingredient);
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new IngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
-            await controller.RenameAsync(1, "Apple");
-            string updatedName = (await controller.GetIngredientByIdAsync(1)).Name;
+            await _ingredientsController.RenameAsync(1, "Apple");
+            string updatedName = (await _ingredientsController.GetIngredientByIdAsync(1)).Name;
+
             // Assert
             Assert.Equal("Apple", updatedName);
-            Assert.True(isUpdate);
+            _repositoryMock.Verify();
         }
 
         [Fact]
         public async Task DeleteIngredient_Should_True()
         {
             // Arrange
-            bool isDelete = false;
-            repositoryMock.Setup(o => o.DeleteAsync(It.IsAny<Ingredient>())).Callback(() => isDelete = true);
+            _repositoryMock.Setup(o => o.DeleteAsync(It.IsAny<Ingredient>()));
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new IngredientsController(unitOfWorkMock.Object, optionsMock.Object);
             // Act
-            await controller.DeleteAsync(It.IsAny<int>());
+            await _ingredientsController.DeleteAsync(It.IsAny<int>());
+
             // Assert
-            Assert.True(isDelete);
+            _repositoryMock.Verify();
         }
     }
 }

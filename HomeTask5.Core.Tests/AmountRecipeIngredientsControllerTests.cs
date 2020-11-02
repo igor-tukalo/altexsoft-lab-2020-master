@@ -1,8 +1,5 @@
-using HomeTask4.Core;
 using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
-using HomeTask4.SharedKernel.Interfaces;
-using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,50 +10,41 @@ using Xunit;
 
 namespace HomeTask5.Core.Tests
 {
-    public class AmountRecipeIngredientsControllerTests
+    public class AmountRecipeIngredientsControllerTests : BaseTests
     {
-        private readonly Mock<IRepository> repositoryMock;
-        private Mock<IUnitOfWork> unitOfWorkMock;
-        private AmountRecipeIngredientsController controller;
+        private readonly AmountRecipeIngredientsController _amountRecipeIngredientsController;
+        private readonly AmountIngredient _amountIngredient;
         public AmountRecipeIngredientsControllerTests()
         {
-            repositoryMock = new Mock<IRepository>();
-            CustomSettings app = new CustomSettings() { NumberConsoleLines = 20 };
+            _amountRecipeIngredientsController = new AmountRecipeIngredientsController(_unitOfWorkMock.Object);
+            _amountIngredient = new AmountIngredient() { Id = 1, Amount = 22.2, Unit = "g", RecipeId = 1, IngredientId = 2 };
         }
+
         [Fact]
         public async Task AddAmountIngredient_Should_True()
         {
             // Arrange
-            bool isAdded = false;
-            repositoryMock.Setup(o => o.AddAsync(It.IsAny<AmountIngredient>())).Callback(() => isAdded = true);
+            _repositoryMock.Setup(o => o.AddAsync(_amountIngredient));
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object);
             // Act
-            await controller.AddAsync(It.IsAny<double>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>());
+            await _amountRecipeIngredientsController.AddAsync(_amountIngredient.Amount,
+                _amountIngredient.Unit, _amountIngredient.RecipeId, _amountIngredient.IngredientId);
+
             // Assert
-            Assert.True(isAdded);
+            _repositoryMock.Verify();
         }
 
         [Fact]
         public async Task DeleteAmountIngredient_Should_True()
         {
             // Arrange
-            bool isDelete = false;
-            repositoryMock.Setup(o => o.DeleteAsync(It.IsAny<AmountIngredient>())).Callback(() => isDelete = true);
+            _repositoryMock.Setup(o => o.DeleteAsync(_amountIngredient));
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object);
             // Act
-            await controller.DeleteAsync(It.IsAny<int>());
+            await _amountRecipeIngredientsController.DeleteAsync(1);
+
             // Assert
-            Assert.True(isDelete);
+            _repositoryMock.Verify();
         }
 
         [Fact]
@@ -67,40 +55,36 @@ namespace HomeTask5.Core.Tests
             {
                 new AmountIngredient()
                 {
-                    Id = It.IsAny<int>(),
-                    Amount = It.IsAny<double>(),
-                    Unit = It.IsAny<string>(),
-                    IngredientId = It.IsAny<int>(),
-                    RecipeId = It.IsAny<int>()
+                    Id = 1,
+                    Amount = 3.3,
+                    Unit = "g",
+                    IngredientId = 12,
+                    RecipeId = 3
                 },
                 new AmountIngredient()
                 {
-                    Id = It.IsAny<int>(),
-                    Amount = It.IsAny<double>(),
-                    Unit = It.IsAny<string>(),
-                    IngredientId = It.IsAny<int>(),
+                    Id = 2,
+                    Amount = 4.4,
+                    Unit = "tbs",
+                    IngredientId = 2,
                     RecipeId = 2
                 },
                 new AmountIngredient()
                 {
-                    Id = It.IsAny<int>(),
-                    Amount = It.IsAny<double>(),
-                    Unit = It.IsAny<string>(),
-                    IngredientId = It.IsAny<int>(),
+                    Id = 3,
+                    Amount = 5.4,
+                    Unit = "tbs",
+                    IngredientId = 13,
                     RecipeId = 2
                 },
             };
 
-            repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<AmountIngredient, bool>>>()))
+            _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<AmountIngredient, bool>>>()))
                 .ReturnsAsync(amountIngredients.Where(x => x.RecipeId == 2).ToList());
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
-
-            controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object);
             // Act
-            int amountIngredientsCount = (await controller.GetAmountIngredietsRecipeAsync(2)).Count;
+            int amountIngredientsCount = (await _amountRecipeIngredientsController.GetAmountIngredietsRecipeAsync(2)).Count;
+
             // Assert
             Assert.Equal(2, amountIngredientsCount);
         }
@@ -110,15 +94,12 @@ namespace HomeTask5.Core.Tests
         {
             // Arrange
             Ingredient ingredient = new Ingredient() { Id = 1, Name = "Banana" };
-            repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(It.IsAny<int>()))
+            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(1))
                 .ReturnsAsync(ingredient);
 
-            unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(o => o.Repository)
-                .Returns(repositoryMock.Object);
             // Act
-            controller = new AmountRecipeIngredientsController(unitOfWorkMock.Object);
-            string ingredientName = (await controller.GetAmountIngredientNameAsync(It.IsAny<int>()));
+            string ingredientName = (await _amountRecipeIngredientsController.GetAmountIngredientNameAsync(1));
+
             // Assert
             Assert.Equal("Banana", ingredientName);
         }
