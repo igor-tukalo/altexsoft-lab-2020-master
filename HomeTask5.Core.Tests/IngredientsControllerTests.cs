@@ -18,20 +18,15 @@ namespace HomeTask5.Core.Tests
         private readonly IngredientsController _ingredientsController;
         private readonly List<Ingredient> _ingredients;
         private readonly Ingredient _ingredient;
+        private readonly CustomSettings _customSettings;
 
         public IngredientsControllerTests()
         {
-            CustomSettings app = new CustomSettings() { NumberConsoleLines = 2 };
+            _customSettings = new CustomSettings() { NumberConsoleLines = 2 };
             _optionsMock = new Mock<IOptions<CustomSettings>>();
-            _optionsMock.Setup(ap => ap.Value).Returns(app);
+            _optionsMock.Setup(ap => ap.Value).Returns(_customSettings);
 
             _ingredientsController = new IngredientsController(_unitOfWorkMock.Object, _optionsMock.Object);
-
-            _ingredient = new Ingredient()
-            {
-                Id = 1,
-                Name = "Banana"
-            };
 
             _ingredients = new List<Ingredient>()
             {
@@ -51,105 +46,117 @@ namespace HomeTask5.Core.Tests
                     Name= "Kefir"
                 }
             };
+
+            _ingredient = _ingredients.First(x => x.Id == 1);
         }
 
         [Fact]
-        public async Task GetIngredientById_Should_IngredientName()
+        public async Task GetIngredientByIdAsync_Should_ExistingIngredient()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(1))
-                .ReturnsAsync(_ingredient);
+            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(_ingredient.Id))
+                .ReturnsAsync(_ingredient).Verifiable();
 
             // Act
-            string ingredientName = (await _ingredientsController.GetIngredientByIdAsync(1)).Name;
+            Ingredient ingredientResult = await _ingredientsController.GetIngredientByIdAsync(_ingredient.Id);
 
             //Assert
-            Assert.Equal("Banana", ingredientName);
+            Assert.Equal(_ingredient, ingredientResult);
+            _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task GetIngredientsBatch_Should_Count()
+        public async Task GetIngredientsBatch_Should_ReturnNumberBatches()
         {
             // Arrange
             _repositoryMock.Setup(o => o.GetListAsync<Ingredient>())
-                .ReturnsAsync(_ingredients);
+                .ReturnsAsync(_ingredients).Verifiable();
 
             // Act
-            int ingredientsCount = (await _ingredientsController.GetIngredientsBatchAsync()).Count;
+            int numberBatches = (await _ingredientsController.GetIngredientsBatchAsync()).Count;
 
             //Assert
-            Assert.Equal(2, ingredientsCount);
+            Assert.Equal(_customSettings.NumberConsoleLines, numberBatches);
+            _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task AddIngredient_Should_True()
+        public async Task AddAsync_Should_ReturnVerified()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.AddAsync(_ingredient));
+            _repositoryMock.Setup(o => o.AddAsync(It.IsAny<Ingredient>())).Verifiable();
 
             // Act
-            await _ingredientsController.AddAsync("Tomato");
+            await _ingredientsController.AddAsync(_ingredient.Name);
 
             // Assert
             _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task GetAllIngredients_Should_Count()
+        public async Task GetAllIngredients_Should_ReturnNumberIngredients()
         {
             // Arrange
             _repositoryMock.Setup(o => o.GetListAsync<Ingredient>())
-                .ReturnsAsync(_ingredients);
+                .ReturnsAsync(_ingredients).Verifiable();
 
             // Act
             int categoriesCount = (await _ingredientsController.GetAllIngredients()).Count;
 
             // Assert
-            Assert.Equal(3, categoriesCount);
+            Assert.Equal(_ingredients.Count, categoriesCount);
+            _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task FindIngredients_Should_Count()
+        public async Task FindIngredients_Should_ReturnNumberIngredientsFound()
         {
             // Arrange
+            string sarchValue = "a";
+            List<Ingredient> ingredintsSearch = _ingredients.Where(x => x.Name.ToLower().Contains(sarchValue)).ToList();
+            int expectedValue = ingredintsSearch.Count;
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Ingredient, bool>>>()))
-                .ReturnsAsync(_ingredients.Where(x => x.Name.ToLower().Contains("a")).ToList());
+                .ReturnsAsync(ingredintsSearch).Verifiable();
 
             // Act
-            int ingredientsCount = (await _ingredientsController.FindIngredientsAsync("a")).Count;
+            int ingredientsCount = (await _ingredientsController.FindIngredientsAsync(sarchValue)).Count;
 
             // Assert
-            Assert.Equal(1, ingredientsCount);
+            Assert.Equal(expectedValue, ingredientsCount);
+            _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task RenameIngredient_Should_NewName()
+        public async Task RenameAsync_Should_ReturnRenamedIngredient()
         {
             // Arrange
+            string newName = "Apple";
             _repositoryMock.Setup(o => o.UpdateAsync(_ingredient));
-            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(1))
+            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(_ingredient.Id))
                 .ReturnsAsync(_ingredient);
 
             // Act
-            await _ingredientsController.RenameAsync(1, "Apple");
-            string updatedName = (await _ingredientsController.GetIngredientByIdAsync(1)).Name;
+            await _ingredientsController.RenameAsync(_ingredient.Id, newName);
 
             // Assert
-            Assert.Equal("Apple", updatedName);
-            _repositoryMock.Verify();
+            string updatedName = (await _ingredientsController.GetIngredientByIdAsync(_ingredient.Id)).Name;
+            Assert.Equal(newName, updatedName);
+            _repositoryMock.VerifyAll();
         }
 
         [Fact]
-        public async Task DeleteIngredient_Should_True()
+        public async Task DeleteIngredient_Should_ReturnVerified()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.DeleteAsync(It.IsAny<Ingredient>()));
+            _repositoryMock.Setup(o => o.DeleteAsync(_ingredient));
+            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(_ingredient.Id))
+                .ReturnsAsync(_ingredient);
 
             // Act
-            await _ingredientsController.DeleteAsync(It.IsAny<int>());
+            await _ingredientsController.DeleteAsync(_ingredient.Id);
 
             // Assert
-            _repositoryMock.Verify();
+            _repositoryMock.VerifyAll();
         }
     }
 }

@@ -13,19 +13,13 @@ namespace HomeTask5.Core.Tests
     public class RecipesControllerTests : BaseTests
     {
         private readonly RecipesController _recipesController;
-        private readonly List<Recipe> recipes;
+        private readonly List<Recipe> _recipes;
         private readonly Recipe _recipe;
         public RecipesControllerTests()
         {
             _recipesController = new RecipesController(_unitOfWorkMock.Object);
 
-            _recipe = new Recipe()
-            {
-                Id = 1,
-                Name = "Omelette"
-            };
-
-            recipes = new List<Recipe>()
+            _recipes = new List<Recipe>()
             {
                 new Recipe()
                 {
@@ -56,40 +50,45 @@ namespace HomeTask5.Core.Tests
                     CategoryId=4
                 }
             };
+
+            _recipe = _recipes.Find(x => x.Id == 1);
         }
 
         [Fact]
-        public async Task GetRecipeById_Shjould_NameRecipe()
+        public async Task GetRecipeByIdAsync_Should_ReturnRequestedRecipe()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(1)).ReturnsAsync(_recipe);
+            _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(_recipe.Id)).ReturnsAsync(_recipe).Verifiable();
 
             // Act
-            string recipeName = (await _recipesController.GetRecipeByIdAsync(1)).Name;
+            Recipe recipeResult = await _recipesController.GetRecipeByIdAsync(_recipe.Id);
 
             //Assert
-            Assert.Equal("Omelette", recipeName);
+            Assert.Equal(_recipe, recipeResult);
+            _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task GetRecipesWhereCategoryId_Should_Count()
+        public async Task GGetRecipesWhereCategoryIdAsync_Should_ReturnNumberRecipesCategoryId()
         {
             // Arrange
+            List<Recipe> recipesCategoryId = _recipes.Where(x => x.CategoryId == _recipe.CategoryId).ToList();
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Recipe, bool>>>()))
-               .ReturnsAsync(recipes.Where(x => x.CategoryId == 2).ToList());
+               .ReturnsAsync(recipesCategoryId).Verifiable();
 
             // Act
-            int recipesCount = (await _recipesController.GetRecipesWhereCategoryIdAsync(2)).Count;
+            int recipesCount = (await _recipesController.GetRecipesWhereCategoryIdAsync(_recipe.CategoryId)).Count;
 
             // Assert
-            Assert.Equal(2, recipesCount);
+            Assert.Equal(recipesCategoryId.Count, recipesCount);
+            _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task AddRecipe_Should_True()
+        public async Task AddAsync_Should_ReturnVerified()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.AddAsync(It.IsAny<Recipe>()));
+            _repositoryMock.Setup(o => o.AddAsync(It.IsAny<Recipe>())).Verifiable();
 
             // Act
             await _recipesController.AddAsync(_recipe.Name, _recipe.Description, _recipe.CategoryId);
@@ -99,52 +98,54 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task RenameRecipe_Should_NewName()
+        public async Task RenameAsync_Should_ReturnRenamedRecipe()
         {
+            string newNameRecipe = "Shakshuka";
             // Arrange
             _repositoryMock.Setup(o => o.UpdateAsync(_recipe));
-            _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(1))
+            _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(_recipe.Id))
                 .ReturnsAsync(_recipe);
 
             // Act
-            await _recipesController.RenameAsync(1, "Shakshuka");
-            string updatedName = (await _recipesController.GetRecipeByIdAsync(1)).Name;
+            await _recipesController.RenameAsync(_recipe.Id, newNameRecipe);
 
             // Assert
-            Assert.Equal("Shakshuka", updatedName);
-            _repositoryMock.Verify();
+            string updatedName = (await _recipesController.GetRecipeByIdAsync(_recipe.Id)).Name;
+            Assert.Equal(newNameRecipe, updatedName);
+            _repositoryMock.VerifyAll();
         }
 
         [Fact]
-        public async Task ChangeDescription_Should_NewDescription()
+        public async Task ChangeDescription_Should_ReturnUpdatedDescription()
         {
+            string newDesc = "Vary this popular brunch";
             // Arrange
             _repositoryMock.Setup(o => o.UpdateAsync(_recipe));
-            _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(1))
+            _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(_recipe.Id))
                 .ReturnsAsync(_recipe);
 
             // Act
-            await _recipesController.ChangeDescriptionAsync(1, "Vary this popular brunch");
-            string updatedDesc = (await _recipesController.GetRecipeByIdAsync(1)).Description;
+            await _recipesController.ChangeDescriptionAsync(_recipe.Id, newDesc);
 
             // Assert
-            Assert.Equal("Vary this popular brunch", updatedDesc);
-            _repositoryMock.Verify();
+            string updatedDesc = (await _recipesController.GetRecipeByIdAsync(_recipe.Id)).Description;
+            Assert.Equal(newDesc, updatedDesc);
+            _repositoryMock.VerifyAll();
         }
 
         [Fact]
-        public async Task DeleteRecipe_Should_True()
+        public async Task DeleteRecipe_Should_ReturnVerified()
         {
             // Arrange
             _repositoryMock.Setup(o => o.DeleteAsync(_recipe));
-            _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(1))
+            _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(_recipe.Id))
                 .ReturnsAsync(_recipe);
 
             // Act
-            await _recipesController.DeleteAsync(1);
+            await _recipesController.DeleteAsync(_recipe.Id);
 
             // Assert
-            _repositoryMock.Verify();
+            _repositoryMock.VerifyAll();
         }
     }
 }
