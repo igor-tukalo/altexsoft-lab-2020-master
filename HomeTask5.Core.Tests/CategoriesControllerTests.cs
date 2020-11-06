@@ -86,13 +86,13 @@ namespace HomeTask5.Core.Tests
         {
             // Arrange
             _repositoryMock.Setup(o => o.AddAsync(It.Is<Category>(
-                entity => entity.Name==_category.Name &&
-                entity.ParentId== _category.ParentId))).Verifiable();
+                entity => entity.Name == _category.Name &&
+                entity.ParentId == _category.ParentId))).Verifiable();
             _repositoryMock.Setup(o => o.GetByPredicateAsync(It.IsAny<Expression<Func<Category, bool>>>()))
-                .ReturnsAsync(_category);
+                .ReturnsAsync(_categories.First(x => x.Id == _category.ParentId));
 
             // Act
-            await _categoriesController.AddAsync(_category.Name, _categories.First(x => x.Id == _category.Id).Name);
+            await _categoriesController.AddAsync(_category.Name, _categories.First(x => x.Id == _category.ParentId).Name);
 
             // Assert
             _repositoryMock.VerifyAll();
