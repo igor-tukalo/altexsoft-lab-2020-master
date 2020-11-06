@@ -59,6 +59,7 @@ namespace HomeTask5.Core.Tests
         {
             // Arrange
             List<CookingStep> cookingStepWhereRecipeId = _cookingSteps.Where(x => x.RecipeId == _cookingStep.RecipeId).ToList();
+
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<CookingStep, bool>>>()))
                .ReturnsAsync(cookingStepWhereRecipeId).Verifiable();
 
@@ -81,7 +82,7 @@ namespace HomeTask5.Core.Tests
             CookingStep cookingStepActual = await _cookingStepsController.GetCookingStepByIdAsync(_cookingStep.Id);
 
             //Assert
-            Assert.Equal(_cookingStep, cookingStepActual);
+            Assert.Same(_cookingStep, cookingStepActual);
             _repositoryMock.Verify();
         }
 
@@ -107,9 +108,16 @@ namespace HomeTask5.Core.Tests
             // Arrange
             string newName = "Peel potatoes";
             int newStep = 2;
-            _repositoryMock.Setup(o => o.UpdateAsync(_cookingStep));
+
+            _repositoryMock.Setup(o => o.UpdateAsync(It.Is<CookingStep>(
+                entity => entity.Id == _cookingStep.Id &&
+                entity.Name == _cookingStep.Name &&
+                entity.Step == _cookingStep.Step &&
+                entity.RecipeId == _cookingStep.RecipeId)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<CookingStep>(_cookingStep.Id))
                 .ReturnsAsync(_cookingStep);
+
             _cookingStep.Name = newName;
             _cookingStep.Step = newStep;
 
@@ -129,7 +137,13 @@ namespace HomeTask5.Core.Tests
             // Arrange
             List<CookingStep> cookingStepsWhereRecipeId =
                 _cookingSteps.Where(x => x.RecipeId == _cookingSteps.Find(x => x.Id == _cookingStep.Id).RecipeId).ToList();
-            _repositoryMock.Setup(o => o.DeleteAsync(_cookingStep));
+
+            _repositoryMock.Setup(o => o.DeleteAsync(It.Is<CookingStep>(
+                entity => entity.Id == _cookingStep.Id &&
+                entity.Name == _cookingStep.Name &&
+                entity.Step == _cookingStep.Step &&
+                entity.RecipeId == _cookingStep.RecipeId)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<CookingStep>(_cookingStep.Id))
                 .ReturnsAsync(_cookingStep);
 

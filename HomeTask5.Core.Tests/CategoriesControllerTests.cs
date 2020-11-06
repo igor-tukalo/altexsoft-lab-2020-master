@@ -61,7 +61,7 @@ namespace HomeTask5.Core.Tests
             Category categoryActual = await _categoriesController.GetCategoryByIdAsync(_category.Id);
 
             //Assert
-            Assert.Equal(_category, categoryActual);
+            Assert.Same(_category, categoryActual);
             _repositoryMock.Verify();
         }
 
@@ -70,6 +70,7 @@ namespace HomeTask5.Core.Tests
         {
             // Arrange
             List<Category> categoriesWhereParentId = _categories.Where(x => x.ParentId == _category.ParentId).ToList();
+
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Category, bool>>>()))
                 .ReturnsAsync(categoriesWhereParentId).Verifiable();
 
@@ -88,6 +89,7 @@ namespace HomeTask5.Core.Tests
             _repositoryMock.Setup(o => o.AddAsync(It.Is<Category>(
                 entity => entity.Name == _category.Name &&
                 entity.ParentId == _category.ParentId))).Verifiable();
+
             _repositoryMock.Setup(o => o.GetByPredicateAsync(It.IsAny<Expression<Func<Category, bool>>>()))
                 .ReturnsAsync(_categories.First(x => x.Id == _category.ParentId));
 
@@ -102,18 +104,23 @@ namespace HomeTask5.Core.Tests
         public async Task EditCategoryAsync_Should_EditExistingCategory()
         {
             // Arrange
-            Category updateCategory = new Category() { Id = _category.Id, Name = "Fish", ParentId = (int)_category.ParentId };
-            _repositoryMock.Setup(o => o.UpdateAsync(updateCategory));
+            Category сategoryToUpdate = new Category() { Id = _category.Id, Name = "Fish", ParentId = (int)_category.ParentId };
+
+            _repositoryMock.Setup(o => o.UpdateAsync(It.Is<Category>(
+                entity => entity.Id == сategoryToUpdate.Id &&
+                entity.Name == сategoryToUpdate.Name &&
+                entity.ParentId == сategoryToUpdate.ParentId)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<Category>(_category.Id))
-                .ReturnsAsync(updateCategory);
+                .ReturnsAsync(сategoryToUpdate);
 
             // Act
-            await _categoriesController.EditCategoryAsync(updateCategory.Id, updateCategory.Name, (int)updateCategory.ParentId);
+            await _categoriesController.EditCategoryAsync(сategoryToUpdate.Id, сategoryToUpdate.Name, (int)сategoryToUpdate.ParentId);
 
             // Assert
-            Category updatedCategory = await _categoriesController.GetCategoryByIdAsync(_category.Id);
-            Assert.Equal(updatedCategory.Name, updatedCategory.Name);
-            Assert.Equal(updatedCategory.ParentId, updatedCategory.ParentId);
+            Category actualCategory = await _categoriesController.GetCategoryByIdAsync(_category.Id);
+            Assert.Equal(сategoryToUpdate.Name, actualCategory.Name);
+            Assert.Equal(сategoryToUpdate.ParentId, actualCategory.ParentId);
             _repositoryMock.VerifyAll();
         }
 
@@ -121,7 +128,11 @@ namespace HomeTask5.Core.Tests
         public async Task DeleteCategoryAsync_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.DeleteAsync(_category));
+            _repositoryMock.Setup(o => o.DeleteAsync(It.Is<Category>(
+                entity => entity.Id == _category.Id &&
+                entity.Name == _category.Name &&
+                entity.ParentId == _category.ParentId)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<Category>(_category.Id))
                 .ReturnsAsync(_category);
 
@@ -139,6 +150,7 @@ namespace HomeTask5.Core.Tests
             string sarchValue = "a";
             List<Category> categoriesSearch = _categories.Where(x => x.Name.ToLower().Contains(sarchValue)).ToList();
             int expectedValue = categoriesSearch.Count;
+
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Category, bool>>>()))
                 .ReturnsAsync(categoriesSearch).Verifiable();
 

@@ -42,7 +42,13 @@ namespace HomeTask5.Core.Tests
         public async Task DeleteAsync_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.DeleteAsync(_amountIngredient)).Verifiable();
+            _repositoryMock.Setup(o => o.DeleteAsync(It.Is<AmountIngredient>(
+                entity => entity.Id == _amountIngredient.Id &&
+                entity.Amount == _amountIngredient.Amount &&
+                entity.Unit == _amountIngredient.Unit &&
+                entity.IngredientId == _amountIngredient.IngredientId &&
+                entity.RecipeId == _amountIngredient.RecipeId))).Verifiable();
+
             _repositoryMock.Setup(o => o.GetByIdAsync<AmountIngredient>(_amountIngredient.Id)).ReturnsAsync(_amountIngredient).Verifiable();
 
             // Act
@@ -85,6 +91,7 @@ namespace HomeTask5.Core.Tests
             };
 
             List<AmountIngredient> amountIngredientsWhereRecipeId = amountIngredients.Where(x => x.RecipeId == _amountIngredient.RecipeId).ToList();
+
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<AmountIngredient, bool>>>()))
                 .ReturnsAsync(amountIngredientsWhereRecipeId).Verifiable();
 
@@ -101,6 +108,7 @@ namespace HomeTask5.Core.Tests
         {
             // Arrange
             Ingredient ingredient = new Ingredient() { Id = 1, Name = "Banana" };
+
             _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(ingredient.Id))
                 .ReturnsAsync(ingredient).Verifiable();
 

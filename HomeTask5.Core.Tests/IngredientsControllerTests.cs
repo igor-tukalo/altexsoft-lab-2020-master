@@ -58,10 +58,10 @@ namespace HomeTask5.Core.Tests
                 .ReturnsAsync(_ingredient).Verifiable();
 
             // Act
-            Ingredient ingredientResult = await _ingredientsController.GetIngredientByIdAsync(_ingredient.Id);
+            Ingredient ingredientActual = await _ingredientsController.GetIngredientByIdAsync(_ingredient.Id);
 
             //Assert
-            Assert.Equal(_ingredient, ingredientResult);
+            Assert.Same(_ingredient, ingredientActual);
             _repositoryMock.Verify();
         }
 
@@ -116,6 +116,7 @@ namespace HomeTask5.Core.Tests
             string sarchValue = "a";
             List<Ingredient> ingredintsSearch = _ingredients.Where(x => x.Name.ToLower().Contains(sarchValue)).ToList();
             int expectedValue = ingredintsSearch.Count;
+
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Ingredient, bool>>>()))
                 .ReturnsAsync(ingredintsSearch).Verifiable();
 
@@ -132,7 +133,10 @@ namespace HomeTask5.Core.Tests
         {
             // Arrange
             string newName = "Apple";
-            _repositoryMock.Setup(o => o.UpdateAsync(_ingredient));
+            _repositoryMock.Setup(o => o.UpdateAsync(It.Is<Ingredient>(
+                entity => entity.Id == _ingredient.Id &&
+                entity.Name == _ingredient.Name)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(_ingredient.Id))
                 .ReturnsAsync(_ingredient);
 
@@ -149,7 +153,10 @@ namespace HomeTask5.Core.Tests
         public async Task DeleteIngredient_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.DeleteAsync(_ingredient));
+            _repositoryMock.Setup(o => o.DeleteAsync(It.Is<Ingredient>(
+                entity => entity.Id == _ingredient.Id &&
+                entity.Name == _ingredient.Name)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(_ingredient.Id))
                 .ReturnsAsync(_ingredient);
 
@@ -157,6 +164,8 @@ namespace HomeTask5.Core.Tests
             await _ingredientsController.DeleteAsync(_ingredient.Id);
 
             // Assert
+            Ingredient ingredientToDelete = await _ingredientsController.GetIngredientByIdAsync(_ingredient.Id);
+            Assert.Same(_ingredient, ingredientToDelete);
             _repositoryMock.VerifyAll();
         }
     }

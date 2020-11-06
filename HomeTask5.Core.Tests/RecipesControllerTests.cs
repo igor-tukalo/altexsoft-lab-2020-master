@@ -64,15 +64,16 @@ namespace HomeTask5.Core.Tests
             Recipe recipeResult = await _recipesController.GetRecipeByIdAsync(_recipe.Id);
 
             //Assert
-            Assert.Equal(_recipe, recipeResult);
+            Assert.Same(_recipe, recipeResult);
             _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task GGetRecipesWhereCategoryIdAsync_Should_ReturnNumberRecipesCategoryId()
+        public async Task GetRecipesWhereCategoryIdAsync_Should_ReturnNumberRecipesCategoryId()
         {
             // Arrange
             List<Recipe> recipesCategoryId = _recipes.Where(x => x.CategoryId == _recipe.CategoryId).ToList();
+
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Recipe, bool>>>()))
                .ReturnsAsync(recipesCategoryId).Verifiable();
 
@@ -105,7 +106,11 @@ namespace HomeTask5.Core.Tests
         {
             string newNameRecipe = "Shakshuka";
             // Arrange
-            _repositoryMock.Setup(o => o.UpdateAsync(_recipe));
+            _repositoryMock.Setup(o => o.UpdateAsync(It.Is<Recipe>(
+                entity => entity.Name == _recipe.Name &&
+                entity.Description == _recipe.Description &&
+                entity.CategoryId == _recipe.CategoryId)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(_recipe.Id))
                 .ReturnsAsync(_recipe);
 
@@ -123,7 +128,11 @@ namespace HomeTask5.Core.Tests
         {
             string newDesc = "Vary this popular brunch";
             // Arrange
-            _repositoryMock.Setup(o => o.UpdateAsync(_recipe));
+            _repositoryMock.Setup(o => o.UpdateAsync(It.Is<Recipe>(
+                entity => entity.Name == _recipe.Name &&
+                entity.Description == _recipe.Description &&
+                entity.CategoryId == _recipe.CategoryId)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(_recipe.Id))
                 .ReturnsAsync(_recipe);
 
@@ -140,7 +149,11 @@ namespace HomeTask5.Core.Tests
         public async Task DeleteRecipe_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.DeleteAsync(_recipe));
+            _repositoryMock.Setup(o => o.DeleteAsync(It.Is<Recipe>(
+                entity => entity.Name == _recipe.Name &&
+                entity.Description == _recipe.Description &&
+                entity.CategoryId == _recipe.CategoryId)));
+
             _repositoryMock.Setup(o => o.GetByIdAsync<Recipe>(_recipe.Id))
                 .ReturnsAsync(_recipe);
 
@@ -148,6 +161,8 @@ namespace HomeTask5.Core.Tests
             await _recipesController.DeleteAsync(_recipe.Id);
 
             // Assert
+            Recipe recipeToDelete = await _recipesController.GetRecipeByIdAsync(_recipe.Id);
+            Assert.Same(_recipe, recipeToDelete);
             _repositoryMock.VerifyAll();
         }
     }
