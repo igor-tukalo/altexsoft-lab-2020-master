@@ -21,10 +21,14 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task AddAsync_Should_ReturnVerified()
+        public async Task AddAsync_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.AddAsync(It.IsAny<AmountIngredient>())).Verifiable();
+            _repositoryMock.Setup(o => o.AddAsync(It.Is<AmountIngredient>(
+                entity => entity.Amount == _amountIngredient.Amount
+                && entity.IngredientId == _amountIngredient.IngredientId
+                && entity.RecipeId == _amountIngredient.RecipeId
+                && entity.Unit == _amountIngredient.Unit))).Verifiable();
 
             // Act
             await _amountRecipeIngredientsController.AddAsync(_amountIngredient.Amount,
@@ -35,7 +39,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task DeleteAsync_Should_ReturnVerified()
+        public async Task DeleteAsync_Runs_Properly()
         {
             // Arrange
             _repositoryMock.Setup(o => o.DeleteAsync(_amountIngredient)).Verifiable();
@@ -93,7 +97,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetAmountIngredientNameAsync_Should_ReturnIngredientName()
+        public async Task GetAmountIngredientNameAsync_Should_ReturnAmountIngredientName()
         {
             // Arrange
             Ingredient ingredient = new Ingredient() { Id = 1, Name = "Banana" };

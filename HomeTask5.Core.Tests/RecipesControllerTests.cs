@@ -85,10 +85,13 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task AddAsync_Should_ReturnVerified()
+        public async Task AddAsync_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.AddAsync(It.IsAny<Recipe>())).Verifiable();
+            _repositoryMock.Setup(o => o.AddAsync(It.Is<Recipe>(
+                entity => entity.Name == _recipe.Name &&
+                entity.Description == _recipe.Description &&
+                entity.CategoryId == _recipe.CategoryId))).Verifiable();
 
             // Act
             await _recipesController.AddAsync(_recipe.Name, _recipe.Description, _recipe.CategoryId);
@@ -98,7 +101,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task RenameAsync_Should_ReturnRenamedRecipe()
+        public async Task RenameAsync_Should_RenameExistingRecipe()
         {
             string newNameRecipe = "Shakshuka";
             // Arrange
@@ -116,7 +119,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task ChangeDescription_Should_ReturnUpdatedDescription()
+        public async Task ChangeDescription_Should_EditExistingRecipeDescription()
         {
             string newDesc = "Vary this popular brunch";
             // Arrange
@@ -134,7 +137,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task DeleteRecipe_Should_ReturnVerified()
+        public async Task DeleteRecipe_Runs_Properly()
         {
             // Arrange
             _repositoryMock.Setup(o => o.DeleteAsync(_recipe));

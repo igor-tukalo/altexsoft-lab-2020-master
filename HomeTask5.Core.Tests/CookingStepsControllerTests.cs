@@ -55,7 +55,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetCookingStepsWhereRecipeIdAsync_Should_ReturnNumberCookingSteps()
+        public async Task GetCookingStepsWhereRecipeIdAsync_Should_ReturnNumberCookingStepsWhereRecipeId()
         {
             // Arrange
             List<CookingStep> cookingStepWhereRecipeId = _cookingSteps.Where(x => x.RecipeId == _cookingStep.RecipeId).ToList();
@@ -71,7 +71,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetCookingStepById_Should_ReturnCookingStep()
+        public async Task GetCookingStepById_Should_ReturnCookingStepById()
         {
             // Arrange
             _repositoryMock.Setup(o => o.GetByIdAsync<CookingStep>(_cookingStep.Id))
@@ -86,10 +86,13 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task AddAsync_Should_ReturnVerified()
+        public async Task AddAsync_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.AddAsync(It.IsAny<CookingStep>())).Verifiable();
+            _repositoryMock.Setup(o => o.AddAsync(It.Is<CookingStep>(
+                entity => entity.Name == _cookingStep.Name &&
+                entity.Step == _cookingStep.Step &&
+                entity.RecipeId == _cookingStep.RecipeId))).Verifiable();
 
             // Act
             await _cookingStepsController.AddAsync(_cookingStep.RecipeId, _cookingStep.Step, _cookingStep.Name);
@@ -121,10 +124,11 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task DeleteAsync_Should_RetunMaxStepCookingSteps()
+        public async Task DeleteAsync_Runs_Properly()
         {
             // Arrange
-            List<CookingStep> cookingStepsWhereRecipeId = _cookingSteps.Where(x => x.RecipeId == _cookingSteps.Find(x => x.Id == _cookingStep.Id).RecipeId).ToList();
+            List<CookingStep> cookingStepsWhereRecipeId =
+                _cookingSteps.Where(x => x.RecipeId == _cookingSteps.Find(x => x.Id == _cookingStep.Id).RecipeId).ToList();
             _repositoryMock.Setup(o => o.DeleteAsync(_cookingStep));
             _repositoryMock.Setup(o => o.GetByIdAsync<CookingStep>(_cookingStep.Id))
                 .ReturnsAsync(_cookingStep);

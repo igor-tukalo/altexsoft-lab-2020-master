@@ -66,7 +66,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetCategoriesWhereParentIdAsync_Should_ReturnNumberCategoriesParentId()
+        public async Task GetCategoriesWhereParentIdAsync_Should_ReturnNumberCategoriesWhereParentId()
         {
             // Arrange
             List<Category> categoriesWhereParentId = _categories.Where(x => x.ParentId == _category.ParentId).ToList();
@@ -82,10 +82,12 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task AddAsync_Should_ReturnVerified()
+        public async Task AddAsync_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.AddAsync(It.IsAny<Category>()));
+            _repositoryMock.Setup(o => o.AddAsync(It.Is<Category>(
+                entity => entity.Name==_category.Name &&
+                entity.ParentId== _category.ParentId))).Verifiable();
             _repositoryMock.Setup(o => o.GetByPredicateAsync(It.IsAny<Expression<Func<Category, bool>>>()))
                 .ReturnsAsync(_category);
 
@@ -116,7 +118,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task DeleteCategoryAsync_Should_ReturnVerified()
+        public async Task DeleteCategoryAsync_Runs_Properly()
         {
             // Arrange
             _repositoryMock.Setup(o => o.DeleteAsync(_category));

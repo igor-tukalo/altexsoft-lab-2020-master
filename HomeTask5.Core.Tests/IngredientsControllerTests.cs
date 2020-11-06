@@ -51,7 +51,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetIngredientByIdAsync_Should_ExistingIngredient()
+        public async Task GetIngredientByIdAsync_Should_ReturnIngredientById()
         {
             // Arrange
             _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(_ingredient.Id))
@@ -81,10 +81,11 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task AddAsync_Should_ReturnVerified()
+        public async Task AddAsync_Runs_Properly()
         {
             // Arrange
-            _repositoryMock.Setup(o => o.AddAsync(It.IsAny<Ingredient>())).Verifiable();
+            _repositoryMock.Setup(o => o.AddAsync(It.Is<Ingredient>(
+                entity => entity.Name == _ingredient.Name))).Verifiable();
 
             // Act
             await _ingredientsController.AddAsync(_ingredient.Name);
@@ -127,7 +128,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task RenameAsync_Should_ReturnRenamedIngredient()
+        public async Task RenameAsync_Should_RenameExistingIngredient()
         {
             // Arrange
             string newName = "Apple";
@@ -145,7 +146,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task DeleteIngredient_Should_ReturnVerified()
+        public async Task DeleteIngredient_Runs_Properly()
         {
             // Arrange
             _repositoryMock.Setup(o => o.DeleteAsync(_ingredient));
