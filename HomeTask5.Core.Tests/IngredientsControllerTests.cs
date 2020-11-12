@@ -116,14 +116,14 @@ namespace HomeTask5.Core.Tests
         public async Task FindIngredients_Should_ReturnIngredientsFound()
         {
             // Arrange
-            string sarchValue = "a";
-            List<Ingredient> expectedResult = _ingredients.Where(x => x.Name.ToLower().Contains(sarchValue)).ToList();
+            string searchValue = "a";
+            List<Ingredient> expectedResult = _ingredients.Where(x => x.Name.ToLower().Contains(searchValue)).ToList();
 
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Ingredient, bool>>>()))
                 .ReturnsAsync(expectedResult).Verifiable();
 
             // Act
-            List<Ingredient> result = await _ingredientsController.FindIngredientsAsync(sarchValue);
+            List<Ingredient> result = await _ingredientsController.FindIngredientsAsync(searchValue);
 
             // Assert
             Assert.Same(expectedResult, result);

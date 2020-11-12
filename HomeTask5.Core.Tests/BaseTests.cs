@@ -6,7 +6,7 @@ namespace HomeTask5.Core.Tests
     public class BaseTests
     {
         protected readonly Mock<IRepository> _repositoryMock;
-        protected Mock<IUnitOfWork> _unitOfWorkMock;
+        protected readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public BaseTests()
         {

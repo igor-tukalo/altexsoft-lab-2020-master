@@ -148,14 +148,14 @@ namespace HomeTask5.Core.Tests
         public async Task FindCategoriesAsync_Should_ReturnCategoriesFound()
         {
             // Arrange
-            string sarchValue = "a";
-            List<Category> expectedResult = _categories.Where(x => x.Name.ToLower().Contains(sarchValue)).ToList();
+            string searchValue = "a";
+            List<Category> expectedResult = _categories.Where(x => x.Name.ToLower().Contains(searchValue)).ToList();
 
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Category, bool>>>()))
                 .ReturnsAsync(expectedResult).Verifiable();
 
             // Act
-            List<Category> result = await _categoriesController.FindCategoriesAsync(sarchValue);
+            List<Category> result = await _categoriesController.FindCategoriesAsync(searchValue);
 
             // Assert
             Assert.Same(expectedResult, result);
