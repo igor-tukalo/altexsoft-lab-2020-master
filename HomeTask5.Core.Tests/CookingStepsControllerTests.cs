@@ -45,7 +45,7 @@ namespace HomeTask5.Core.Tests
                 new CookingStep()
                 {
                     Id = 4,
-                    Step=1,
+                    Step=4,
                     Name = "test4",
                     RecipeId = 2
                 },
@@ -55,34 +55,34 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetCookingStepsWhereRecipeIdAsync_Should_ReturnNumberCookingStepsWhereRecipeId()
+        public async Task GetCookingStepsWhereRecipeIdAsync_Should_ReturnCookingSteps()
         {
             // Arrange
-            List<CookingStep> cookingStepWhereRecipeId = _cookingSteps.Where(x => x.RecipeId == _cookingStep.RecipeId).ToList();
+            List<CookingStep> expectedResult = _cookingSteps.Where(x => x.RecipeId == _cookingStep.RecipeId).ToList();
 
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<CookingStep, bool>>>()))
-               .ReturnsAsync(cookingStepWhereRecipeId).Verifiable();
+               .ReturnsAsync(expectedResult).Verifiable();
 
             // Act
-            int cookingStepsCount = (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(_cookingStep.RecipeId)).Count;
+            List<CookingStep> result = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(_cookingStep.RecipeId);
 
             // Assert
-            Assert.Equal(cookingStepWhereRecipeId.Count(), cookingStepsCount);
+            Assert.Same(expectedResult, result);
             _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task GetCookingStepById_Should_ReturnCookingStepById()
+        public async Task GetCookingStepById_Should_ReturnCookingStep()
         {
             // Arrange
             _repositoryMock.Setup(o => o.GetByIdAsync<CookingStep>(_cookingStep.Id))
                 .ReturnsAsync(_cookingStep).Verifiable();
 
             // Act
-            CookingStep cookingStepActual = await _cookingStepsController.GetCookingStepByIdAsync(_cookingStep.Id);
+            CookingStep result = await _cookingStepsController.GetCookingStepByIdAsync(_cookingStep.Id);
 
             //Assert
-            Assert.Same(_cookingStep, cookingStepActual);
+            Assert.Same(_cookingStep, result);
             _repositoryMock.Verify();
         }
 
@@ -106,28 +106,12 @@ namespace HomeTask5.Core.Tests
         public async Task EditAsync_Should_EditExistingCookingStep()
         {
             // Arrange
-            string newName = "Peel potatoes";
-            int newStep = 2;
-
-            _repositoryMock.Setup(o => o.UpdateAsync(It.Is<CookingStep>(
-                entity => entity.Id == _cookingStep.Id &&
-                entity.Name == _cookingStep.Name &&
-                entity.Step == _cookingStep.Step &&
-                entity.RecipeId == _cookingStep.RecipeId)));
-
-            _repositoryMock.Setup(o => o.GetByIdAsync<CookingStep>(_cookingStep.Id))
-                .ReturnsAsync(_cookingStep);
-
-            _cookingStep.Name = newName;
-            _cookingStep.Step = newStep;
+            _repositoryMock.Setup(o => o.UpdateAsync(_cookingStep));
 
             // Act
             await _cookingStepsController.EditAsync(_cookingStep);
 
             // Assert
-            CookingStep updatedCookingStep = await _cookingStepsController.GetCookingStepByIdAsync(_cookingStep.Id);
-            Assert.Equal(newName, updatedCookingStep.Name);
-            Assert.Equal(newStep, updatedCookingStep.Step);
             _repositoryMock.VerifyAll();
         }
 
@@ -136,7 +120,8 @@ namespace HomeTask5.Core.Tests
         {
             // Arrange
             List<CookingStep> cookingStepsWhereRecipeId =
-                _cookingSteps.Where(x => x.RecipeId == _cookingSteps.Find(x => x.Id == _cookingStep.Id).RecipeId).ToList();
+                _cookingSteps.Where(x => x.RecipeId == _cookingStep.RecipeId && x.Step > _cookingStep.Step).ToList();
+            int expectedResult = cookingStepsWhereRecipeId.Max(x => x.Step) - 1;
 
             _repositoryMock.Setup(o => o.DeleteAsync(It.Is<CookingStep>(
                 entity => entity.Id == _cookingStep.Id &&
@@ -154,8 +139,8 @@ namespace HomeTask5.Core.Tests
             await _cookingStepsController.DeleteAsync(_cookingStep.Id);
 
             // Assert
-            int numCookingStep = (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(_cookingStep.Id)).Max(x => x.Step);
-            Assert.Equal(cookingStepsWhereRecipeId.Max(x => x.Step), numCookingStep);
+            int result = (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(_cookingStep.RecipeId)).Max(x => x.Step);
+            Assert.Equal(expectedResult, result);
             _repositoryMock.VerifyAll();
         }
     }

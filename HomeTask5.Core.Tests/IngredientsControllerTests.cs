@@ -3,6 +3,7 @@ using HomeTask4.Core.Controllers;
 using HomeTask4.Core.Entities;
 using Microsoft.Extensions.Options;
 using Moq;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetIngredientByIdAsync_Should_ReturnIngredientById()
+        public async Task GetIngredientByIdAsync_Should_ReturnIngredient()
         {
             // Arrange
             _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(_ingredient.Id))
@@ -66,17 +67,19 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetIngredientsBatch_Should_ReturnNumberBatches()
+        public async Task GetIngredientsBatch_Should_ReturnIngredientsBatch()
         {
             // Arrange
             _repositoryMock.Setup(o => o.GetListAsync<Ingredient>())
                 .ReturnsAsync(_ingredients).Verifiable();
 
             // Act
-            int numberBatches = (await _ingredientsController.GetIngredientsBatchAsync()).Count;
+            List<IEnumerable<Ingredient>> result = await _ingredientsController.GetIngredientsBatchAsync();
 
             //Assert
-            Assert.Equal(_customSettings.NumberConsoleLines, numberBatches);
+            List<IEnumerable<Ingredient>> expectedResult = _ingredients.OrderBy(x => x.Name).Batch(_customSettings.NumberConsoleLines).ToList();
+
+            Assert.Equal(expectedResult, result);
             _repositoryMock.Verify();
         }
 
@@ -95,36 +98,35 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetAllIngredients_Should_ReturnNumberIngredients()
+        public async Task GetAllIngredients_Should_ReturnIngredients()
         {
             // Arrange
             _repositoryMock.Setup(o => o.GetListAsync<Ingredient>())
                 .ReturnsAsync(_ingredients).Verifiable();
 
             // Act
-            int categoriesCount = (await _ingredientsController.GetAllIngredients()).Count;
+            List<Ingredient> result = await _ingredientsController.GetAllIngredients();
 
             // Assert
-            Assert.Equal(_ingredients.Count, categoriesCount);
+            Assert.Same(_ingredients, result);
             _repositoryMock.Verify();
         }
 
         [Fact]
-        public async Task FindIngredients_Should_ReturnNumberIngredientsFound()
+        public async Task FindIngredients_Should_ReturnIngredientsFound()
         {
             // Arrange
             string sarchValue = "a";
-            List<Ingredient> ingredintsSearch = _ingredients.Where(x => x.Name.ToLower().Contains(sarchValue)).ToList();
-            int expectedValue = ingredintsSearch.Count;
+            List<Ingredient> expectedResult = _ingredients.Where(x => x.Name.ToLower().Contains(sarchValue)).ToList();
 
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Ingredient, bool>>>()))
-                .ReturnsAsync(ingredintsSearch).Verifiable();
+                .ReturnsAsync(expectedResult).Verifiable();
 
             // Act
-            int ingredientsCount = (await _ingredientsController.FindIngredientsAsync(sarchValue)).Count;
+            List<Ingredient> result = await _ingredientsController.FindIngredientsAsync(sarchValue);
 
             // Assert
-            Assert.Equal(expectedValue, ingredientsCount);
+            Assert.Same(expectedResult, result);
             _repositoryMock.Verify();
         }
 
@@ -164,8 +166,6 @@ namespace HomeTask5.Core.Tests
             await _ingredientsController.DeleteAsync(_ingredient.Id);
 
             // Assert
-            Ingredient ingredientToDelete = await _ingredientsController.GetIngredientByIdAsync(_ingredient.Id);
-            Assert.Same(_ingredient, ingredientToDelete);
             _repositoryMock.VerifyAll();
         }
     }

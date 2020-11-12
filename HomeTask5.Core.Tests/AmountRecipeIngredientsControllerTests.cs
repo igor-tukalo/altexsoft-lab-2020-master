@@ -17,7 +17,15 @@ namespace HomeTask5.Core.Tests
         public AmountRecipeIngredientsControllerTests()
         {
             _amountRecipeIngredientsController = new AmountRecipeIngredientsController(_unitOfWorkMock.Object);
-            _amountIngredient = new AmountIngredient() { Id = 1, Amount = 22.2, Unit = "g", RecipeId = 1, IngredientId = 2 };
+            _amountIngredient = new AmountIngredient()
+            {
+                Id = 1,
+                Amount = 22.2,
+                Unit = "g",
+                RecipeId = 1,
+                IngredientId = 2,
+                Ingredient = new Ingredient() { Id = 2, Name = "Banana" }
+            };
         }
 
         [Fact]
@@ -59,7 +67,7 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetAmountIngredietsRecipeAsync_Should_ReturnNumberAmountngredientsRecipe()
+        public async Task GetAmountIngredietsRecipeAsync_Should_ReturnAmountngredientsRecipe()
         {
             // Arrange
             List<AmountIngredient> amountIngredients = new List<AmountIngredient>
@@ -90,16 +98,16 @@ namespace HomeTask5.Core.Tests
                 },
             };
 
-            List<AmountIngredient> amountIngredientsWhereRecipeId = amountIngredients.Where(x => x.RecipeId == _amountIngredient.RecipeId).ToList();
+            List<AmountIngredient> expectedResult = amountIngredients.Where(x => x.RecipeId == _amountIngredient.RecipeId).ToList();
 
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<AmountIngredient, bool>>>()))
-                .ReturnsAsync(amountIngredientsWhereRecipeId).Verifiable();
+                .ReturnsAsync(expectedResult).Verifiable();
 
             // Act
-            int amountIngredientsCount = (await _amountRecipeIngredientsController.GetAmountIngredietsRecipeAsync(_amountIngredient.RecipeId)).Count;
+            List<AmountIngredient> result = await _amountRecipeIngredientsController.GetAmountIngredietsRecipeAsync(_amountIngredient.RecipeId);
 
             // Assert
-            Assert.Equal(amountIngredientsWhereRecipeId.Count(), amountIngredientsCount);
+            Assert.Same(expectedResult, result);
             _repositoryMock.Verify();
         }
 
@@ -107,16 +115,14 @@ namespace HomeTask5.Core.Tests
         public async Task GetAmountIngredientNameAsync_Should_ReturnAmountIngredientName()
         {
             // Arrange
-            Ingredient ingredient = new Ingredient() { Id = 1, Name = "Banana" };
-
-            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(ingredient.Id))
-                .ReturnsAsync(ingredient).Verifiable();
+            _repositoryMock.Setup(o => o.GetByIdAsync<Ingredient>(_amountIngredient.IngredientId))
+                .ReturnsAsync(_amountIngredient.Ingredient).Verifiable();
 
             // Act
-            string ingredientName = await _amountRecipeIngredientsController.GetAmountIngredientNameAsync(ingredient.Id);
+            string ingredientName = await _amountRecipeIngredientsController.GetAmountIngredientNameAsync(_amountIngredient.IngredientId);
 
             // Assert
-            Assert.Equal(ingredient.Name, ingredientName);
+            Assert.Equal(_amountIngredient.Ingredient.Name, ingredientName);
             _repositoryMock.Verify();
         }
     }

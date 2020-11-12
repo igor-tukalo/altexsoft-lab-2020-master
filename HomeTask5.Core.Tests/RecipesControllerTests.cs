@@ -69,19 +69,19 @@ namespace HomeTask5.Core.Tests
         }
 
         [Fact]
-        public async Task GetRecipesWhereCategoryIdAsync_Should_ReturnNumberRecipesCategoryId()
+        public async Task GetRecipesWhereCategoryIdAsync_Should_ReturnRecipes()
         {
             // Arrange
-            List<Recipe> recipesCategoryId = _recipes.Where(x => x.CategoryId == _recipe.CategoryId).ToList();
+            List<Recipe> expectedResult = _recipes.Where(x => x.CategoryId == _recipe.CategoryId).ToList();
 
             _repositoryMock.Setup(o => o.GetListWhereAsync(It.IsAny<Expression<Func<Recipe, bool>>>()))
-               .ReturnsAsync(recipesCategoryId).Verifiable();
+               .ReturnsAsync(expectedResult).Verifiable();
 
             // Act
-            int recipesCount = (await _recipesController.GetRecipesWhereCategoryIdAsync(_recipe.CategoryId)).Count;
+            List<Recipe> result = await _recipesController.GetRecipesWhereCategoryIdAsync(_recipe.CategoryId);
 
             // Assert
-            Assert.Equal(recipesCategoryId.Count, recipesCount);
+            Assert.Same(expectedResult, result);
             _repositoryMock.Verify();
         }
 
@@ -104,8 +104,9 @@ namespace HomeTask5.Core.Tests
         [Fact]
         public async Task RenameAsync_Should_RenameExistingRecipe()
         {
-            string newNameRecipe = "Shakshuka";
             // Arrange
+            string newNameRecipe = "Shakshuka";
+
             _repositoryMock.Setup(o => o.UpdateAsync(It.Is<Recipe>(
                 entity => entity.Name == _recipe.Name &&
                 entity.Description == _recipe.Description &&
@@ -126,8 +127,9 @@ namespace HomeTask5.Core.Tests
         [Fact]
         public async Task ChangeDescription_Should_EditExistingRecipeDescription()
         {
-            string newDesc = "Vary this popular brunch";
             // Arrange
+            string newDesc = "Vary this popular brunch";
+
             _repositoryMock.Setup(o => o.UpdateAsync(It.Is<Recipe>(
                 entity => entity.Name == _recipe.Name &&
                 entity.Description == _recipe.Description &&
