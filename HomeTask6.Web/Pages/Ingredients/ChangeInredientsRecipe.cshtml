@@ -1,0 +1,47 @@
+﻿@page
+@model HomeTask6.Web.Pages.Ingredients.ChangeInredientsRecipeModel
+@{
+    ViewData["Title"] = "Change ingredients recipe";
+}
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"]</h3>
+        <a class="form-input" asp-page="/Recipes/ViewRecipe"
+           asp-route-recipeId=@Model.RecipeId>Back to recipe</a>
+        <input class="form-input-text" type="text" name="ingredientName" id="ingredientName" placeholder="Ingredient name" />
+        <input class="form-input" type="submit" value="Find" asp-page-handler="FindIngredients"
+               asp-route-nameIngredient=ingredientName
+               asp-route-recipeId=@Model.RecipeId />
+        @if (Model.FoundIngredients != null)
+        {
+            <select asp-for="SelectedAmountIngredient" name="SelectedAmountIngredient"
+                    class="form-control"
+                    onchange="onFormSelected(this.value)"
+                    asp-items="@(new SelectList(Model.FoundIngredients, "Id", "Name"))">
+            </select>
+            <input class="form-text-one-line" type="text" name="amount" id="amount" placeholder="amount" />
+            <input class="form-text-one-line" type="text" name="unit" id="unit" placeholder="unit" />
+            <input class="form-input-one-line" type="submit" value="Add" asp-page-handler="AddIngredient"
+                   asp-route-selectedAmountIngredient=SelectedAmountIngredient
+                   asp-route-recipeId=@Model.RecipeId />
+        }
+        <table class="table-ingr-recipe">
+            <caption>Ingredients recipe</caption>
+            @foreach (var ingredient in Model.RecipeIngredients)
+            {
+                <tr>
+                    <th>@ingredient.Ingredient.Name</th>
+                    <th class="amount">@ingredient.Amount @ingredient.Unit</th>
+                    <td>
+                        <input type="submit" value="Delete" asp-page-handler="DeleteIngredient"
+                               asp-route-ingredientId=@ingredient.Id
+                               asp-route-recipeId=@Model.RecipeId />
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</form>

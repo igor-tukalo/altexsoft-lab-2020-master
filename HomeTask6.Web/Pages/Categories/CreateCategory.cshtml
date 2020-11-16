@@ -1,0 +1,14 @@
+﻿@page
+@model HomeTask6.Web.Pages.Categories.CreateCategoryModel
+@{
+}
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@Model.Message</h3>
+        <input class="form-input-text" type="text" placeholder="Enter category name" name="nameCategory" id="nameCategory" required />
+        <input class="form-input" type="submit" value="Create" asp-page-handler="CreateCategory" asp-route-parentСategoryName=@Model.ParentСategoryName />
+    </div>
+</form>

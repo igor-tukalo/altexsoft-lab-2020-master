@@ -1,0 +1,38 @@
+﻿@page
+@using HomeTask6.Web.Entities
+@model HomeTask6.Web.Pages.CategoriesIndexModel
+@{
+    ViewData["Title"] = "Categories";
+    async Task ShowTree(IEnumerable<CategoryMenu> categories)
+    {
+        <ul class="push">
+            @foreach (var category in categories)
+            {
+                <li>
+                    @category.Name
+                    <button type="submit" asp-page-handler="RedirectCreate" asp-route-categoryId=@category.Id>
+                        <img src="~/images/create.png" />
+                    </button>
+                    <button type="submit" asp-page-handler="RedirectEdit" asp-route-categoryId=@category.Id>
+                        <img src="~/images/edit.png" />
+                    </button>
+                    <button type="submit" asp-page-handler="DeleteCategory" asp-route-categoryId=@category.Id>
+                        <img src="~/images/remove.png" />
+                    </button>
+                    @if (category.Children.Any())
+                    {
+                        await ShowTree(category.Children);
+                    }
+                </li>
+            }
+        </ul>
+    }
+}
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        @{await ShowTree(Model.DisplayedCategories); }
+    </div>
+</form>

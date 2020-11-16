@@ -1,0 +1,42 @@
+﻿@page
+@model HomeTask6.Web.Pages.CookingSteps.CookingStepsIndexModel
+@{
+    ViewData["Title"] = "Cooking steps";
+}
+<div class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"]</h3>
+        <div class="wrap-long-text-step-edit">
+            <a class="form-input" asp-page="/Recipes/ViewRecipe"
+               asp-route-recipeId=@Model.RecipeId>Back to recipe</a>
+            <ol class="rounded">
+                <li class="caption"><h3 class="caption">Cooking steps</h3></li>
+                @foreach (var cookingStep in Model.CookingSteps)
+                {
+                    <li>
+                        <field>
+                            <form method="post">
+                                <textarea class="textarea-step" placeholder="Enter description cooking step" name="cookingStepName" id="cookingStepName" required>@cookingStep.Name</textarea>
+                                <input class="btn" type="submit" value="Edit" asp-page-handler="EditCookingStep"
+                                               asp-route-recipeId=@cookingStep.RecipeId
+                                               asp-route-cookingStepId=@cookingStep.Id/>
+                                <input class="btn" type="submit" value="Delete" asp-page-handler="DeleteCookingStep"
+                                       asp-route-recipeId=@Model.RecipeId
+                                       asp-route-cookingStepId=@cookingStep.Id />
+                            </form>
+                        </field>
+
+                    </li>
+                }
+            </ol>
+            <form method="post">
+                <textarea class="textarea-step" placeholder="Enter description cooking step" name="cookingStepNameAdd" id="cookingStepNameAdd" required></textarea>
+                <input class="form-input" type="submit" value="Add" asp-page-handler="AddCookingStep"
+                       asp-route-recipeId=@Model.RecipeId />
+            </form>
+        </div>
+    </div>
+</div>
