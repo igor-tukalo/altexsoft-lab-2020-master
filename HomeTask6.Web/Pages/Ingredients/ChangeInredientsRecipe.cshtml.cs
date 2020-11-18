@@ -6,6 +6,7 @@ using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace HomeTask6.Web.Pages.Ingredients
 {
@@ -39,6 +40,16 @@ namespace HomeTask6.Web.Pages.Ingredients
             {
                 FoundIngredients = await _ingredientsController.FindIngredientsAsync(ingredientName);
             }
+        }
+
+        public async Task<PartialViewResult> OnGetFindIngredientsPartial(string ingredientName)
+        {
+            FoundIngredients = await _ingredientsController.FindIngredientsAsync(ingredientName);
+            return new PartialViewResult
+            {
+                ViewName = "_ChangeInredientsRecipePartial",
+                ViewData = new ViewDataDictionary<List<Ingredient>>(ViewData, FoundIngredients)
+            };
         }
 
         public async Task OnPostAddIngredientAsync(double amount, string unit, int recipeId, int selectedAmountIngredient)

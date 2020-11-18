@@ -3,7 +3,18 @@
 @{
     ViewData["Title"] = "Change ingredients recipe";
 }
-<form method="post" class="decor">
+@section Scripts
+{
+    <script>
+        $(function () {
+            $('#find').on('click', function () {
+                var ingredientName = $('#ingredientName').val();
+                $('#resultSearch').load('/Ingredients/ChangeInredientsRecipe?handler=FindIngredientsPartial&ingredientName=' + ingredientName);
+            });
+        });
+    </script>
+}
+<div class="decor">
     <div class="form-left-decoration"></div>
     <div class="form-right-decoration"></div>
     <div class="circle"></div>
@@ -12,16 +23,10 @@
         <a class="form-input" asp-page="/Recipes/ViewRecipe"
            asp-route-recipeId=@Model.RecipeId>Back to recipe</a>
         <input class="form-input-text" type="text" name="ingredientName" id="ingredientName" placeholder="Ingredient name" />
-        <input class="form-input" type="submit" value="Find" asp-page-handler="FindIngredients"
-               asp-route-nameIngredient=ingredientName
-               asp-route-recipeId=@Model.RecipeId />
+        <button class="form-input" type="submit" id="find">Find</button>
+        <div id="resultSearch"></div>
         @if (Model.FoundIngredients != null)
         {
-            <select asp-for="SelectedAmountIngredient" name="SelectedAmountIngredient"
-                    class="form-control"
-                    onchange="onFormSelected(this.value)"
-                    asp-items="@(new SelectList(Model.FoundIngredients, "Id", "Name"))">
-            </select>
             <input class="form-text-one-line" type="text" name="amount" id="amount" placeholder="amount" />
             <input class="form-text-one-line" type="text" name="unit" id="unit" placeholder="unit" />
             <input class="form-input-one-line" type="submit" value="Add" asp-page-handler="AddIngredient"
@@ -44,4 +49,4 @@
             }
         </table>
     </div>
-</form>
+</div>

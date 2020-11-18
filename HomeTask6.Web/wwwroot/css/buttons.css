@@ -13,7 +13,7 @@
         left: 2px;
     }
 
-a.form-input, input.form-input {
+a.form-input, input.form-input, button.form-input {
     text-decoration: none;
     outline: none;
     display: block;
