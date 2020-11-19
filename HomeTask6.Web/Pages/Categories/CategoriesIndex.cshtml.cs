@@ -22,8 +22,8 @@ namespace HomeTask6.Web.Pages
 
         public async Task OnGetAsync()
         {
-            var allCategories = (await _categoriesController.GetAllGategoriesAsync()).OrderBy(x => x.Name);
-            var items = allCategories.Select(x => new CategoryMenu() { Id = x.Id, Name = x.Name, ParentId = x.ParentId });
+            IOrderedEnumerable<Category> allCategories = (await _categoriesController.GetAllGategoriesAsync()).OrderBy(x => x.Name);
+            IEnumerable<CategoryMenu> items = allCategories.Select(x => new CategoryMenu() { Id = x.Id, Name = x.Name, ParentId = x.ParentId });
             DisplayedCategories = (List<CategoryMenu>)items.BuildTree();
         }
 

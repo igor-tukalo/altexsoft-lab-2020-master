@@ -30,8 +30,8 @@ namespace HomeTask6.Web.Pages.Recipes
 
         public async Task OnGetAsync()
         {
-            var allCategories = (await _categoriesController.GetAllGategoriesAsync()).OrderBy(x => x.Name);
-            var items = allCategories.Select(x => new CategoryMenu() { Id = x.Id, Name = x.Name, ParentId = x.ParentId });
+            IOrderedEnumerable<Category> allCategories = (await _categoriesController.GetAllGategoriesAsync()).OrderBy(x => x.Name);
+            IEnumerable<CategoryMenu> items = allCategories.Select(x => new CategoryMenu() { Id = x.Id, Name = x.Name, ParentId = x.ParentId });
             DisplayedCategories = (List<CategoryMenu>)items.BuildTree();
         }
 
@@ -47,7 +47,7 @@ namespace HomeTask6.Web.Pages.Recipes
 
         private async Task GetRecipes(int categoryId)
         {
-            var category = await _categoriesController.GetCategoryByIdAsync(categoryId);
+            Category category = await _categoriesController.GetCategoryByIdAsync(categoryId);
             await OnGetAsync();
             CategoryId = category.ParentId != null ? categoryId : 0;
             NameCategory = category.Name;
