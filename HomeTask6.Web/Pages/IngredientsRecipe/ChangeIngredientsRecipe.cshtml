@@ -7,14 +7,14 @@
 {
     <script>
         $(function () {
-            $('#viewIngredients').load('/Ingredients/ChangeIngredientsRecipe?handler=ViewIngredientsRecipePartial&recipeId=' + @Model.RecipeId)
+            $('#viewIngredients').load('/IngredientsRecipe/ChangeIngredientsRecipe?handler=ViewIngredientsRecipePartial&recipeId=' + @Model.RecipeId)
         });
         $(function () {
             $('#find').on('click', function () {
                 var ingredientName = $('#ingredientName').val();
                 if (ingredientName != '') {
-                    $('#resultFind').load('/Ingredients/ChangeIngredientsRecipe?handler=FindIngredientsPartial&ingredientName=' + ingredientName);
-                    $('#resultShowAdd').load('/Ingredients/ChangeIngredientsRecipe?handler=ShowAddIngredientsRecipePartial&recipeId=' + @Model.RecipeId);
+                    $('#resultFind').load('/IngredientsRecipe/ChangeIngredientsRecipe?handler=FindIngredientsPartial&ingredientName=' + ingredientName);
+                    $('#resultShowAdd').load('/IngredientsRecipe/ChangeIngredientsRecipe?handler=ShowAddIngredientsRecipePartial&recipeId=' + @Model.RecipeId);
                 }
             });
         });

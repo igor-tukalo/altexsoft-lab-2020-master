@@ -6,8 +6,14 @@
             var unit = $('#unitIngredient').val();
             var recipeId = @Model;
             var selectedAmountIngredient = $('#selectedAmountIngredient').val();
-            $('#viewIngredients').load('/Ingredients/ChangeIngredientsRecipe?handler=AddIngredientsRecipePartial&amount=' + amount +
-                '&unit=' + unit + '&recipeId=' + recipeId + '&selectedAmountIngredient=' + selectedAmountIngredient)
+            if ($.isNumeric(amount)) {
+                $('#viewIngredients').load('/IngredientsRecipe/ChangeIngredientsRecipe?handler=AddIngredientsRecipePartial&amount=' + amount +
+                    '&unit=' + unit + '&recipeId=' + recipeId + '&selectedAmountIngredient=' + selectedAmountIngredient)
+            }
+            else
+            {
+                alert('Amount ingredient must be numeric!')
+            }
         });
     });
 </script>
