@@ -1,0 +1,26 @@
+﻿@page "@{pageNo}/{ingredientId}/{ingredientName}"
+@model HomeTask6.Web.Pages.Ingredients.EditIngredientModel
+@{
+    ViewData["Title"] = "Edit ingredient";
+    var pageNo= RouteData.Values["pageNo"];
+    var ingredientId = RouteData.Values["ingredientId"];
+    var ingredientName = RouteData.Values["ingredientName"];
+}
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <div class="wrap-long-text-step-edit">
+            <h3>@ViewData["Title"]</h3>
+            <a class="form-input" asp-page="IngredientsIndex"
+               asp-route-pageNo=@pageNo>Back to ingredients</a>
+            <input class="form-input-text" type="text" placeholder="Name ingredient" value="@ingredientName" name="ingredientName" id="ingredientName" required />
+            <input class="form-input" type="submit" value="Save"
+                   asp-page-handler="SaveIngredientChanges"
+                   asp-route-pageNo=@pageNo
+                   asp-route-ingredientId=@ingredientId
+                   asp-route-ingredientName=ingredientName />
+        </div>
+        </div>
+</form>

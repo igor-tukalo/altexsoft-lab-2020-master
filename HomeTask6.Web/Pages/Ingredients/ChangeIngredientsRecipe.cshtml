@@ -1,0 +1,37 @@
+﻿@page
+@model HomeTask6.Web.Pages.Ingredients.ChangeIngredientsRecipeModel
+@{
+    ViewData["Title"] = "Change ingredients recipe";
+}
+@section Scripts
+{
+    <script>
+        $(function () {
+            $('#viewIngredients').load('/Ingredients/ChangeIngredientsRecipe?handler=ViewIngredientsRecipePartial&recipeId=' + @Model.RecipeId)
+        });
+        $(function () {
+            $('#find').on('click', function () {
+                var ingredientName = $('#ingredientName').val();
+                if (ingredientName != '') {
+                    $('#resultFind').load('/Ingredients/ChangeIngredientsRecipe?handler=FindIngredientsPartial&ingredientName=' + ingredientName);
+                    $('#resultShowAdd').load('/Ingredients/ChangeIngredientsRecipe?handler=ShowAddIngredientsRecipePartial&recipeId=' + @Model.RecipeId);
+                }
+            });
+        });
+    </script>
+}
+<div class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"]</h3>
+        <a class="form-input" asp-page="/Recipes/ViewRecipe"
+           asp-route-recipeId=@Model.RecipeId>Back to recipe</a>
+        <input class="form-input-text" type="text" name="ingredientName" id="ingredientName" placeholder="Ingredient name" required />
+        <button class="form-input" type="submit" id="find">Find</button>
+        <div id="resultFind"></div>
+        <div id="resultShowAdd"></div>
+        <div id="viewIngredients"></div>
+    </div>
+</div>

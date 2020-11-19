@@ -1,0 +1,23 @@
+﻿@using HomeTask4.Core.Entities
+@model List<AmountIngredient>
+<script>
+    $(function () {
+        $('#deleteIngredient').on('click', function (e) {
+            $('#viewIngredients').load('/Ingredients/ChangeIngredientsRecipe?handler=DeleteIngredientPartial&ingredientId=' + e.target.name
+                + '&recipeId=' + e.target.value);
+        });
+    });
+</script>
+<table class="table-ingr-recipe">
+    <caption>Ingredients recipe</caption>
+    @foreach (var ingredient in Model)
+    {
+        <tr>
+            <th>@ingredient.Ingredient.Name</th>
+            <th class="amount">@ingredient.Amount @ingredient.Unit</th>
+            <td>
+                <button name="@ingredient.Id" value="@ingredient.RecipeId" type="submit" id="deleteIngredient">Delete</button>
+            </td>
+        </tr>
+    }
+</table>

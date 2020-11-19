@@ -1,0 +1,16 @@
+﻿@model int
+<script>
+    $(function () {
+        $('#addIngredient').on('click', function () {
+            var amount = $('#amountIngredient').val();
+            var unit = $('#unitIngredient').val();
+            var recipeId = @Model;
+            var selectedAmountIngredient = $('#selectedAmountIngredient').val();
+            $('#viewIngredients').load('/Ingredients/ChangeIngredientsRecipe?handler=AddIngredientsRecipePartial&amount=' + amount +
+                '&unit=' + unit + '&recipeId=' + recipeId + '&selectedAmountIngredient=' + selectedAmountIngredient)
+        });
+    });
+</script>
+<input class="form-text-one-line" type="text" name="amountIngredient" id="amountIngredient" placeholder="amount" />
+<input class="form-text-one-line" type="text" name="unitIngredient" id="unitIngredient" placeholder="unit" />
+<button class="form-input-one-line" type="submit" id="addIngredient">Add</button>

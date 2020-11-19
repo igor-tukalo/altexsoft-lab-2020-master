@@ -1,0 +1,45 @@
+﻿@page
+@model HomeTask6.Web.Pages.Ingredients.IngredientsIndexModel
+@{
+    ViewData["Title"] = "Ingredients";
+}
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"]</h3>
+        <b>
+            <a class="form-input" asp-page="CreateIngredient">Create ingredient</a>
+        </b>
+        <ul class="push">
+            @foreach (var ingredient in Model.DisplayedIngredients)
+            {
+                <li>
+                    @ingredient.Name
+                    <button type="submit" asp-page-handler="RedirectEdit"
+                            asp-route-ingredientId=@ingredient.Id
+                            asp-route-ingredientName=@ingredient.Name
+                            asp-route-pageNo="@Model.PageNo">
+                        <img src="~/images/edit.png" />
+                    </button>
+                    <button type="submit" asp-page-handler="DeleteIngredient" asp-route-ingredientId=@ingredient.Id>
+                        <img src="~/images/remove.png" />
+                    </button>
+                </li>
+            }
+        </ul>
+    </div>
+</form>
+<div class="decor-pager">
+    <paging total-records="Model.TotalRecords"
+            page-no="Model.PageNo"
+            page-size="Model.PageSize"
+            show-total-pages="false"
+            show-total-records="false"
+            show-page-size-nav="false"
+            query-string-key-page-no="pageNo"
+            query-string-key-page-size="pageSize">
+    </paging>
+
+</div>
