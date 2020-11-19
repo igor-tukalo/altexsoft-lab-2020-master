@@ -3,11 +3,11 @@
     $(function () {
         $('#addIngredient').on('click', function () {
             var amount = $('#amountIngredient').val();
-            var unit = $('#unitIngredient').val();
+            var unit = $('#unitIngredient').val().replace(/ +/g, '+').trim();
             var recipeId = @Model;
             var selectedAmountIngredient = $('#selectedAmountIngredient').val();
             if ($.isNumeric(amount)) {
-                $('#viewIngredients').load('/IngredientsRecipe/ChangeIngredientsRecipe?handler=AddIngredientsRecipePartial&amount=' + amount +
+                $('#viewIngredients').load('/IngredientsRecipe/IndexIngredientsRecipe?handler=AddIngredientsRecipePartial&amount=' + amount +
                     '&unit=' + unit + '&recipeId=' + recipeId + '&selectedAmountIngredient=' + selectedAmountIngredient)
             }
             else

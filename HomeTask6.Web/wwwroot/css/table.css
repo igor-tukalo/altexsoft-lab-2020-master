@@ -54,6 +54,11 @@
         position: relative;
     }
 
+    .table-ingr-recipe .input-th {
+        width:100%;
+    }
+
+
         .table-ingr-recipe a:hover, .table-ingr-recipe input:hover, .table-ingr-recipe button:hover {
             box-shadow: none;
             top: 2px;

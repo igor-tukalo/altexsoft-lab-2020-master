@@ -1,0 +1,45 @@
+﻿@page
+@model HomeTask6.Web.Pages.Ingredients.IndexIngredientsModel
+@{
+    ViewData["Title"] = "Ingredients";
+}
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(function () {
+            $('#createIngredient').on('click', function () {
+                var ingredientName = $('#ingredientName').val().replace(/ +/g, '+').trim();
+                if (ingredientName != '') {
+                    $('#viewIngredients').load('/Ingredients/IndexIngredients?handler=CreateIngredientPartial&ingredientName=' + ingredientName);
+                }
+            });
+        });
+        $(function () {
+            $(document).on('click', '#editIngredient', function (e) {
+                var ingredientName = $('#' + e.target.name).val().replace(/ +/g, '+').trim();
+                $('#viewIngredients').load('/Ingredients/IndexIngredients?handler=EditIngredientPartial&ingredientId=' + e.target.name + '&ingredientName=' + ingredientName);
+            });
+        });
+        $(function () {
+            $(document).on('click', '#deleteIngredient', function (e) {
+                $('#viewIngredients').load('/Ingredients/IndexIngredients?handler=DeleteIngredientPartial&ingredientId=' + e.target.name);
+            });
+        });
+    </script>
+}
+<div class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"]</h3>
+        <b>
+            <input class="form-input-text" type="text" placeholder="Enter ingredient name" name="ingredientName" id="ingredientName" required />
+            <button class="form-input" type="submit" id="createIngredient">Create ingredient</button>
+        </b>
+        <div id="viewIngredients">
+            <partial name="_ViewIngredientsPartial.cshtml" />
+        </div>
+    </div>
+</div>

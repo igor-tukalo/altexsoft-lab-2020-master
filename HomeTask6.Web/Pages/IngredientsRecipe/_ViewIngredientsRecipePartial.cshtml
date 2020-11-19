@@ -2,8 +2,8 @@
 @model List<AmountIngredient>
 <script>
     $(function () {
-        $('#deleteIngredient').on('click', function (e) {
-            $('#viewIngredients').load('/IngredientsRecipe/ChangeIngredientsRecipe?handler=DeleteIngredientPartial&ingredientId=' + e.target.name
+        $(document).on('click', '#deleteIngredient', function (e) {
+            $('#viewIngredients').load('/IngredientsRecipe/IndexIngredientsRecipe?handler=DeleteIngredientPartial&ingredientId=' + e.target.name
                 + '&recipeId=' + e.target.value);
         });
     });
