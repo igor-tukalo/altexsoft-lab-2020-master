@@ -18,7 +18,6 @@ namespace HomeTask6.Web.Pages.Ingredients
 
         public List<Ingredient> FoundIngredients { set; get; }
         public List<AmountIngredient> RecipeIngredients { set; get; }
-        public int SelectedAmountIngredient { get; set; }
         public int RecipeId { get; set; }
 
         public ChangeIngredientsRecipeModel(IIngredientsController ingredientsController,
@@ -38,20 +37,8 @@ namespace HomeTask6.Web.Pages.Ingredients
             FoundIngredients = await _ingredientsController.FindIngredientsAsync(ingredientName);
             return new PartialViewResult
             {
-                ViewName = "_FIndIngredientsRecipePartial",
+                ViewName = "_FindIngredientsRecipePartial",
                 ViewData = new ViewDataDictionary<List<Ingredient>>(ViewData, FoundIngredients)
-            };
-        }
-
-        public async Task<PartialViewResult> OnGetAddIngredientsRecipePartialAsync(double amount, string unit, int recipeId, int selectedAmountIngredient)
-        {
-            await _amountRecipeIngredientsController.AddAsync(amount, unit, recipeId, selectedAmountIngredient);
-            var ingredientsRecipe = (await _amountRecipeIngredientsController.GetAmountIngredietsRecipeAsync(recipeId));
-
-            return new PartialViewResult
-            {
-                ViewName = "_ViewIngredientsRecipePartial",
-                ViewData = new ViewDataDictionary<List<AmountIngredient>>(ViewData, ingredientsRecipe)
             };
         }
 
@@ -67,6 +54,12 @@ namespace HomeTask6.Web.Pages.Ingredients
             };
         }
 
+        public async Task<PartialViewResult> OnGetAddIngredientsRecipePartialAsync(double amount, string unit, int recipeId, int selectedAmountIngredient)
+        {
+            await _amountRecipeIngredientsController.AddAsync(amount, unit, recipeId, selectedAmountIngredient);
+            return await OnGetViewIngredientsRecipePartialAsync(recipeId);
+        }
+
         public PartialViewResult OnGetShowAddIngredientsRecipePartial(int recipeId)
         {
             return new PartialViewResult
@@ -79,14 +72,7 @@ namespace HomeTask6.Web.Pages.Ingredients
         public async Task<PartialViewResult> OnGetDeleteIngredientPartialAsync(int ingredientId, int recipeId)
         {
             await _amountRecipeIngredientsController.DeleteAsync(ingredientId);
-            RecipeIngredients = (await _amountRecipeIngredientsController.GetAmountIngredietsRecipeAsync(recipeId))
-                .OrderBy(x => x.Ingredient.Name).ToList();
-
-            return new PartialViewResult
-            {
-                ViewName = "_ViewIngredientsRecipePartial",
-                ViewData = new ViewDataDictionary<List<AmountIngredient>>(ViewData, RecipeIngredients)
-            };
+            return await OnGetViewIngredientsRecipePartialAsync(recipeId);
         }
     }
 }
