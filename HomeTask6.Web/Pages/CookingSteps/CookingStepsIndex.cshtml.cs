@@ -1,6 +1,8 @@
 using HomeTask4.Core.Entities;
 using HomeTask4.Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,31 +20,42 @@ namespace HomeTask6.Web.Pages.CookingSteps
             _cookingStepsController = cookingStepsController;
         }
 
-        public async Task OnGetAsync(int recipeId)
+        public void OnGetAsync(int recipeId)
         {
             RecipeId = recipeId;
-            CookingSteps = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId);
         }
 
-        public async Task OnPostAddCookingStepAsync(int recipeId, string cookingStepNameAdd)
+        public async Task<IActionResult> OnGetViewCookingStepsPartialAsync(int recipeId)
         {
-            int stepNum = (await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId)).Max(x => x.Step) + 1;
-            await _cookingStepsController.AddAsync(recipeId, stepNum, cookingStepNameAdd);
-            await OnGetAsync(recipeId);
+            CookingSteps = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId);
+
+            return new PartialViewResult
+            {
+                ViewName = "_ViewCookingStepsPartial",
+                ViewData = new ViewDataDictionary<List<CookingStep>>(ViewData, CookingSteps)
+            };
         }
 
-        public async Task OnPostEditCookingStep(int recipeId, int cookingStepId, string cookingStepName)
+        public async Task<IActionResult> OnGetAddCookingStepPartialAsync(string cookingStepName, int recipeId)
+        {
+            List<CookingStep> cookingStepsRecipe = await _cookingStepsController.GetCookingStepsWhereRecipeIdAsync(recipeId);
+            int stepNum = cookingStepsRecipe.Count > 0 ? cookingStepsRecipe.Max(x => x.Step) + 1 : 1;
+            await _cookingStepsController.AddAsync(recipeId, stepNum, cookingStepName);
+            return await OnGetViewCookingStepsPartialAsync(recipeId);
+        }
+
+        public async Task<IActionResult> OnGetEditCookingStepPartialAsync(int cookingStepId, string cookingStepName, int recipeId)
         {
             CookingStep cookingStep = await _cookingStepsController.GetCookingStepByIdAsync(cookingStepId);
             cookingStep.Name = cookingStepName;
             await _cookingStepsController.EditAsync(cookingStep);
-            await OnGetAsync(recipeId);
+            return await OnGetViewCookingStepsPartialAsync(recipeId);
         }
 
-        public async Task OnPostDeleteCookingStepAsync(int recipeId, int cookingStepId)
+        public async Task<IActionResult> OnGetDeleteCookingStepPartialAsync(int cookingStepId, int recipeId)
         {
             await _cookingStepsController.DeleteAsync(cookingStepId);
-            await OnGetAsync(recipeId);
+            return await OnGetViewCookingStepsPartialAsync(recipeId);
         }
     }
 }

@@ -3,6 +3,43 @@
 @{
     ViewData["Title"] = "Cooking steps";
 }
+@section Scripts
+{
+    <script>
+        $(function () {
+            $('#viewCookingSteps').load('/CookingSteps/CookingStepsIndex?handler=ViewCookingStepsPartial&recipeId=' + @Model.RecipeId);
+        });
+        $(function () {
+            $('#addCookingStep').on('click', function () {
+                var cookingStepName = $('#cookingStepName').val().replace(/ +/g, '+').trim();
+                var recipeId = @Model.RecipeId;
+                if (cookingStepName != '')
+                {
+                    $('#viewCookingSteps').load('/CookingSteps/CookingStepsIndex?handler=AddCookingStepPartial&cookingStepName=' + cookingStepName +
+                        '&recipeId=' + @Model.RecipeId);
+                    $('#cookingStepName').val('');
+                }
+                else
+                {
+                    alert('Enter description cooking step!');
+                }
+            });
+        });
+        $(function () {
+            $(document).on('click', '#editCookingStep', function (e) {
+                var cookingStepName = $('#' + e.target.value).val().replace(/ +/g, '+').trim();
+                $('#viewCookingSteps').load('/CookingSteps/CookingStepsIndex?handler=EditCookingStepPartial&cookingStepId=' + e.target.value
+                    + '&cookingStepName=' + cookingStepName + '&recipeId=' +@Model.RecipeId);
+            });
+        });
+        $(function () {
+            $(document).on('click', '#deleteCookingStep', function (e) {
+                $('#viewCookingSteps').load('/CookingSteps/CookingStepsIndex?handler=DeleteCookingStepPartial&cookingStepId=' + e.target.value
+                    + '&recipeId=' + @Model.RecipeId);
+            });
+        });
+    </script>
+}
 <div class="decor">
     <div class="form-left-decoration"></div>
     <div class="form-right-decoration"></div>
@@ -12,31 +49,9 @@
         <div class="wrap-long-text-step-edit">
             <a class="form-input" asp-page="/Recipes/ViewRecipe"
                asp-route-recipeId=@Model.RecipeId>Back to recipe</a>
-            <ol class="rounded">
-                <li class="caption"><h3 class="caption">Cooking steps</h3></li>
-                @foreach (var cookingStep in Model.CookingSteps)
-                {
-                    <li>
-                        <field>
-                            <form method="post">
-                                <textarea class="textarea-step" placeholder="Enter description cooking step" name="cookingStepName" id="cookingStepName" required>@cookingStep.Name</textarea>
-                                <input class="btn" type="submit" value="Edit" asp-page-handler="EditCookingStep"
-                                               asp-route-recipeId=@cookingStep.RecipeId
-                                               asp-route-cookingStepId=@cookingStep.Id/>
-                                <input class="btn" type="submit" value="Delete" asp-page-handler="DeleteCookingStep"
-                                       asp-route-recipeId=@Model.RecipeId
-                                       asp-route-cookingStepId=@cookingStep.Id />
-                            </form>
-                        </field>
-
-                    </li>
-                }
-            </ol>
-            <form method="post">
-                <textarea class="textarea-step" placeholder="Enter description cooking step" name="cookingStepNameAdd" id="cookingStepNameAdd" required></textarea>
-                <input class="form-input" type="submit" value="Add" asp-page-handler="AddCookingStep"
-                       asp-route-recipeId=@Model.RecipeId />
-            </form>
+            <div id="viewCookingSteps"></div>
+            <textarea class="textarea-step" placeholder="Enter description cooking step" id="cookingStepName" required></textarea>
+            <button class="form-input" type="submit" id="addCookingStep">Add</button>
         </div>
     </div>
 </div>

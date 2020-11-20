@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HomeTask6.Web.Pages.Ingredients
 {
-    public class IndexIngredientsRecipeModel : PageModel
+    public class IngredientsRecipeIndexModel : PageModel
     {
         private readonly IIngredientsController _ingredientsController;
         private readonly IAmountRecipeIngredientsController _amountRecipeIngredientsController;
@@ -18,7 +18,7 @@ namespace HomeTask6.Web.Pages.Ingredients
         public List<AmountIngredient> RecipeIngredients { set; get; }
         public int RecipeId { get; set; }
 
-        public IndexIngredientsRecipeModel(IIngredientsController ingredientsController,
+        public IngredientsRecipeIndexModel(IIngredientsController ingredientsController,
             IAmountRecipeIngredientsController amountRecipeIngredientsController)
         {
             _ingredientsController = ingredientsController;
@@ -52,13 +52,13 @@ namespace HomeTask6.Web.Pages.Ingredients
             };
         }
 
-        public async Task<IActionResult> OnGetAddIngredientsRecipePartialAsync(double amount, string unit, int recipeId, int selectedAmountIngredient)
+        public async Task<IActionResult> OnGetAddIngredientRecipePartialAsync(double amount, string unit, int recipeId, int selectedAmountIngredient)
         {
             await _amountRecipeIngredientsController.AddAsync(amount, unit, recipeId, selectedAmountIngredient);
             return await OnGetViewIngredientsRecipePartialAsync(recipeId);
         }
 
-        public IActionResult OnGetShowAddIngredientsRecipePartial(int recipeId)
+        public IActionResult OnGetShowAddIngredientRecipePartial(int recipeId)
         {
             return new PartialViewResult
             {

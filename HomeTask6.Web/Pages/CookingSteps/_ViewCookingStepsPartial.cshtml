@@ -1,0 +1,20 @@
+﻿@using HomeTask4.Core.Entities
+@model List<CookingStep>
+<ol class="rounded">
+    <li class="caption"><h3 class="caption">Cooking steps</h3></li>
+    @foreach (var cookingStep in Model)
+    {
+        <li>
+            <field>
+                <textarea name="@cookingStep.Id" prevvalue="@cookingStep.Name" class="textarea-step" placeholder="Enter description cooking step" required id="@cookingStep.Id">@cookingStep.Name</textarea>
+                <button class="btn-orange" value="@cookingStep.Id" id="editCookingStep">
+                    Edit
+                </button>
+                <button class="btn-orange" value="@cookingStep.Id" id="deleteCookingStep">
+                    Delete
+                </button>
+            </field>
+
+        </li>
+    }
+</ol>

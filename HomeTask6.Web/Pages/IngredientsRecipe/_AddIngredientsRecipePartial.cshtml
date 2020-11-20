@@ -7,7 +7,7 @@
             var recipeId = @Model;
             var selectedAmountIngredient = $('#selectedAmountIngredient').val();
             if ($.isNumeric(amount)) {
-                $('#viewIngredients').load('/IngredientsRecipe/IndexIngredientsRecipe?handler=AddIngredientsRecipePartial&amount=' + amount +
+                $('#viewIngredients').load('/IngredientsRecipe/IngredientsRecipeIndex?handler=AddIngredientRecipePartial&amount=' + amount +
                     '&unit=' + unit + '&recipeId=' + recipeId + '&selectedAmountIngredient=' + selectedAmountIngredient)
             }
             else

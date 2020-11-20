@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HomeTask6.Web.Pages.Ingredients
 {
-    public class IndexIngredientsModel : PageModel
+    public class IngredientsIndexModel : PageModel
     {
         private readonly IIngredientsController _ingredientsController;
         public List<Ingredient> DisplayedIngredients { get; set; }
@@ -21,7 +21,7 @@ namespace HomeTask6.Web.Pages.Ingredients
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 10;
 
-        public IndexIngredientsModel(IIngredientsController ingredientsController)
+        public IngredientsIndexModel(IIngredientsController ingredientsController)
         {
             _ingredientsController = ingredientsController;
         }

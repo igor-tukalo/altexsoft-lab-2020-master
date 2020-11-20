@@ -1,4 +1,4 @@
-﻿input.btn {
+﻿.btn-orange {
     cursor: pointer;
     display: inline-block;
     padding: 5px 10px;
@@ -7,10 +7,12 @@
     position: relative;
 }
 
-    input.btn:hover {
+    .btn-orange:hover {
+        background: #F79361;
         box-shadow: none;
         top: 2px;
         left: 2px;
+        transform: translateY(-7px);
     }
 
 a.form-input, input.form-input, button.form-input {
@@ -64,7 +66,7 @@ textarea.textarea-input {
     background: white;
 }
 
-a.form-input:hover, input.form-input:hover, button:hover {
+a.form-input:hover, input.form-input:hover, button.form-input:hover {
     background: lightblue;
     box-shadow: 0 15px 20px rgba(46,229,157,.4);
     color: black;

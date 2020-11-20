@@ -1,5 +1,5 @@
 ﻿@page
-@model HomeTask6.Web.Pages.Ingredients.IndexIngredientsModel
+@model HomeTask6.Web.Pages.Ingredients.IngredientsIndexModel
 @{
     ViewData["Title"] = "Ingredients";
 }
@@ -11,19 +11,19 @@
             $('#createIngredient').on('click', function () {
                 var ingredientName = $('#ingredientName').val().replace(/ +/g, '+').trim();
                 if (ingredientName != '') {
-                    $('#viewIngredients').load('/Ingredients/IndexIngredients?handler=CreateIngredientPartial&ingredientName=' + ingredientName);
+                    $('#viewIngredients').load('/Ingredients/IngredientsIndex?handler=CreateIngredientPartial&ingredientName=' + ingredientName);
                 }
             });
         });
         $(function () {
             $(document).on('click', '#editIngredient', function (e) {
                 var ingredientName = $('#' + e.target.name).val().replace(/ +/g, '+').trim();
-                $('#viewIngredients').load('/Ingredients/IndexIngredients?handler=EditIngredientPartial&ingredientId=' + e.target.name + '&ingredientName=' + ingredientName);
+                $('#viewIngredients').load('/Ingredients/IngredientsIndex?handler=EditIngredientPartial&ingredientId=' + e.target.name + '&ingredientName=' + ingredientName);
             });
         });
         $(function () {
             $(document).on('click', '#deleteIngredient', function (e) {
-                $('#viewIngredients').load('/Ingredients/IndexIngredients?handler=DeleteIngredientPartial&ingredientId=' + e.target.name);
+                $('#viewIngredients').load('/Ingredients/IngredientsIndex?handler=DeleteIngredientPartial&ingredientId=' + e.target.name);
             });
         });
     </script>

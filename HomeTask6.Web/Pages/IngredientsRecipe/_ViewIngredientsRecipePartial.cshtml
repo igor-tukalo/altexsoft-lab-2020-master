@@ -3,7 +3,7 @@
 <script>
     $(function () {
         $(document).on('click', '#deleteIngredient', function (e) {
-            $('#viewIngredients').load('/IngredientsRecipe/IndexIngredientsRecipe?handler=DeleteIngredientPartial&ingredientId=' + e.target.name
+            $('#viewIngredients').load('/IngredientsRecipe/IngredientsRecipeIndex?handler=DeleteIngredientPartial&ingredientId=' + e.target.name
                 + '&recipeId=' + e.target.value);
         });
     });

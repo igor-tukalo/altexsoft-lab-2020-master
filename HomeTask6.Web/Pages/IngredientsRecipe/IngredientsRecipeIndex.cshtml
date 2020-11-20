@@ -1,5 +1,5 @@
 ﻿@page
-@model HomeTask6.Web.Pages.Ingredients.IndexIngredientsRecipeModel
+@model HomeTask6.Web.Pages.Ingredients.IngredientsRecipeIndexModel
 @{
     ViewData["Title"] = "Change ingredients recipe";
 }
@@ -7,14 +7,14 @@
 {
     <script>
         $(function () {
-            $('#viewIngredients').load('/IngredientsRecipe/IndexIngredientsRecipe?handler=ViewIngredientsRecipePartial&recipeId=' + @Model.RecipeId)
+            $('#viewIngredients').load('/IngredientsRecipe/IngredientsRecipeIndex?handler=ViewIngredientsRecipePartial&recipeId=' + @Model.RecipeId)
         });
         $(function () {
             $('#find').on('click', function () {
                 var ingredientName = $('#ingredientName').val().replace(/ +/g, '+').trim();
                 if (ingredientName != '') {
-                    $('#resultFind').load('/IngredientsRecipe/IndexIngredientsRecipe?handler=FindIngredientsPartial&ingredientName=' + ingredientName);
-                    $('#resultShowAdd').load('/IngredientsRecipe/IndexIngredientsRecipe?handler=ShowAddIngredientsRecipePartial&recipeId=' + @Model.RecipeId);
+                    $('#resultFind').load('/IngredientsRecipe/IngredientsRecipeIndex?handler=FindIngredientsPartial&ingredientName=' + ingredientName);
+                    $('#resultShowAdd').load('/IngredientsRecipe/IngredientsRecipeIndex?handler=ShowAddIngredientRecipePartial&recipeId=' + @Model.RecipeId);
                 }
             });
         });
