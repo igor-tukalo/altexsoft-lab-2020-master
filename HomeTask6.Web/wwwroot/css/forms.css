@@ -1,0 +1,149 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f69a73;
+}
+
+.decor {
+    position: relative;
+    width: max-content;
+    margin: 50px auto 0;
+    background: white;
+    border-radius: 30px;
+}
+
+.decor-pager {
+    width: max-content;
+    margin: 30px auto 0;
+}
+
+.form-left-decoration,
+.form-right-decoration {
+    content: "";
+    position: absolute;
+    width: 50px;
+    height: 20px;
+    background: #f69a73;
+    border-radius: 20px;
+}
+
+.form-left-decoration {
+    bottom: 60px;
+    left: -30px;
+}
+
+.form-right-decoration {
+    top: 60px;
+    right: -30px;
+}
+
+    .form-left-decoration:before,
+    .form-left-decoration:after,
+    .form-right-decoration:before,
+    .form-right-decoration:after {
+        content: "";
+        position: absolute;
+        width: 50px;
+        height: 20px;
+        border-radius: 30px;
+        background: white;
+    }
+
+.form-left-decoration:before {
+    top: -20px;
+}
+
+.form-left-decoration:after {
+    top: 20px;
+    left: 10px;
+}
+
+.form-right-decoration:before {
+    top: -20px;
+    right: 0;
+}
+
+.form-right-decoration:after {
+    top: 20px;
+    right: 10px;
+}
+
+.circle {
+    position: absolute;
+    bottom: 80px;
+    left: -55px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+}
+
+.form-inner {
+    margin-top: 120px;
+    padding: 50px;
+    width: max-content;
+}
+
+    .form-inner input.form, .form-inner a.form,
+    .form-inner textarea {
+        display: block;
+        width: 100%;
+        padding: 0 20px;
+        margin-bottom: 10px;
+        background: #E9EFF6;
+        border-width: 0;
+        border-radius: 20px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .form-inner .form-text-one-line, select {
+        text-decoration: none;
+        outline: none;
+        height: 45px;
+        line-height: 45px;
+        border-radius: 45px;
+        margin: 20px 0px 10px 0px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 18px;
+        text-align: center;
+        color: #524f4e;
+        background: white;
+    }
+
+    .form-inner input[type="submit"].form, .form-inner a.form {
+        margin-top: 30px;
+        background: #f69a73;
+        border-bottom: 4px solid #d87d56;
+        color: white;
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+    .form-inner textarea {
+        resize: none;
+    }
+
+    .form-inner h3 {
+        margin-top: 0;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        font-size: 24px;
+        color: #707981;
+    }
+
+    .form-inner .form-input-one-line {
+        cursor: pointer;
+        display: inline-block;
+        padding: 5px 10px;
+        background: #F79361;
+        box-shadow: 2px 2px 0 0 #a22800;
+        position: relative;
+    }
+
+        .form-inner .form-input-one-line:hover {
+            box-shadow: none;
+            top: 2px;
+            left: 2px;
+        }

@@ -1,0 +1,11 @@
+﻿@using HomeTask4.Core.Entities
+@model List<Ingredient>
+@section Scripts
+{
+
+}
+<select name="SelectedAmountIngredient" id="selectedAmountIngredient"
+        class="form-control"
+        onchange="onFormSelected(this.value)"
+        asp-items="@(new SelectList(Model, "Id", "Name"))">
+</select>

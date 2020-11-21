@@ -1,0 +1,18 @@
+﻿@page
+@model HomeTask6.Web.Pages.Recipes.EditRecipeModel
+@{
+    ViewData["Title"] = "Edit recipe";
+}
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"]</h3>
+        <input class="form-input-text" value="@Model.Recipe.Name" type="text" placeholder="Enter recipe name" name="nameRecipe" id="nameRecipe" required />
+        <textarea class="textarea-input" placeholder="Enter description recipe" name="descRecipe" id="descRecipe">@Model.Recipe.Description</textarea>
+        <input class="form-input" type="submit" value="Edit" asp-page-handler="EditRecipe" asp-route-recipeId=@Model.Recipe.Id />
+        <a class="form-input" asp-page="ViewRecipe"
+           asp-route-recipeId=@Model.Recipe.CategoryId>Back to recipe</a>
+    </div>
+</form>

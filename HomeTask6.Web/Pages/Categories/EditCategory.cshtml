@@ -1,0 +1,20 @@
+﻿@page
+@model HomeTask6.Web.Pages.Categories.EditCategoryModel
+@{
+    ViewData["Title"] = "Edit category";
+}
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>@ViewData["Title"] «@Model.CurrentCategoryName»</h3>
+        <b><a class="form-input" asp-page="RenameCategory" asp-route-categoryId=@Model.CategoryId>Rename category</a></b>
+        @if (Model.CategoryId != 1)
+        {
+            <b><a class="form-input" asp-page="ChangeParentCategory"
+                  asp-route-categoryId=@Model.CategoryId
+                  asp-route-nameCategory=@Model.CurrentCategoryName>Change parent category</a></b>
+        }
+        </div>
+</form>

@@ -1,0 +1,73 @@
+﻿@page
+@using HomeTask6.Web.Entities
+@model HomeTask6.Web.Pages.Recipes.RecipesIndexModel
+@{
+    ViewData["Title"] = "Recipes";
+    async Task ShowTree(IEnumerable<CategoryMenu> categories)
+    {
+        <ul class="push">
+            @foreach (var category in categories)
+            {
+                <li>
+                    <button asp-page-handler="GetRecipes"
+                            asp-route-categoryId=@category.Id>
+                        @category.Name
+                    </button>
+                    @if (category.Children.Any())
+                    {
+                        await ShowTree(category.Children);
+                    }
+                </li>
+            }
+        </ul>
+    }
+}
+
+<form method="post" class="decor">
+    <div class="form-left-decoration"></div>
+    <div class="form-right-decoration"></div>
+    <div class="circle"></div>
+    <div class="form-inner">
+        <h3>Recipes</h3>
+        <div>
+            <div class="block">
+                @{ await ShowTree(Model.DisplayedCategories); }
+            </div>
+            @if (@Model.CategoryId != 0)
+            {
+                <div class="block">
+                    <b>
+                        <a class="form-input" asp-page="CreateRecipe"
+                           asp-route-categoryId=@Model.CategoryId
+                           asp-route-categoryName=@Model.NameCategory>
+                            Сreate recipe
+                        </a>
+                    </b>
+                    <ul class="zebra">
+                        @if (Model.DisplayedRecipes.Count > 0)
+                        {
+                            <li><h3 class="caption">@Model.NameCategory</h3></li>
+                            @foreach (var recipe in Model.DisplayedRecipes)
+                            {
+                                <li>
+                                    <b>
+                                        <a class="list" asp-page="ViewRecipe"
+                                           asp-route-recipeId=@recipe.Id>@recipe.Name</a>
+                                    </b>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            }
+            <div class="block">
+                <p>
+                    @Model.NameRecipe
+                </p>
+                <p class="perenos">
+                    @Model.Description
+                </p>
+            </div>
+        </div>
+    </div>
+</form>
